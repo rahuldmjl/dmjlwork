@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\photography_product;
 use App\category;
+use App\color;
 use Illuminate\Http\Request;
 use DB;
 class PhotoshopProductController extends Controller
@@ -14,18 +15,18 @@ class PhotoshopProductController extends Controller
     {
        $this->list_prpduct=collect(photography_product::get_product_list());
        $this->total_product=collect(photography_product::get_photography_product_count());
-    
+       
        
     }
     public function list_of_product()
     {
        $total=count($this->total_product);
-     $pending=count($this->total_product->where('status','=',0));
-     $done=count($this->total_product->where('status','=',1));
-        $list=$this->list_prpduct;
-        $category=category::all();
-        $color = photography_product::select('color')->distinct()->get();
-      return view('Photoshop/Product/list',compact('list','category','color','total','done','pending'));
+       $pending=count($this->total_product->where('status','=',0));
+       $done=count($this->total_product->where('status','=',1));
+       $list=$this->list_prpduct;
+       $category=category::all();
+    $color = photography_product::select('color')->distinct()->get();
+       return view('Photoshop/Product/list',compact('list','category','color','total','done','pending'));
         
        
     }
@@ -37,31 +38,39 @@ public function Photography_product_ajax(Request $request){
     $length = (!empty($params['length']) ? $params['length'] : 10);
     $stalen = $start / $length;
     $curpage = $stalen;
+    $maindata = photography_product::query();
     $where = '';
     $offset = '';
     $limit = '';
     $order = $params['order'][0]['column'];
     $order_direc = strtoupper($params['order'][0]['dir']);
-    if ($order == "1") {
-        $order_by = 'sku';
-    } else{
-        $order_by = 'color';
-    } 
-    if(!empty($params['colorFilter'])){
-        $product=photography_product::where('color',$params['colorFilter'])->get();
-    }
    
-    
-    $data["draw"] = $params['draw'];
-		$data["page"] = $curpage;
-		//$data["query"] = $maindata->toSql();
-		$data["recordsTotal"] = count($product);
-		$data["recordsFiltered"] = count($product);
-        $data['deferLoading'] = count($product);
-        if(count($product)>0){
-            foreach($product as $p){
-                $action='CCXC ';
-                $data['data'][] = array($p->sku, $p->color, $p->category_id, $action);
+
+    if(!empty($params['skusearch'])){
+        $maindata->where('sku',$params['skusearch']);
+    }
+   if(!empty($params['category'])){
+    $maindata->where('category_id',$params['category']);
+   }
+   if(!empty($params['color'])){
+    $maindata->where('color',$params['color']);
+   }
+   if(!empty($params['status'])){
+    $maindata->where('status',$params['status']);
+   }
+    $datacount = $maindata->count();
+		$datacoll = $maindata;
+        $data["recordsTotal"] = $datacount;
+		$data["recordsFiltered"] = $datacount;
+		$data['deferLoading'] = $datacount;
+        
+        $datacollection = $datacoll->take($length)->offset($start)->get();
+        
+         if(count($datacollection)>0){
+            foreach($datacollection as $key=>$p){
+                $action='<a class="color-content table-action-style btn-delete-customer " data-href="'.route('delete.product',['id'=>$p->id]) .'" style="cursor:pointer;"><i class="material-icons md-18">delete</i></a>&nbsp;&nbsp;';
+                $category="0";
+                $data['data'][] = array($p->sku, $p->color,$category, $action);
             }
            
         }else{
@@ -76,7 +85,10 @@ public function Photography_product_ajax(Request $request){
 
     public function add_of_product()
     {
-        return view('Photoshop/Product/add');
+        $category=category::all();
+        $color=color::all();
+       
+        return view('Photoshop/Product/add',compact('category','color'));
     }
 
     public function list_of_product_filter(Request $request)
@@ -118,10 +130,18 @@ public function Photography_product_ajax(Request $request){
     }
 
     public function deleteproduct($id){
-       $data=photography_product::find($id);
+        $data=photography_product::find($id);
         $data->delete();
-     return redirect()->back();
+        return redirect()->back();
   
+    }
+
+
+    public function add_action_product(Request $request){
+       $sku=$request->input('sku');
+       $category_id=$request->input('category');
+       $color=$request->input('color');
+       echo $color;
     }
    
 }

@@ -33,6 +33,144 @@
       <div class="loader"></div>
     </div>
   </div>
+  <div class="widget-list">
+                <div class="row">
+                    <!-- Default Tabs -->
+                    <div class="col-md-12 widget-holder">
+                        <div class="widget-bg">
+                            <div class="widget-body clearfix">
+                                <h5 class="box-title">Total Photography Filter</h5>
+                                <div class="tabs">
+                                    <ul class="nav nav-tabs">
+                                        <li class="nav-item "><a class="nav-link" href="#home-tab" data-toggle="tab" aria-expanded="true">Home</a>
+                                        </li>
+                                        <li class="nav-item active"><a class="nav-link" href="#profile-tab" data-toggle="tab" aria-expanded="true">Filter</a>
+                                        </li>
+                                      
+                                    </ul>
+                                    <!-- /.nav-tabs -->
+                                    <div class="tab-content">
+                                        <div class="tab-pane " id="home-tab">
+										<div class="row">
+                    <!-- Counter: Sales -->
+                    <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                        <div class="widget-bg bg-primary text-inverse">
+                            <div class="widget-body">
+                                <div class="widget-counter">
+                                    <h6>Total Product <small class="text-inverse"></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$totalproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                </div>
+                                <!-- /.widget-counter -->
+                            </div>
+                            <!-- /.widget-body -->
+                        </div>
+                        <!-- /.widget-bg -->
+                    </div>
+                    <!-- /.widget-holder -->
+                    <!-- Counter: Subscriptions -->
+                    <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                        <div class="widget-bg bg-color-scheme text-inverse">
+                            <div class="widget-body clearfix">
+                                <div class="widget-counter">
+                                    <h6>Done  <small class="text-inverse"></small></h6>
+                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                </div>
+                                <!-- /.widget-counter -->
+                            </div>
+                            <!-- /.widget-body -->
+                        </div>
+                        <!-- /.widget-bg -->
+                    </div>
+                    <!-- /.widget-holder -->
+                    <!-- Counter: Users -->
+                    <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                        <div class="widget-bg">
+                            <div class="widget-body clearfix">
+                                <div class="widget-counter">
+                                    <h6>Pending <small></small></h6>
+                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                </div>
+                                <!-- /.widget-counter -->
+                            </div>
+                            <!-- /.widget-body -->
+                        </div>
+                        <!-- /.widget-bg -->
+                    </div>
+                    <!-- /.widget-holder -->
+                    <!-- Counter: Pageviews -->
+                    
+                    <!-- /.widget-holder -->
+                </div>
+         </div>
+                  <div class="tab-pane active" id="profile-tab">
+						<div class="row">
+			<div class="col-md-12 widget-holder content-area">
+				<div class="widget-bg">
+					<div class="widget-heading clearfix">
+						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Photography Filter</h5>
+					  
+					</div>
+					<div class="widget-body clearfix dataTable-length-top-0">
+						<form class="mr-b-30" method="post" action="javascript:void(0);">
+							{{ csrf_field() }}
+							<div class="row">
+								<div class="col-md-3">
+									<div class="form-group">
+										<select class="form-control" name="categoryFilter" id="categoryFilter">
+											<option value="">Select Category</option>
+											
+										</select>	
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<select class="form-control" name="colorFilter" id="colorFilter">
+											<option value="">Select Color</option>
+											
+										</select>	
+									</div>
+								</div>
+								
+								<div class="col-md-3">
+									<div class="form-group">
+										<select class="form-control" name="statusFilter" id="statusFilter">
+											<option value="">Select Status</option>
+											<option value="0">Pending</option>
+											<option value="1">Done</option>
+										</select>	
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<input class="form-control" name="sku" id="sku" style="height: 43px;" placeholder="Sku Search" type="text">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<input class="btn btn-primary" style="    height: 43px;" id="searchfilter"   type="submit" value="Apply">
+                     <button class="btn btn-default" namwe="reset" id="reset" type="button">Reset</button>
+                    
+                                	</div>
+								</div>
+							</div>
+						</form>
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+							</div>
+												
+                                    </div>
+                                 </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+               </div>
+           
+ 
   	<div class="widget-list">
       	<div class="row">
   			<div class="col-md-12 widget-holder content-area">
@@ -42,8 +180,7 @@
 						
   					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
-  						
-	                    <table class="table table-striped table-center word-break mt-0"   data-toggle="datatables" >
+  					  <table class="table table-striped table-center word-break mt-0"   data-toggle="datatables" >
   							<thead>
   								<tr class="bg-primary">
   									<th>Sku</th>

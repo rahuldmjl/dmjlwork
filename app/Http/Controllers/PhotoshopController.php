@@ -42,11 +42,11 @@ class PhotoshopController extends Controller
        $pendinglist=array();
      
        // $pending=photography_product::all();
-        $pendinglist=collect($this->product)->where('status','=',0);
+        $pendinglist=collect($this->product)->where('status','=',0)->take(100);
       
-      $totalproduct= count($pendinglist);  
+      $totalproduct= count(photography_product::all());  
       
-   return view('Photoshop/Photography/photography_pending',compact('pendinglist','totalproduct'));
+      return view('Photoshop/Photography/photography_pending',compact('pendinglist','totalproduct'));
  
   
     }
@@ -67,7 +67,7 @@ class PhotoshopController extends Controller
     {
      
        
-         $reworklist=collect($this->photography)->where('status','=',4);
+       $reworklist=collect($this->photography)->where('status','=',4);
       return view('Photoshop/Photography/photography_rework',compact('reworklist'));
     }
 

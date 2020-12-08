@@ -718,15 +718,15 @@ Photoshop Product COntroller
 */
 Route::get('Photoshop/Product/list','PhotoshopProductController@list_of_product')->name('product_list');
 Route::get('Photoshop/Product/add','PhotoshopProductController@add_of_product')->name('product_add');
+Route::post('Photoshop/Product/add','PhotoshopProductController@add_action_product')->name('add.product.action');
 Route::post('Photoshop/Product/listAjax','PhotoshopProductController@Photography_product_ajax')->name('Ajax_product_list');
-Route::get('Photoshop/Product/delete/{id}','PhotoshopProductController@deleteproduct');
+Route::get('Photoshop/Product/delete/{id}','PhotoshopProductController@deleteproduct')->name('delete.product');
 /*
 Photoshop department
 */
 Route::get('Photoshop/Photography','PhotoshopController@index')->name('photography.index');
 Route::post('Photoshop/Photography/pending','PhotoshopController@pending_list_submit');
 Route::get('Photoshop/Photography/pending','PhotoshopController@get_pending_list')->name('photography.pending');
-
 Route::get('Photoshop/Photography/done','PhotoshopController@get_done_list')->name('photography.done');
 Route::post('Photoshop/Photography/done','PhotoshopController@submit_done_list')->name('photography.done');
 Route::get('Photoshop/Photography/rework','PhotoshopController@get_rework_list')->name('photography.rework');

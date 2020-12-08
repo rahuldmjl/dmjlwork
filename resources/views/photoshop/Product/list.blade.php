@@ -110,10 +110,10 @@
 							<div class="row">
 								<div class="col-md-3">
 									<div class="form-group">
-										<select class="form-control" name="category">
-											<option value="null">Select Category</option>
+										<select class="form-control" name="categoryFilter" id="categoryFilter">
+											<option value="">Select Category</option>
 											@foreach($category as $cat){
-												<option value={{$cat->entity_id}}>{{$cat->value}}</option>
+												<option value={{$cat->entity_id}}>{{$cat->name}}</option>
 											
 											@endforeach
 										</select>	
@@ -121,10 +121,10 @@
 								</div>
 								<div class="col-md-3">
 									<div class="form-group">
-										<select class="form-control" name="color" id="colorFilter">
-											<option value="null">Select Color</option>
+										<select class="form-control" name="colorFilter" id="colorFilter">
+											<option value="">Select Color</option>
 											@foreach($color->unique('color') as $user){
-												<option>{{$user->color}}</option>
+												<option value="{{$user->color}}">{{$user->color}}</option>
 											
 											@endforeach
 										</select>	
@@ -133,8 +133,8 @@
 								
 								<div class="col-md-3">
 									<div class="form-group">
-										<select class="form-control" name="status" id="statusFilter">
-											<option value="null">Select Status</option>
+										<select class="form-control" name="statusFilter" id="statusFilter">
+											<option value="">Select Status</option>
 											<option value="0">Pending</option>
 											<option value="1">Done</option>
 										</select>	
@@ -148,7 +148,7 @@
 								<div class="col-md-3">
 									<div class="form-group">
 										<input class="btn btn-primary" style="    height: 43px;" id="searchfilter"   type="submit" value="Apply">
-                                        <button class="btn btn-default" id="searchreset" type="button">Reset</button>
+                     <button class="btn btn-default" namwe="reset" id="reset" type="button">Reset</button>
                     
                                 	</div>
 								</div>
@@ -198,28 +198,15 @@
 	                <tr>
 		                <td>{{$item->sku}}</td>
 	                    <td>{{$item->color}}</td>
-						<td>0</td>
+						     <td>0</td>
 						
                       <td>
-						<?php 
-						if($item->status=='0')
-						{
-							?>
-							<a href="" class="color-content table-action-style"><i class="material-icons sm-18">delete</i></a>
-							&nbsp;	&nbsp;&nbsp;
-							<a href="javascript:void(0)"  class="color-content table-action-style"><i class="material-icons sm-18">remove_red_eye</i></a>
+					
 							
-							<?php 
-						}
-						else {
-							?>
-							
-							<a href="delete/{{$item->id}}"   class="color-content table-action-style"><i class="material-icons sm-18">delete</i></a>
-							
-							<a href="view/{{$item->id}}" class="color-content table-action-style"><i class="material-icons sm-18">remove_red_eye</i></a>
-							<?php 
-						}
-						?>
+							<a class="color-content table-action-style btn-delete-customer" data-href="{{ route('delete.product',['id'=>$item->id]) }}" style="cursor:pointer;"><i class="material-icons md-18">delete</i></a>
+								
+							<a href="view/{{$item->id}}" class="color-content table-action-style" style="display:none"><i class="material-icons sm-18">remove_red_eye</i></a>
+					
 						</td>
 
     </tr>
@@ -265,6 +252,23 @@
 <script src="<?=URL::to('/');?>/js/jquery.validate.min.js"></script>
 <script src="<?=URL::to('/');?>/js/additional-methods.min.js"></script>
 <script type="text/javascript">
+	$(document).on('click','.btn-delete-customer',function(){
+			var deleteUrl = $(this).data('href');
+		    swal({
+		        title: 'Are you sure?',
+		         type: 'info',
+				 text:'Delete This Product',
+		        showCancelButton: true,
+		        confirmButtonText: 'Confirm',
+		        confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
+		        }).then(function(data) {
+		        	if (data.value) {
+		        		window.location.href = deleteUrl;
+		        	}
+
+		    });
+		});
+	
   var buttonCommon = {
         exportOptions: {
             format: {
@@ -318,26 +322,30 @@
   "ajax":{
     "url": $("#photographyproductAjax").val(),
     "data": function(data, callback){
-        console.log("rr");
+      console.log(data);
       showLoader();
       data._token = "{{ csrf_token() }}";
+
+    
       var skusearch = $('#sku').val();
-  
       if(skusearch != ''){
         data.skusearch = skusearch;
     
       }
-
-      var colorFilter=$('#colorFilter').val();
-      if(colorFilter != ''){
-          data.colorFilter=colorFilter;
-      }
-
-      var statusFilter=$('statusFilter').val();
-      if(statusFilter != ''){
-          data.statusFilter=statusFilter;
-      }
-
+      var category = $('#categoryFilter').children("option:selected").val();
+     if(category != ''){
+       data.category=category;
+     }
+     var color = $('#colorFilter').children("option:selected").val();
+     if(color != ''){
+       data.color=color;
+     }
+    
+     
+     var status = $('#statusFilter').children("option:selected").val();
+     if(status != ''){
+       data.status=status;
+     }
     },
     complete: function(response){
       hideLoader();
@@ -348,6 +356,35 @@
 	});
     $('#searchfilter').click(function(){
     table.draw();
+  });
+  $('#reset').click(function(){
+	$('#sku').val('');
+	$('#categoryFilter option[value=""]').attr('selected','selected');
+	$('#colorFilter option[value=""]').attr('selected','selected');
+	$('#statusFilter option[value=""]').attr('selected','selected');
+
+	$('#categoryFilter').on('change', function() {
+      if(this.value == ''){
+        $('#categoryFilter option[value=""]').attr('selected','selected');
+      }else{
+        $('#categoryFilter option[value=""]').removeAttr('selected','selected');
+      }
+	});
+	$('#colorFilter').on('change', function() {
+      if(this.value == ''){
+        $('#colorFilter option[value=""]').attr('selected','selected');
+      }else{
+        $('#colorFilter option[value=""]').removeAttr('selected','selected');
+      }
+	});
+	$('#statusFilter').on('change', function() {
+      if(this.value == ''){
+        $('#statusFilter option[value=""]').attr('selected','selected');
+      }else{
+        $('#statusFilter option[value=""]').removeAttr('selected','selected');
+      }
+    });
+	table.draw();
   });
 	</script>
 @endsection
