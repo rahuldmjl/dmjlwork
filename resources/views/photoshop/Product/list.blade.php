@@ -1,4 +1,6 @@
-
+<?php
+use App\Helpers\PhotoshopHelper;
+?>
 @extends('layout.photo_navi')
 
 
@@ -185,6 +187,7 @@
 	                    <table class="table table-striped table-center word-break mt-0"   id="photographytable" >
   							<thead>
   								<tr class="bg-primary">
+                  <th>Sr No</th>
   									<th>Sku</th>
 									  <th>Color</th>
 									  <th>Category</th>
@@ -193,12 +196,13 @@
   								</tr>
   							</thead>
   							<tbody>
-                     @foreach($list as $item)
-
+                     @foreach($list as $key=>$item)
+                       
 	                <tr>
+                  <td>{{$key+1}}</td>
 		                <td>{{$item->sku}}</td>
 	                    <td>{{$item->color}}</td>
-						     <td>0</td>
+						     <td>{{$item->category->name}}</td>
 						
                       <td>
 					
@@ -215,6 +219,7 @@
 	  </tbody>
 							  <tfoot>
 								<tr class="bg-primary">
+                <th>Sr No</th>
 									<th>Sku</th>
 									<th>Color</th>
 									<th>Category</th>

@@ -39,6 +39,15 @@ public static function get_status($name)
             ->get();
             return $status;
 }
+
+public static function getCategory_name_by_id($id){
+    $status=DB::table('categories')
+    ->select('name')
+    ->where('entity_id','=',$id)
+    ->get();
+    return $status;
+}
+
 public static function store_cache_table_data($cache)
 {
    
@@ -79,6 +88,7 @@ public static function addintoCasheTable($data)
                 ->insert($data);
 
 }
+
 
 }   
 ?>

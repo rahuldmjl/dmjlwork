@@ -25,7 +25,7 @@ class PhotoshopProductController extends Controller
        $done=count($this->total_product->where('status','=',1));
        $list=$this->list_prpduct;
        $category=category::all();
-    $color = photography_product::select('color')->distinct()->get();
+       $color = photography_product::select('color')->distinct()->get();
        return view('Photoshop/Product/list',compact('list','category','color','total','done','pending'));
         
        
@@ -69,12 +69,12 @@ public function Photography_product_ajax(Request $request){
          if(count($datacollection)>0){
             foreach($datacollection as $key=>$p){
                 $action='<a class="color-content table-action-style btn-delete-customer " data-href="'.route('delete.product',['id'=>$p->id]) .'" style="cursor:pointer;"><i class="material-icons md-18">delete</i></a>&nbsp;&nbsp;';
-                $category="0";
-                $data['data'][] = array($p->sku, $p->color,$category, $action);
+                $srno = $key + 1 + $start;
+                $data['data'][] = array($srno,$p->sku, $p->color,$p, $action);
             }
            
         }else{
-            $data['data'][] = array('', '', '', '');
+            $data['data'][] = array('', '', '', '','');
       
         }
      echo json_encode($data);
@@ -87,8 +87,12 @@ public function Photography_product_ajax(Request $request){
     {
         $category=category::all();
         $color=color::all();
-       
-        return view('Photoshop/Product/add',compact('category','color'));
+      $totalproduct=count($this->total_product);
+      $data=collect($this->total_product)->where('status',1);
+      $pendingediting=collect($this->total_product)->where('status',0);
+       $done_editing=count($data);
+       $pending_editing=count($pendingediting);
+     return view('Photoshop/Product/add',compact('category','color','totalproduct','done_editing','pending_editing'));
     }
 
     public function list_of_product_filter(Request $request)
@@ -138,10 +142,28 @@ public function Photography_product_ajax(Request $request){
 
 
     public function add_action_product(Request $request){
-       $sku=$request->input('sku');
-       $category_id=$request->input('category');
-       $color=$request->input('color');
-       echo $color;
+      
+      $photography_product=array();
+      $photography_product[]=array(
+        'sku'=>$request->input('sku'),
+        'category_id'=>$request->input('category'),
+        'color'=>$request->input('color'),
+        'regular_shoot_status'=>"0",
+        'model_shoot_status'=>"0",
+       'instagram_shoot_status'=>"0",
+       'status'=>"0",
+       'created_at'=>date("Y-m-d H:i:s"),
+       'updated_at'=>date("Y-m-d H:i:s"),
+       'created_by'=>"test",
+       'deleted_at'=>"test"
+      );
+      $status=photography_product::productInsert($photography_product);
+      if($status){
+        return  redirect('Photoshop/Product/add')->with('message','Product Add Change Successfull');
+      }else{
+        return  redirect('Photoshop/Product/add')->with('message','Product Add Change Successfull');
+      }
+ 
     }
    
 }

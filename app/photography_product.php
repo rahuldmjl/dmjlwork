@@ -8,7 +8,7 @@ class photography_product extends Model
 {
     public static function get_product_list()
     {
-          return photography_product::where('status','=',0)->take(10)->get();
+          return photography_product::where('status','=',0) ->orderBy('id', 'DESC')->take(10)->get();
     }
     public function category()
     {
@@ -19,6 +19,10 @@ class photography_product extends Model
 
         return photography_product::all();
     }
-   
-   
+    public static function productInsert($data){
+    
+        return photography_product::insert($data);
+       }
+  
+
 }
