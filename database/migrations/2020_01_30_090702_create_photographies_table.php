@@ -20,6 +20,7 @@ class CreatePhotographiesTable extends Migration
             $table->Integer('status');
             $table->Integer('current_status');
             $table->Integer('next_department_status');
+            $table->String('created_by');
             $table->timestamps();
         });
     }

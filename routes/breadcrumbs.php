@@ -628,3 +628,13 @@ Breadcrumbs::for('product_add',function($trail){
 	$trail->parent('dashboard');
 	$trail->push('Product Add', route('product_add'));
 });
+
+
+Breadcrumbs::for('photgraphy_setting_category',function($trail){
+$trail->parent('dashboard');
+$trail->push('Photography Category',route('photography.setting.category'));
+});
+Breadcrumbs::for('photgraphy_setting_color',function($trail){
+	$trail->parent('dashboard');
+	$trail->push('Photography Color',route('photography.setting.color'));
+	});

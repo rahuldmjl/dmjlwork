@@ -17,8 +17,9 @@ class CreatePhotoshopCachesTable extends Migration
             $table->bigIncrements('id');
             $table->Integer('product_id');
             $table->string('action_name');
-            $table->Integer('action_by');
+            $table->String('action_by');
             $table->datetime('action_date_time');
+            $table->String('status');
         });
     }
 

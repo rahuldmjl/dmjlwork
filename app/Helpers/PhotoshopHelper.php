@@ -51,33 +51,8 @@ public static function getCategory_name_by_id($id){
 public static function store_cache_table_data($cache)
 {
    
-   $product_id=$cache['product_id'];
-   $status=$cache['status'];
-   $status1=PhotoshopHelper::getStatus($status);
-   $sta="";
-   $dt = new DateTime();
-  
- foreach($status1 as $s)
- {
-     $sta.=$s->name;
- }
- $stat="";
- $name=strtoUpper($cache['url'])."_".strtoUpper($sta);
- $statusid=photoshopHelper::get_status($name);
- foreach($statusid as $sr)
- {
-$stat=$sr->status_id;
- }
  
-   $insert=array(
-       'product_id'=>$product_id,
-       'action_name'=>$stat,
-       'action_by'=>$cache['action_by'],
-       'action_date_time'=>date("Y-m-d H:i:s")
-   );
-    
- 
-        PhotoshopHelper::addintoCasheTable($insert);
+        PhotoshopHelper::addintoCasheTable($cache);
    
    
   

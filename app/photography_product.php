@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\category;
 class photography_product extends Model
 {
     public static function get_product_list()
@@ -23,6 +23,17 @@ class photography_product extends Model
     
         return photography_product::insert($data);
        }
-  
+       /*
+        find category by category id 
+       */
+  public static function  get_category_by_id($id){
+    $name=category::where('entity_id',$id)->first();
+    return $name->name;
+  }
+
+ public static function update_product($id){
+  $data=array('status'=>"1");
+  return photography_product::where('id','=',$id)->update($data);
+ }
 
 }

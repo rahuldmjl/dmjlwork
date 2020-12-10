@@ -159,18 +159,8 @@ use App\Helpers\PhotoshopHelper;
 
 
 								</div>
-							</div>
-						</div>
-					</div>
-							</div>
-												
-                                    </div>
-                                 </div>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-               </div>
+						
+						
            
   	<div class="widget-list">
 
@@ -224,7 +214,7 @@ use App\Helpers\PhotoshopHelper;
 									<th>Color</th>
 									<th>Category</th>
 								
-                                    <th>Action</th>
+                   <th>Action</th>
 								
 								</tr>
 							</tfoot>
@@ -296,7 +286,7 @@ use App\Helpers\PhotoshopHelper;
       title: 'Photography-Product-List',
       className: "btn btn-primary btn-sm px-3",
       exportOptions: {
-          columns: [0,1,2],
+          columns: [0,1,2,3],
           orthogonal: 'export'
       }
     }),

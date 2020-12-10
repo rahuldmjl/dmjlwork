@@ -5,6 +5,7 @@ use App\photography_product;
 use App\category;
 use App\color;
 use Illuminate\Http\Request;
+use App\Helper\PhotoshopHelper;
 use DB;
 class PhotoshopProductController extends Controller
 {
@@ -70,11 +71,14 @@ public function Photography_product_ajax(Request $request){
             foreach($datacollection as $key=>$p){
                 $action='<a class="color-content table-action-style btn-delete-customer " data-href="'.route('delete.product',['id'=>$p->id]) .'" style="cursor:pointer;"><i class="material-icons md-18">delete</i></a>&nbsp;&nbsp;';
                 $srno = $key + 1 + $start;
-                $data['data'][] = array($srno,$p->sku, $p->color,$p, $action);
+             // $cat=photography_product::get_category_by_id($p->category_id);
+               $cat=photography_product::get_category_by_id($p->category_id);
+             
+                $data['data'][] = array($srno,$p->sku, $p->color,$cat, $action);
             }
            
         }else{
-            $data['data'][] = array('', '', '', '','');
+            $data['data'][] = array('', '', '', '','','');
       
         }
      echo json_encode($data);
@@ -165,5 +169,11 @@ public function Photography_product_ajax(Request $request){
       }
  
     }
-   
+
+    /*
+Testing For data fetch 
+
+    */
+ 
+ 
 }
