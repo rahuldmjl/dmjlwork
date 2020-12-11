@@ -32,8 +32,7 @@ class photography_product extends Model
   }
 
  public static function update_product($id){
-  $data=array('status'=>"1");
-  return photography_product::where('id','=',$id)->update($data);
+  return photography_product::where('id','=',$id)->update(["status"=>1]);
  }
 
 }

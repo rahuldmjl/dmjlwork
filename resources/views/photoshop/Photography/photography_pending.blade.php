@@ -76,7 +76,7 @@
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
                                     <h6>Done  <small class="text-inverse"></small></h6>
-                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h3 class="h1"><span class="counter">{{$done_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                                 <!-- /.widget-counter -->
                             </div>
@@ -91,7 +91,7 @@
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
                                     <h6>Pending <small></small></h6>
-                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h3 class="h1"><span class="counter">{{$remaning-$done_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                                 <!-- /.widget-counter -->
                             </div>
@@ -162,6 +162,8 @@
 							</div>
 						</form>
 				</div>
+        </div>
+        </div>
 		<div class="widget-list">
       	<div class="row">
   			<div class="col-md-12 widget-holder content-area">
@@ -185,12 +187,12 @@
                 <?php 
 $i=1;
                 ?>
- @foreach ($pendinglist as $key=>$item)
+ @foreach ($list as $key=>$item)
 <tr>
 <td><?php echo $i++;?></td>
 		<td>{{$item->sku}}</td>
 	
-	<td>{{$item->color}} Gold</td>
+	<td>{{$item->color}} </td>
 	<td>
 {{$item->category->name}}
 			
@@ -235,7 +237,7 @@ $i=1;
   <!-- /.widget-list -->
 </main>
 <!-- /.main-wrappper -->
-<input type="hidden" id="photographylistAjax" value="<?=URL::to('Photoshop/Photography/listAjax');?>">
+<input type="hidden" id="photographylistAjax" value="<?=URL::to('Photoshop/Photography/pending_ajax_list');?>">
 <style type="text/css">
 .form-control[readonly] {background-color: #fff;}
 </style>
@@ -254,7 +256,12 @@ $i=1;
 <script src="<?=URL::to('/');?>/js/jquery.validate.min.js"></script>
 <script src="<?=URL::to('/');?>/js/additional-methods.min.js"></script>
 <script type="text/javascript">
-
+var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
 	var buttonCommon = {
         exportOptions: {
             format: {
@@ -306,6 +313,7 @@ $i=1;
   "searching": false
   ,
   "serverMethod": "post",
+ 
   "ajax":{
     "url": $("#photographylistAjax").val(),
     "data": function(data, callback){

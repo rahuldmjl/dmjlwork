@@ -721,6 +721,11 @@ Route::get('Photoshop/Product/add','PhotoshopProductController@add_of_product')-
 Route::post('Photoshop/Product/add','PhotoshopProductController@add_action_product')->name('add.product.action');
 Route::post('Photoshop/Product/listAjax','PhotoshopProductController@Photography_product_ajax')->name('Ajax_product_list');
 Route::get('Photoshop/Product/delete/{id}','PhotoshopProductController@deleteproduct')->name('delete.product');
+
+/*
+TEst The Query
+
+*/
 Route::get('Photoshop/Product/test','PhotoshopProductController@test')->name('test');
 
 
@@ -740,8 +745,10 @@ Photoshop department
 Route::get('Photoshop/Photography','PhotoshopController@index')->name('photography.index');
 Route::post('Photoshop/Photography/pending','PhotoshopController@pending_list_submit');
 Route::get('Photoshop/Photography/pending','PhotoshopController@get_pending_list')->name('photography.pending');
-Route::post('Photoshop/Photography/listAjax','PhotoshopController@Pending_Ajax_list')->name('ajax.pending');
+Route::post('Photoshop/Photography/pending_ajax_list','PhotoshopController@Pending_Ajax_list')->name('ajax.pending');
 Route::get('Photoshop/Photography/done','PhotoshopController@get_done_list')->name('photography.done');
+Route::post('Photoshop/Photography/done_ajax_list','PhotoshopController@get_done_ajax__list')->name('photography.ajax.done');
+
 Route::post('Photoshop/Photography/done','PhotoshopController@submit_done_list')->name('photography.done');
 Route::get('Photoshop/Photography/rework','PhotoshopController@get_rework_list')->name('photography.rework');
 Route::post('Photoshop/Photography/rework','PhotoshopController@submit_done_list')->name('photography.rework');

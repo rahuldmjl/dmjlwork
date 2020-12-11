@@ -175,5 +175,16 @@ Testing For data fetch
 
     */
  
- 
+ public function test(){
+     $query=   DB::table('photography_products')
+     ->select('photography_products.sku','photography_products.category_id','photography_products.color')
+     ->join('photographies','photographies.product_id','=','photography_products.id')
+     ->where(['photographies.status'=>3])
+     ->get();
+     var_dump(count($query));
+     foreach($query as $q){
+         echo $q->sku;
+         echo "<br>";
+     }
+ }
 }
