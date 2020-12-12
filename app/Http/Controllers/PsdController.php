@@ -63,7 +63,7 @@ class PsdController extends Controller
     public function get_data_from_psd_pending_list(Request $request)
     {
       
-      $user=Auth::user();
+      
       $photoshop=new psd();
       if($request->input('status') !="1")
       {
@@ -75,16 +75,19 @@ class PsdController extends Controller
           $photoshop->status=$request->input('status');
           $photoshop->current_status='1';
           $photoshop->next_department_status='0';
-       
+          $url= $request->url();
+          $urllink= explode('Photoshop/',$url);
+          $link= $urllink[1];
          //Cache table data Insert
          if($request->input('status')=='3')
          {
           $photoshop->save();
           $cache=array(
-              'product_id'=>$request->input('product_id'),
-              'url'=>PhotoshopHelper::getDepartment($request->url()),
-              'status'=>$request->input('status'),
-              'action_by'=>$user->id
+            'product_id'=>$request->input('product_id'),
+            'action_name'=>$link,
+            'status'=>$request->input('status'),
+            'action_by'=>"user",
+            'action_date_time'=>date('Y-m-d H:i:s')
   
   
           );
@@ -99,15 +102,18 @@ class PsdController extends Controller
 
     public function submit_done_list(Request $request)
     {
-      $user=Auth::user();
+      $url= $request->url();
+      $urllink= explode('Photoshop/',$url);
+      $link= $urllink[1];
         $psd=psd::find($request->input('id'));
        if($request->input('status') !='0')
        {
         $cache=array(
           'product_id'=>$request->input('product_id'),
-          'url'=>PhotoshopHelper::getDepartment($request->url()),
+          'action_name'=>$link,
           'status'=>$request->input('status'),
-          'action_by'=>$user->id
+          'action_by'=>"user",
+          'action_date_time'=>date('Y-m-d H:i:s')
 
       );
       PhotoshopHelper::store_cache_table_data($cache);

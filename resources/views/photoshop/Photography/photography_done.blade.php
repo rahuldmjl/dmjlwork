@@ -1,4 +1,3 @@
-
 @extends('layout.photo_navi')
 
 
@@ -184,7 +183,6 @@
 		 <?php 
 									$product=$item->getProduct;
 									$category=$item->category;
-
 									?>
 	
 	<tr>
@@ -316,7 +314,6 @@ $.ajaxSetup({
       console.log(data);
       showLoader();
       data._token = "{{ csrf_token() }}";
-
     
       var skusearch = $('#sku').val();
       if(skusearch != ''){
@@ -347,7 +344,6 @@ $.ajaxSetup({
 	$('#categoryFilter option[value=""]').attr('selected','selected');
 	$('#colorFilter option[value=""]').attr('selected','selected');
 	$('#statusFilter option[value=""]').attr('selected','selected');
-
 	$('#categoryFilter').on('change', function() {
       if(this.value == ''){
         $('#categoryFilter option[value=""]').attr('selected','selected');
@@ -371,8 +367,6 @@ $.ajaxSetup({
     });
 	table.draw();
   });
-
 	
-
 </script>
 @endsection

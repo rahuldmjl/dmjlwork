@@ -31,6 +31,13 @@ public static function getDepartment($url)
     return $depart[0];
 }
 
+public static function get_product_validation($id){
+    $data=DB::table('photography_products')
+        ->select('id','status')
+        ->where('id','=',$id)
+        ->first();
+    return $data->status;
+}
 
 public static function get_status($name)
 {

@@ -47,15 +47,14 @@ class PhotoshopController extends Controller
     public function get_pending_list()
     {
       
-      $category_name=$this->category;
-      $color_name=$this->color;
-      $list=photography_product::all()->take(11)->where('status', 0);
-      $done_product_count=photography_product::where('status', 1)->count();
-      $totalproduct= count(photography_product::all());  
-     $remaning=count(photography_product::all());
-    return view('Photoshop/Photography/photography_pending',compact('list','totalproduct','category_name','color_name','done_product_count','remaning'));
-
-
+        $category_name=$this->category;
+        $color_name=$this->color;
+        $list=photography_product::all()->take(11)->where('status', 0);
+        $done_product_count=photography_product::where('status', 1)->count();
+        $totalproduct= count(photography_product::all());  
+       $remaning=count(photography_product::all());
+      return view('Photoshop/Photography/photography_pending',compact('list','totalproduct','category_name','color_name','done_product_count','remaning'));
+  
     }
     /*
 
@@ -154,7 +153,8 @@ pending photography pending ajax List
 		$curpage = $stalen;
         $maindata = photography::query();
         $datacount = $maindata->count();
-		$datacoll = $maindata->where('status',3);
+        $datacoll = $maindata->where('status','=',3);
+        
         $data["recordsTotal"] = $datacoll->count();
 		$data["recordsFiltered"] = $datacoll->count();
         $data['deferLoading'] = $datacoll->count();
@@ -262,15 +262,20 @@ done to rework
     public function submit_done_list(Request $request)
     {
         
-        $user=Auth::user();
+      
+        $url= $request->url();
+        $urllink= explode('Photoshop/',$url);
+        $link= $urllink[1];
+      
         if($request->input('status') !='0')
         {
             //cache table data insert 
             $cache=array(
                 'product_id'=>$request->input('product_id'),
-                'url'=>PhotoshopHelper::getDepartment($request->url()),
+                'action_name'=>$link,
                 'status'=>$request->input('status'),
-                'action_by'=>$user->id
+                'action_by'=>"user",
+                'action_date_time'=>date('Y-m-d H:i:s')
     
             );
             PhotoshopHelper::store_cache_table_data($cache);

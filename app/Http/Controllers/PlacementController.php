@@ -54,16 +54,19 @@ class PlacementController extends Controller
             $placement_data->status=$request->input('status');
             $placement_data->current_status='1';
             $placement_data->next_department_status='0';
-         
+            $url= $request->url();
+            $urllink= explode('Photoshop/',$url);
+            $link= $urllink[1];
            //Cache table data Insert
            if($request->input('status')=='3')
            {
             $placement_data->save();
             $cache=array(
                 'product_id'=>$request->input('product_id'),
-                'url'=>PhotoshopHelper::getDepartment($request->url()),
+                'action_name'=>$link,
                 'status'=>$request->input('status'),
-                'action_by'=>$user->id
+                'action_by'=>"user",
+                'action_date_time'=>date('Y-m-d H:i:s')
     
     
             );
@@ -79,16 +82,18 @@ class PlacementController extends Controller
     public function submit_done_list(Request $request)
     {
         $user=Auth::user();
-       
+        $url= $request->url();
+        $urllink= explode('Photoshop/',$url);
+        $link= $urllink[1];
         if($request->input('status') !='0')
         {
             //cache table data insert 
             $cache=array(
                 'product_id'=>$request->input('product_id'),
-                'url'=>PhotoshopHelper::getDepartment($request->url()),
+                'action_name'=>$link,
                 'status'=>$request->input('status'),
-                'action_by'=>$user->id
-    
+                'action_by'=>"user",
+                'action_date_time'=>date('Y-m-d H:i:s')
             );
            
            PhotoshopHelper::store_cache_table_data($cache);

@@ -45,7 +45,9 @@ class EditingController extends Controller
 
     public function get_pending_submit_editing(Request $request)
     {
-        $user=Auth::user();
+        $url= $request->url();
+      $urllink= explode('Photoshop/',$url);
+      $link= $urllink[1];
       $editing=new EditingModel();
       if($request->input('status') !="1")
       {
@@ -63,11 +65,11 @@ class EditingController extends Controller
          {
           $editing->save();
           $cache=array(
-              'product_id'=>$request->input('product_id'),
-              'url'=>PhotoshopHelper::getDepartment($request->url()),
-              'status'=>$request->input('status'),
-              'action_by'=>$user->id
-  
+            'product_id'=>$request->input('product_id'),
+            'action_name'=>$link,
+            'status'=>$request->input('status'),
+            'action_by'=>"user",
+            'action_date_time'=>date('Y-m-d H:i:s')
   
           );
            PhotoshopHelper::store_cache_table_data($cache);
@@ -84,7 +86,9 @@ class EditingController extends Controller
 
     public function submit_done_list_editng(Request $request)
     {
-        $user=Auth::user();
+        $url= $request->url();
+        $urllink= explode('Photoshop/',$url);
+        $link= $urllink[1];
      if($request->input('status')=='0')
      {
       
@@ -99,9 +103,10 @@ class EditingController extends Controller
 
         $cache=array(
             'product_id'=>$request->input('product_id'),
-            'url'=>PhotoshopHelper::getDepartment($request->url()),
+            'action_name'=>$link,
             'status'=>$request->input('status'),
-            'action_by'=>$user->id
+            'action_by'=>"user",
+            'action_date_time'=>date('Y-m-d H:i:s')
   
         );
        PhotoshopHelper::store_cache_table_data($cache);

@@ -45,6 +45,9 @@ class JpegController extends Controller
 
    public function submit_pending_list_jpeg(Request $request)
    {
+      $url= $request->url();
+      $urllink= explode('Photoshop/',$url);
+      $link= $urllink[1];
       $user=Auth::user();
       $jpeg=new jpegModel();
       if($request->input('status') !="1")
@@ -60,10 +63,11 @@ class JpegController extends Controller
          {
           $jpeg->save();
           $cache=array(
-              'product_id'=>$request->input('product_id'),
-              'url'=>PhotoshopHelper::getDepartment($request->url()),
-              'status'=>$request->input('status'),
-              'action_by'=>$user->id
+            'product_id'=>$request->input('product_id'),
+            'action_name'=>$link,
+            'status'=>$request->input('status'),
+            'action_by'=>"user",
+            'action_date_time'=>date('Y-m-d H:i:s')
                       );
            PhotoshopHelper::store_cache_table_data($cache);
            jpegModel::getUpdatestatusdone($request->input('product_id'));
@@ -76,16 +80,18 @@ class JpegController extends Controller
 
    public function submit_done_list_jpeg(Request $request)
    {
-     
-      $user=Auth::user();
+      $url= $request->url();
+      $urllink= explode('Photoshop/',$url);
+      $link= $urllink[1];
       if($request->input('status') !='0')
       {
      
          $cache=array(
             'product_id'=>$request->input('product_id'),
-            'url'=>PhotoshopHelper::getDepartment($request->url()),
+            'action_name'=>$link,
             'status'=>$request->input('status'),
-            'action_by'=>$user->id
+            'action_by'=>"user",
+            'action_date_time'=>date('Y-m-d H:i:s')
   
         );
         PhotoshopHelper::store_cache_table_data($cache);

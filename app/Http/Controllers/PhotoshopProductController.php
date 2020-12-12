@@ -31,7 +31,7 @@ class PhotoshopProductController extends Controller
         
        
     }
-
+   
 public function Photography_product_ajax(Request $request){
     $data = array();
     $params = $request->post();
@@ -111,9 +111,6 @@ public function Photography_product_ajax(Request $request){
             'status'=>$status,
             'sku'=>$sku
         );
-        
-        
-      
          if($color !=="null")
         {
             $list=$this->list_prpduct->where('color',$color);
