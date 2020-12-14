@@ -581,7 +581,7 @@ Breadcrumbs::for ('psd.done', function ($trail) {
 });
 Breadcrumbs::for ('psd.rework', function ($trail) {
 	$trail->parent('dashboard');
-	$trail->push('PSD Pending', route('psd.rework'));
+	$trail->push('PSD Rework List', route('psd.rework'));
 });
 Breadcrumbs::for ('editing.pending', function ($trail) {
 	$trail->parent('dashboard');

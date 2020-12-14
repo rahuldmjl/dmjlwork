@@ -181,16 +181,16 @@
 							  ?>
 		 @foreach ($donelist as $item)
 		 <?php 
-									$product=$item->getProduct;
-									$category=$item->category;
+								
+								
 									?>
 	
 	<tr>
 		<td><?php echo $i++;?></td>
-		<td><?php echo $product['sku'];?></td>
-		<td><?php echo $product['color'];?>
+		<td>{{$item->sku}}</td>
+		<td>{{$item->color}}
 		</td>
-    <td>{{$category->name}}</td>
+    <td>{{$item->name}}</td>
     <td>Done</td>
 		<td style="    float: right;">
 			<form action="" method="POST">

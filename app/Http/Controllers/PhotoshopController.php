@@ -17,12 +17,14 @@ class PhotoshopController extends Controller
     public $photography;
     public $category;
     public $color;
+    public $product_list;
     public function __construct()
     {
         $this->product=photography_product::groupBy('sku')->groupBy('color')->where('status',0)->get();
         $this->photography=photography::getphotographyProduct();
         $this->category=category::all();
         $this->color=color::all();
+        $this->product_list=PhotoshopHelper::get_photography_product_list();
 
        
     }
@@ -98,8 +100,7 @@ pending photography pending ajax List
             $i=1;
              if(count($datacollection)>0){
                 foreach($datacollection as $key=>$p){
-                    $action='<a class="color-content table-action-style btn-delete-customer " data-href="'.route('delete.product',['id'=>$p->id]) .'" style="cursor:pointer;"><i class="material-icons md-18">delete</i></a>&nbsp;&nbsp;';
-                    $srno = $i++;
+                    $srno = $key + 1 + $start;
                     $c=photography_product::get_category_by_id($p->category_id);
                     $action='
                     <form action="" method="POST">
@@ -133,10 +134,13 @@ pending photography pending ajax List
     {
         $category_name=$this->category;
         $color_name=$this->color;
-       $donelist=collect($this->photography)->where('status','=',3);
-      $totalproduct= count($this->product);  
-       $doneproduct=count($donelist);
-     return view('Photoshop/Photography/photography_done',compact('donelist','category_name','color_name','totalproduct','doneproduct'));
+    
+       $donelist=$this->product_list->where(['photographies.status'=>3])->get();
+  
+      $totalproduct= $this->product->count();
+       $doneproduct=$donelist->count();
+     
+  return view('Photoshop/Photography/photography_done',compact('donelist','category_name','color_name','totalproduct','doneproduct'));
     }
 
     /*
@@ -152,7 +156,7 @@ pending photography pending ajax List
 		$stalen = $start / $length;
 		$curpage = $stalen;
         $maindata = photography::query();
-        $datacount = $maindata->count();
+          $datacount = $maindata->count();
         $datacoll = $maindata->where('status','=',3);
         
         $data["recordsTotal"] = $datacoll->count();

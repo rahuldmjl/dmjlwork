@@ -9,6 +9,7 @@ use DateTime;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
 use App\photography_product;
+
 class PhotoshopHelper
 {
 
@@ -71,6 +72,25 @@ public static function addintoCasheTable($data)
 
 }
 
+//Get Placement Data from the join 
+
+public static function get_placement_product_detail(){
+
+   $product=DB::table('placements')
+    ->join('photography_products','photography_products.id','placements.product_id')
+    ->join('categories','categories.entity_id','placements.category_id');
+    return $product;
+}
+//Get PhotoGraphy Product List Using Joing
+
+public static function get_photography_product_list(){
+    $product=DB::table('photographies')
+    ->join('photography_products','photography_products.id','photographies.product_id')
+    ->join('categories','categories.entity_id','photographies.category_id');
+    
+    
+    return $product;
+}
 
 }   
 ?>

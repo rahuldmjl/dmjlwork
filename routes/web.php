@@ -769,11 +769,13 @@ Route::post('Photoshop/psd/rework','PsdController@submit_done_list')->name('psd.
 //Placement Routing
 
 Route::get('Photoshop/Placement/pending','PlacementController@get_placement_pending_list')->name('placement_pending');
+Route::post('Photoshop/placement/pending_ajax_list','PlacementController@pending_Ajax_list')->name('pending_ajax_list');
 Route::get('Photoshop/Placement/done','PlacementController@get_placement_done_list')->name('placement_done');
 Route::get('Photoshop/Placement/rework','PlacementController@get_placement_rework_list')->name('placement_rework');
 Route::post('Photoshop/Placement/pending','PlacementController@get_pending_list_data_submit')->name('placement_pending_submit');
 Route::post('Photoshop/Placement/done','PlacementController@submit_done_list')->name('placement_done');
 Route::post('Photoshop/Placement/rework','PlacementController@submit_done_list')->name('placement_done');
+
 /*
 Editing Department Routing
 */

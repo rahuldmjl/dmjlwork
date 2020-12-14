@@ -56,15 +56,14 @@
   							<tbody>
 								@foreach($done_list as $item)	
 								<?php 
-								 $product=$item->getProduct;
-								$category=$item->category;
+							
 									 ?>
 				<tr>
-					<td>{{$product->sku}}</td>
+					<td>{{$item->sku}}</td>
 				
-				<td>{{$product->color}}</td>
+				<td>{{$item->color}}</td>
 				<td>
-					{{$category->name}}
+					{{$item->name}}
 						
 				</td>
 				<td>
@@ -77,8 +76,9 @@
 					<option value="0">select status</option>
 					<option value="4">Rework</option>
 				</select>
-				<input type="submit" style="height:20px;" class="btn btn-primary" value="Submit"/>
-		
+				<button type="submit" style="height: 30px;
+    width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
+	
 			</form>
 			</td>
 

@@ -80,8 +80,9 @@
 					<option value="1">In processing</option>
 					<option value="3">Done</option>
 				</select>
-				<input type="submit" style="height:20px;" class="btn btn-primary" value="Submit"/>
-		
+				<button type="submit" style="height: 30px;
+    width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
+	
 			</form>
 			</td>
 	
