@@ -131,7 +131,7 @@
 										<select class="form-control" name="colorFilter" id="colorFilter">
 											<option value="">Select Color</option>
 											@foreach($colorlist as $cat)
-											<option value="{{$cat->entity_id}}">{{$cat->name}}</option>
+											<option value="{{$cat->name}}">{{$cat->name}}</option>
 											@endforeach
 										</select>	
 									</div>
@@ -146,8 +146,7 @@
 									<div class="form-group">
 										<input class="btn btn-primary" style="height: 43px;" id="searchfilter"   type="submit" value="Apply">
                      <button class="btn btn-default" namwe="reset" id="reset" type="button">Reset</button>
-                    
-                                	</div>
+                   </div>
 								</div>
 							</div>
 						</form>

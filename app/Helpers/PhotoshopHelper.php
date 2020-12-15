@@ -58,13 +58,8 @@ public static function getCategory_name_by_id($id){
 
 public static function store_cache_table_data($cache)
 {
-   
- 
-        PhotoshopHelper::addintoCasheTable($cache);
-   
-   
-  
-}
+  PhotoshopHelper::addintoCasheTable($cache);
+ }
 public static function addintoCasheTable($data)
 {
     $data=DB::table('photoshop_caches')
@@ -91,6 +86,12 @@ public static function get_photography_product_list(){
     
     return $product;
 }
-
+//Get Editing Product List
+public static function get_editing_product_list(){
+    $product=DB::table('editing_models')
+    ->join('photography_products','photography_products.id','editing_models.product_id')
+    ->join('categories','categories.entity_id','editing_models.category_id');
+     return $product;
+}
 }   
 ?>

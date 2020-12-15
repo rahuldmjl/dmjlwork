@@ -310,8 +310,7 @@ $.ajaxSetup({
   "deferLoading": <?=$totalproduct?>,
   "processing": true,
   "serverSide": true,
-  "searching": false
-  ,
+  "searching": false,
   "serverMethod": "post",
  
   "ajax":{
