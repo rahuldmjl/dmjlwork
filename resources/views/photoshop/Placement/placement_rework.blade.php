@@ -34,6 +34,124 @@
     </div>
   </div>
   	<div class="widget-list">
+	  <div class="row">
+		  <div class="col-md-12 widget-holder">
+                        <div class="widget-bg">
+                        @if (session()->has('message'))
+    <div class="alert alert-success">{{ session('message') }}</div>
+@endif
+                            <div class="widget-body clearfix">
+                                <h5 class="box-title">Placement  Pending List</h5>
+                                <div class="tabs">
+                                    <ul class="nav nav-tabs">
+                                        <li class="nav-item "><a class="nav-link" href="#home-tab" data-toggle="tab" aria-expanded="true">Home</a>
+                                        </li>
+                                        <li class="nav-item active"><a class="nav-link" href="#profile-tab" data-toggle="tab" aria-expanded="true">Filter</a>
+                                        </li>
+                                      
+                                    </ul>
+                                    <!-- /.nav-tabs -->
+                                    <div class="tab-content">
+                                        <div class="tab-pane " id="home-tab">
+										<div class="row">
+                    <!-- Counter: Sales -->
+                    <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                        <div class="widget-bg bg-primary text-inverse">
+                            <div class="widget-body">
+                                <div class="widget-counter">
+                                    <h6>Total Product <small class="text-inverse"></small></h6>
+                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                </div>
+                                <!-- /.widget-counter -->
+                            </div>
+                            <!-- /.widget-body -->
+                        </div>
+                        <!-- /.widget-bg -->
+                    </div>
+                    <!-- /.widget-holder -->
+                    <!-- Counter: Subscriptions -->
+                    <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                        <div class="widget-bg bg-color-scheme text-inverse">
+                            <div class="widget-body clearfix">
+                                <div class="widget-counter">
+                                    <h6>Done  <small class="text-inverse"></small></h6>
+                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                </div>
+                                <!-- /.widget-counter -->
+                            </div>
+                            <!-- /.widget-body -->
+                        </div>
+                        <!-- /.widget-bg -->
+                    </div>
+                    <!-- /.widget-holder -->
+                    <!-- Counter: Users -->
+                    <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                        <div class="widget-bg">
+                            <div class="widget-body clearfix">
+                                <div class="widget-counter">
+                                    <h6>Pending <small></small></h6>
+                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                </div>
+                                <!-- /.widget-counter -->
+                            </div>
+                            <!-- /.widget-body -->
+                        </div>
+                        <!-- /.widget-bg -->
+                    </div>
+                    <!-- /.widget-holder -->
+                    <!-- Counter: Pageviews -->
+                    
+                    <!-- /.widget-holder -->
+                </div>
+         </div>
+                  <div class="tab-pane active" id="profile-tab">
+						<div class="row">
+			<div class="col-md-12 widget-holder content-area">
+				<div class="widget-bg">
+					<div class="widget-heading clearfix">
+						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Placement Filter</h5>
+					  
+					</div>
+					<div class="widget-body clearfix dataTable-length-top-0">
+						<form class="mr-b-30" method="post" action="javascript:void(0);">
+							{{ csrf_field() }}
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<select class="form-control" name="categoryFilter" id="categoryFilter">
+											<option value="">Select Category</option>
+											@foreach($cateorylist as $cat)
+											<option value="{{$cat->entity_id}}">{{$cat->name}}</option>
+											@endforeach
+										</select>	
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<select class="form-control" name="colorFilter" id="colorFilter">
+											<option value="">Select Color</option>
+											@foreach($colorlist as $cat)
+											<option value="{{$cat->name}}">{{$cat->name}}</option>
+											@endforeach
+										</select>	
+									</div>
+								</div>
+								
+								<div class="col-md-4">
+									<div class="form-group">
+										<input class="form-control" name="sku" id="sku" style="height: 43px;" placeholder="Sku Search" type="text">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<input class="btn btn-primary" style="height: 43px;" id="searchfilter"   type="submit" value="Apply">
+                     <button class="btn btn-default" namwe="reset" id="reset" type="button">Reset</button>
+                   </div>
+								</div>
+							</div>
+						</form>
+				</div>
+        </div>
       	<div class="row">
   			<div class="col-md-12 widget-holder content-area">
   				<div class="widget-bg">
@@ -43,9 +161,10 @@
   					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
   						
-	                    <table class="table table-striped table-center word-break mt-0"   data-toggle="datatables" >
+	                    <table class="table table-striped table-center word-break mt-0"   id="placementreworklist">
   							<thead>
   								<tr class="bg-primary">
+								  <th>Sr No</th>
   									<th>Sku</th>
 									  <th>Color</th>
 									  <th>Category</th>
@@ -54,11 +173,15 @@
   								</tr>
   							</thead>
   							<tbody>
+							  <?php 
+							$i=1;
+							  ?>
 								@foreach($rework_list as $item)	
 								<?php 
 						 
 								?>
 			<tr>
+			<td><?php echo $i++;?></td>
 				<td>{{$item->sku}}</td>
 			
 			<td>{{$item->color}}</td>
@@ -72,9 +195,9 @@
 					<input type="hidden" value="{{$item->category_id}}" name="category_id"/>
 					@csrf
 				<select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-					<option value="2">Pending</option>
-					<option value="1">In processing</option>
-					<option value="3">Done</option>
+				   <option value="">Select Status</option>
+					<option value="0">Pending</option>
+					<option value="1">Done</option>
 				</select>
 				<button type="submit" style="height: 30px;
     width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
@@ -88,6 +211,7 @@
 							  </tbody>
 							  <tfoot>
 								<tr class="bg-primary">
+								<th>Sr No</th>
 									<th>Sku</th>
 									<th>Color</th>
 									<th>Category</th>
@@ -104,6 +228,7 @@
   <!-- /.widget-list -->
 </main>
 <!-- /.main-wrappper -->
+<input type="hidden" id="placementreworkAjax" value="<?=URL::to('Photoshop/placement/rework_ajax_list');?>">
 
 <style type="text/css">
 .form-control[readonly] {background-color: #fff;}
@@ -120,5 +245,114 @@
 <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.print.min.js"></script>
 <script src="<?=URL::to('/');?>/js/jquery.validate.min.js"></script>
 <script src="<?=URL::to('/');?>/js/additional-methods.min.js"></script>
+<script type="text/javascript">
+var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+	var buttonCommon = {
+        exportOptions: {
+            format: {
+                body: function ( data, row, column, node ) {                    
+                    if (column === 3) {
+                      data = data.replace(/(&nbsp;|<([^>]+)>)/ig, "");
+                    }
+                    return data;
+                }
+            }
+        }
+    };
+	var table = $('#placementreworklist').DataTable({
+		"dom": "<'row mb-2 align-items-center'<'col-auto dataTable-length-tb-0'l><'col'B>><'row'<'col-md-12' <'user-roles-main' t>>><'row'<'col-md-3'i><'col-md-6 ml-auto'p>>",
+  "lengthMenu": [[10, 50, 100, 200,500], [10, 50, 100, 200,500]],
+  "buttons": [
+    $.extend( true, {}, buttonCommon, {
+      extend: 'csv',
+      footer: false,
+      title: 'Photography-pending-List',
+      className: "btn btn-primary btn-sm px-3",
+      exportOptions: {
+          columns: [0,1,2,3],
+          orthogonal: 'export'
+      }
+    }),
+    $.extend( true, {}, buttonCommon, {
+      extend: 'excel',
+      footer: false,
+      title: 'Photography-pending-List',
+      className: "btn btn-primary btn-sm px-3",
+      exportOptions: {
+          columns: [0,1,2],
+          orthogonal: 'export'
+      }
+    })
+  ],
+  "language": {
+    "search": "",
+    "infoEmpty": "No matched records found",
+    "zeroRecords": "No matched records found",
+    "emptyTable": "No data available in table",
+    /*"sProcessing": "<div class='spinner-border' style='width: 3rem; height: 3rem;'' role='status'><span class='sr-only'>Loading...</span></div>"*/
+  },
+  "order": [[ 0, "desc" ]],
+  "deferLoading": <?=count($rework_list)?>,
+  "processing": true,
+  "serverSide": true,
+  "searching": false,
+  "serverMethod": "post",
+  "ajax":{
+    "url": $("#placementreworkAjax").val(),
+    "data": function(data, callback){
+        showLoader();
+      data._token = "{{ csrf_token() }}";
+	 var skusearch = $('#sku').val();
+  if(skusearch != ''){
+              data.skusearch = skusearch;
+                    }
+   var category = $('#categoryFilter').children("option:selected").val();
+     if(category != ''){
+       data.category=category;
+     }
+     var color = $('#colorFilter').children("option:selected").val();
+     if(color != ''){
+       data.color=color;
+       
+     }
+    
+     
+    },
+    complete: function(response){
+      hideLoader();
+    }
+  }
+	});
+	$('#searchfilter').click(function(){
+    table.draw();
+  });
+  $('#reset').click(function(){
+	$('#sku').val('');
+	$('#categoryFilter option[value=""]').attr('selected','selected');
+	$('#colorFilter option[value=""]').attr('selected','selected');
+	$('#statusFilter option[value=""]').attr('selected','selected');
 
+	$('#categoryFilter').on('change', function() {
+      if(this.value == ''){
+        $('#categoryFilter option[value=""]').attr('selected','selected');
+      }else{
+        $('#categoryFilter option[value=""]').removeAttr('selected','selected');
+      }
+	});
+	$('#colorFilter').on('change', function() {
+      if(this.value == ''){
+        $('#colorFilter option[value=""]').attr('selected','selected');
+      }else{
+        $('#colorFilter option[value=""]').removeAttr('selected','selected');
+      }
+	});
+
+	table.draw();
+  });
+	</script>
 @endsection

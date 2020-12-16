@@ -117,12 +117,85 @@ class PlacementController extends Controller
      echo json_encode($data);
     exit;
     }
+     /*
+    Get Done  List
+    */
+
     public function get_placement_done_list()
     {
-       
+        $cateorylist=$this->category;
+        $colorlist=$this->color;
        $this->product->where(['placements.status'=>3]);
        $done_list=$this->product->get();
-      return View('Photoshop/Placement/placement_done',compact('done_list'));
+      return View('Photoshop/Placement/placement_done',compact('done_list','cateorylist','colorlist'));
+    }
+    /*
+    Get Done Ajax List
+    */
+
+    public function done_ajax_list(Request $request){
+        $data = array();
+        $params = $request->post();
+        $start = (!empty($params['start']) ? $params['start'] : 0);
+        $length = (!empty($params['length']) ? $params['length'] : 10);
+        $stalen = $start / $length;
+        $curpage = $stalen;
+        $maindata = Placement::query();
+        $maindata->join('photography_products','placements.product_id','photography_products.id');
+        $maindata->join('categories','placements.category_id','categories.entity_id');
+        $where = '';
+        $offset = '';
+        $limit = '';
+        $order = $params['order'][0]['column'];
+        $order_direc = strtoupper($params['order'][0]['dir']);
+               
+    
+        if(!empty($params['skusearch'])){
+            $maindata->where('photography_products.sku',$params['skusearch']);
+        }
+       if(!empty($params['category'])){
+        $maindata->where('photography_products.category_id',$params['category']);
+       }
+       if(!empty($params['color'])){
+        $maindata->where('photography_products.color',$params['color']);
+       }
+       
+            $datacount = $maindata->count();
+            $datacoll = $maindata->where(['placements.status'=>3])->orderBy('placements.id','DESC');
+            $data["recordsTotal"] = $datacount;
+            $data["recordsFiltered"] = $datacount;
+            $data['deferLoading'] = $datacount;
+            $csrf=csrf_field();
+          
+            $datacollection = $datacoll->take($length)->offset($start)->get();
+            
+             if(count($datacollection)>0){
+                foreach($datacollection as $p){
+                    $srno = $key + 1 + $start;
+                    $action='
+                        <form action="" method="POST">
+                        '.$csrf.'
+                <input type="hidden" value="'.$p->id.'" name="product_id"/>
+                <input type="hidden" value="'.$p->category_id.'" name="category_id"/>
+                <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
+                <option value="0">select status</option>
+                <option value="4">Rework</option>
+         </select>
+                    <button type="submit" style="height: 30px;
+        width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
+            
+                </form>
+                        ';
+                 
+                    $data['data'][] = array($srno,$p->sku, $p->color,$p->name, $action);
+                }
+               
+            }else{
+                $data['data'][] = array('', '', '', '','','');
+          
+            }
+         echo json_encode($data);
+        exit;
     }
 
     public function get_placement_rework_list()
@@ -130,9 +203,80 @@ class PlacementController extends Controller
        
         $this->product->where(['placements.status'=>4]);
        $rework_list=$this->product->get();
-        return View('Photoshop/Placement/placement_rework',compact('rework_list'));
+       $cateorylist=$this->category;
+       $colorlist=$this->color;
+        return View('Photoshop/Placement/placement_rework',compact('rework_list','cateorylist','colorlist'));
     }
 
+
+    /*
+Get Rework Ajax List
+    */
+    public function rework_ajax_list(Request $request){
+        $data = array();
+        $params = $request->post();
+        $start = (!empty($params['start']) ? $params['start'] : 0);
+        $length = (!empty($params['length']) ? $params['length'] : 10);
+        $stalen = $start / $length;
+        $curpage = $stalen;
+        $maindata = Placement::query();
+        $maindata->join('photography_products','placements.product_id','photography_products.id');
+        $maindata->join('categories','placements.category_id','categories.entity_id');
+        $where = '';
+        $offset = '';
+        $limit = '';
+        $order = $params['order'][0]['column'];
+        $order_direc = strtoupper($params['order'][0]['dir']);
+               
+    
+        if(!empty($params['skusearch'])){
+            $maindata->where('photography_products.sku',$params['skusearch']);
+        }
+       if(!empty($params['category'])){
+        $maindata->where('photography_products.category_id',$params['category']);
+       }
+       if(!empty($params['color'])){
+        $maindata->where('photography_products.color',$params['color']);
+       }
+       
+            $datacount = $maindata->count();
+            $datacoll = $maindata->where(['placements.status'=>4])->orderBy('placements.id','DESC');
+            $data["recordsTotal"] = $datacount;
+            $data["recordsFiltered"] = $datacount;
+            $data['deferLoading'] = $datacount;
+            $csrf=csrf_field();
+          
+            $datacollection = $datacoll->take($length)->offset($start)->get();
+            
+             if(count($datacollection)>0){
+                foreach($datacollection as $key=>$p){
+                    $srno = $key + 1 + $start;
+                    $action='
+                        <form action="" method="POST">
+                        '.$csrf.'
+                <input type="hidden" value="'.$p->id.'" name="product_id"/>
+                <input type="hidden" value="'.$p->category_id.'" name="category_id"/>
+                <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
+                <option value="">Select Status</option>
+                <option value="0">Pending</option>
+                <option value="1">Done</option>
+         </select>
+                    <button type="submit" style="height: 30px;
+        width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
+            
+                </form>
+                        ';
+                 
+                    $data['data'][] = array($srno,$p->sku, $p->color,$p->name, $action);
+                }
+               
+            }else{
+                $data['data'][] = array('', '', '', '','','');
+          
+            }
+         echo json_encode($data);
+        exit;
+    }
     public function get_pending_list_data_submit(Request $request)
     {
         $user=Auth::user();

@@ -194,10 +194,7 @@ use App\Helpers\PhotoshopHelper;
 	                    <td>{{$item->color}}</td>
 						     <td>{{$item->category->name}}</td>
 						 <td>
-             <?php 
-
-                      echo  PhotoshopHelper::get_product_validation($item->id);
-?>
+    
 							<a class="color-content table-action-style btn-delete-customer" data-href="{{ route('delete.product',['id'=>$item->id]) }}" style="cursor:pointer;"><i class="material-icons md-18">delete</i></a>
 								
 							<a href="view/{{$item->id}}" class="color-content table-action-style" style="display:none"><i class="material-icons sm-18">remove_red_eye</i></a>

@@ -217,20 +217,12 @@
 							
 							
 							</tr>
-						
-															
-															@endforeach
-						
-														  
-													
-								  
-							  
-							</tbody>
+							@endforeach
+						</tbody>
 							<tfoot>
 							  <tr class="bg-primary">
 							  <th>Sr No</th>
-								
-								  <th>Sku</th>
+								<th>Sku</th>
 								  <th>Color</th>
 								  <th>Category</th>
 								  <th>Status</th>

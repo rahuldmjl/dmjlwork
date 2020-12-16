@@ -86,11 +86,28 @@ public static function get_photography_product_list(){
     
     return $product;
 }
+//Get PhotoGraphy Product List Using Joing
+
+public static function get_psd_product_list(){
+    $product=DB::table('psds')
+    ->join('photography_products','photography_products.id','psds.product_id')
+    ->join('categories','categories.entity_id','psds.category_id');
+    
+    
+    return $product;
+}
 //Get Editing Product List
 public static function get_editing_product_list(){
     $product=DB::table('editing_models')
     ->join('photography_products','photography_products.id','editing_models.product_id')
     ->join('categories','categories.entity_id','editing_models.category_id');
+     return $product;
+}
+//Get Editing Product List
+public static function get_jpeg_product_list(){
+    $product=DB::table('jpeg_models')
+    ->join('photography_products','photography_products.id','jpeg_models.product_id')
+    ->join('categories','categories.entity_id','jpeg_models.category_id');
      return $product;
 }
 }   

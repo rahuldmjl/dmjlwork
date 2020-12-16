@@ -59,9 +59,10 @@ public function Photography_product_ajax(Request $request){
    if(!empty($params['status'])){
     $maindata->where('status',$params['status']);
    }
+   $datacoll = $maindata->where('status',0);
+      
     $datacount = $maindata->count();
-		$datacoll = $maindata;
-        $data["recordsTotal"] = $datacount;
+	  $data["recordsTotal"] = $datacount;
 		$data["recordsFiltered"] = $datacount;
 		$data['deferLoading'] = $datacount;
         
@@ -85,9 +86,7 @@ public function Photography_product_ajax(Request $request){
     exit;
  
 }
-
-
-    public function add_of_product()
+  public function add_of_product()
     {
         $category=category::all();
         $color=color::all();
