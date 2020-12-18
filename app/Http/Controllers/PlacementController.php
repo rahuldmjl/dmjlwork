@@ -25,12 +25,10 @@ class PlacementController extends Controller
        $this->category=category::all();
        //Unique Color List 
        $this->color=color::all();
-        $this->psd=psd::getPsdProduct();
+       
         $user=Auth::user();
         $this->placement=Placement::all();
-        $this->psd= $psd_list=DB::table('psds')
-        ->join('photography_products','photography_products.id','psds.product_id')
-        ->join('categories','categories.entity_id','psds.category_id');
+        $this->psd=PhotoshopHelper::get_psd_product_list();
 
         //Placement table data fetch
 
@@ -59,9 +57,7 @@ class PlacementController extends Controller
     $length = (!empty($params['length']) ? $params['length'] : 10);
     $stalen = $start / $length;
     $curpage = $stalen;
-    $maindata = psd::query();
-    $maindata->join('photography_products','psds.product_id','photography_products.id');
-    $maindata->join('categories','psds.category_id','categories.entity_id');
+    $maindata =$this->psd;
     $where = '';
     $offset = '';
     $limit = '';
@@ -333,7 +329,7 @@ Get Rework Ajax List
             );
            
            PhotoshopHelper::store_cache_table_data($cache);
-         placement::update_placement_status($request->input('product_id'),$request->input('status'));
+           placement::update_placement_status($request->input('product_id'),$request->input('status'));
     if($request->input('status')=='4')
     {
          placement::delete_from_editing($request->input('product_id'));

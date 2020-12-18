@@ -10,18 +10,7 @@ use App\placement;
 class placement extends Model
 {
     
-  public function getPsdDoneList()
-  {
-    return $this->belongsTo('App\psd');
-  }
-  public function getProduct()
-  {
-    return $this->hasOne('App\photography_product','id','product_id');
-  }
- public function category()
- {
-     return $this->hasOne('App\category','entity_id','category_id');
- }
+
  public static function update_placement_status($productid,$status)
  {
   $data=array('status'=>$status);

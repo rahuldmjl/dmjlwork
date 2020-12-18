@@ -61,7 +61,7 @@
                             <div class="widget-body">
                                 <div class="widget-counter">
                                     <h6>Total Product <small class="text-inverse"></small></h6>
-                                    <h3 class="h1"><span class="counter">{{$totalproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h3 class="h1"><span class="counter">{{$remaning-$done_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                             </div>
                          </div>
@@ -82,8 +82,8 @@
                         <div class="widget-bg">
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
-                                    <h6>Pending <small></small></h6>
-                                    <h3 class="h1"><span class="counter">{{$remaning-$done_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h6>Unique Sku Pending <small></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$totalproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                                 <!-- /.widget-counter -->
                             </div>

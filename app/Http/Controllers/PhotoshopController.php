@@ -25,22 +25,12 @@ class PhotoshopController extends Controller
         $this->category=category::all();
         $this->color=color::all();
         $this->product_list=PhotoshopHelper::get_photography_product_list();
-
        
     }
     public function index()
     {
 
-        DB::setTablePrefix('');
-        $totoalproduct=DB::table('Catalog_product_flat_1 as e')->count();
-        $totalphotographydone=DB::table('Catalog_product_flat_1 as e')
-                    ->where('dml_only','=',0)
-                    ->count();
-        $totalphotographypending=DB::table('Catalog_product_flat_1 as e')
-                    ->where('dml_only','=',1)
-                    ->count();
-        DB::setTablePrefix('dml_');
-        return view('Photoshop/Photography/index',compact('totoalproduct','totalphotographydone','totalphotographypending'));
+      ;
     }
 
     /*
@@ -53,9 +43,9 @@ class PhotoshopController extends Controller
         $color_name=$this->color;
         $list=photography_product::all()->take(11)->where('status', 0);
         $done_product_count=photography_product::where('status', 1)->count();
-        $totalproduct= count(photography_product::all());  
-       $remaning=count(photography_product::all());
-      return view('Photoshop/Photography/photography_pending',compact('list','totalproduct','category_name','color_name','done_product_count','remaning'));
+        $totalproduct=$this->product->count();  
+        $remaning=count(photography_product::all());
+         return view('Photoshop/Photography/photography_pending',compact('list','totalproduct','category_name','color_name','done_product_count','remaning'));
   
     }
     /*
@@ -90,12 +80,13 @@ pending photography pending ajax List
         $maindata->where('status',$params['status']);
        }
         $datacount = $maindata->count();
-        $datacoll = $maindata->groupBy('sku')->groupBy('color')->where('status','0');
-            $datacollection = $datacoll->take($length)->offset($start)->get();
+        
+         $datacoll = $maindata->groupBy(['sku','color'])->where('status','0');
+        $datacollection = $datacoll->take($length)->offset($start)->get();
             $csrf=csrf_field();
             $data["recordsTotal"] = $datacount;
-	  	 $data["recordsFiltered"] = $datacount;
-         $data['deferLoading'] = $datacount;
+	  	    $data["recordsFiltered"] = $datacount;
+            $data['deferLoading'] = $datacount;
             $token=$request->session()->token();
             $i=1;
              if(count($datacollection)>0){

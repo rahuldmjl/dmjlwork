@@ -61,7 +61,7 @@
                             <div class="widget-body">
                                 <div class="widget-counter">
                                     <h6>Total Product <small class="text-inverse"></small></h6>
-                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h3 class="h1"><span class="counter">{{count($psdpending)}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                             </div>
                          </div>

@@ -27,7 +27,7 @@ class PhotoshopProductController extends Controller
        $list=$this->list_prpduct;
        $category=category::all();
        $color = photography_product::select('color')->distinct()->get();
-       return view('Photoshop/Product/list',compact('list','category','color','total','done','pending'));
+      return view('Photoshop/Product/list',compact('list','category','color','total','done','pending'));
         
        
     }
@@ -46,8 +46,7 @@ public function Photography_product_ajax(Request $request){
     $order = $params['order'][0]['column'];
     $order_direc = strtoupper($params['order'][0]['dir']);
    
-
-    if(!empty($params['skusearch'])){
+   if(!empty($params['skusearch'])){
         $maindata->where('sku',$params['skusearch']);
     }
    if(!empty($params['category'])){
@@ -96,41 +95,6 @@ public function Photography_product_ajax(Request $request){
        $done_editing=count($data);
        $pending_editing=count($pendingediting);
      return view('Photoshop/Product/add',compact('category','color','totalproduct','done_editing','pending_editing'));
-    }
-
-    public function list_of_product_filter(Request $request)
-    {
-        $category=$request->input('category');
-        $color=$request->input('color');
-        $status=$request->input('status');
-        $sku=$request->input('sku');
-        $filter=array(
-            'category'=>$category,
-            'color'=>$color,
-            'status'=>$status,
-            'sku'=>$sku
-        );
-         if($color !=="null")
-        {
-            $list=$this->list_prpduct->where('color',$color);
-           
-        }
-        else if($status !=="null")
-        {
-            $list=$this->list_prpduct->where('status',$status);
-         
-        }
-        else if($sku !=="null"){
-            $list=$this->list_prpduct->where('sku',$sku);
-
-        }else{
-            $list=$this->list_prpduct;
-        }
-        $category=category::all();
-        $color = photography_product::select('color')->distinct()->get();
-     
-        return view('Photoshop/Product/list',compact('list','category','color'));
- 
     }
 
     public function deleteproduct($id){

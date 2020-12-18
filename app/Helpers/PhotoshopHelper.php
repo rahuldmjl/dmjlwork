@@ -66,7 +66,13 @@ public static function addintoCasheTable($data)
                 ->insert($data);
 
 }
-
+public static function get_product_list(){
+    
+   $product=DB::table('photography_products as p')
+          ->join('categories as c','c.entity_id','p.category_id')
+          ->select('p.id','p.sku','p.color','c.name','c.entity_id','c.name');
+     return $product;
+}
 //Get Placement Data from the join 
 
 public static function get_placement_product_detail(){

@@ -42,6 +42,7 @@ class PsdController extends Controller
       $categorylist=$this->category;
       $colorlist=$this->color;
       $psdpending= $this->product_list->where(['photographies.status'=>'3','photographies.next_department_status'=>'0'])->get();
+   
       return view('Photoshop/PSD/psd_pending',compact('psdpending','categorylist','colorlist'));
     }
     /*
@@ -56,9 +57,7 @@ public function get_Ajax_pendingList(Request $request){
 		$length = (!empty($params['length']) ? $params['length'] : 10);
 		$stalen = $start / $length;
 		$curpage = $stalen;
-        $maindata = photography::query();
-        $maindata->join('photography_products','photographies.product_id','photography_products.id');
-        $maindata->join('categories','photographies.category_id','categories.entity_id');
+        $maindata = PhotoshopHelper::get_photography_product_list();
         $where = '';
         $offset = '';
         $limit = '';
