@@ -89,8 +89,7 @@ public static function get_photography_product_list(){
     ->join('photography_products','photography_products.id','photographies.product_id')
     ->join('categories','categories.entity_id','photographies.category_id');
     
-    
-    return $product;
+     return $product;
 }
 //Get PhotoGraphy Product List Using Joing
 

@@ -56,7 +56,7 @@ public function get_pending_Ajax_list(Request $request){
    $order = $params['order'][0]['column'];
    $order_direc = strtoupper($params['order'][0]['dir']);
    if(!empty($params['skusearch'])){
-       $maindata->where('photography_products.sku',$params['skusearch']);
+       $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
    }
   if(!empty($params['category'])){
    $maindata->where('photography_products.category_id',$params['category']);
@@ -133,7 +133,7 @@ public function get_pending_Ajax_list(Request $request){
    $order = $params['order'][0]['column'];
    $order_direc = strtoupper($params['order'][0]['dir']);
    if(!empty($params['skusearch'])){
-       $maindata->where('photography_products.sku',$params['skusearch']);
+       $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
    }
   if(!empty($params['category'])){
    $maindata->where('photography_products.category_id',$params['category']);
@@ -208,7 +208,7 @@ public function get_ajax_Rework_list(Request $request){
    $order = $params['order'][0]['column'];
    $order_direc = strtoupper($params['order'][0]['dir']);
    if(!empty($params['skusearch'])){
-       $maindata->where('photography_products.sku',$params['skusearch']);
+       $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
    }
   if(!empty($params['category'])){
    $maindata->where('photography_products.category_id',$params['category']);

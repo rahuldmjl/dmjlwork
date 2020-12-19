@@ -20,7 +20,7 @@ class PhotoshopController extends Controller
     public $product_list;
     public function __construct()
     {
-        $this->product=photography_product::groupBy('sku')->groupBy('color')->where('status',0)->get();
+        $this->product=photography_product::groupBy(['sku','color'])->where('status',0)->get();
         $this->photography=photography::getphotographyProduct();
         $this->category=category::all();
         $this->color=color::all();
@@ -41,7 +41,7 @@ class PhotoshopController extends Controller
       
         $category_name=$this->category;
         $color_name=$this->color;
-        $list=photography_product::all()->take(11)->where('status', 0);
+        $list=photography_product::all()->take(10)->where('status', 0);
         $done_product_count=photography_product::where('status', 1)->count();
         $totalproduct=$this->product->count();  
         $remaning=count(photography_product::all());
@@ -68,7 +68,7 @@ pending photography pending ajax List
         $order_direc = strtoupper($params['order'][0]['dir']);
          if(!empty($params['skusearch']))
         {
-            $maindata->where('sku',$params['skusearch']);
+            $maindata->where('sku','LIKE', '%' . $params['skusearch']. '%');
         }
        if(!empty($params['category'])){
         $maindata->where('category_id',$params['category']);
@@ -156,7 +156,7 @@ pending photography pending ajax List
         $order_direc = strtoupper($params['order'][0]['dir']);
                
      if(!empty($params['skusearch'])){
-            $maindata->where('photography_products.sku',$params['skusearch']);
+            $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
         }
        if(!empty($params['category'])){
         $maindata->where('photography_products.category_id',$params['category']);
@@ -232,7 +232,7 @@ pending photography pending ajax List
         $order_direc = strtoupper($params['order'][0]['dir']);
                
      if(!empty($params['skusearch'])){
-            $maindata->where('photography_products.sku',$params['skusearch']);
+            $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
         }
        if(!empty($params['category'])){
         $maindata->where('photography_products.category_id',$params['category']);

@@ -66,7 +66,7 @@ class PlacementController extends Controller
            
 
     if(!empty($params['skusearch'])){
-        $maindata->where('photography_products.sku',$params['skusearch']);
+        $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
     }
    if(!empty($params['category'])){
     $maindata->where('photography_products.category_id',$params['category']);
@@ -147,7 +147,7 @@ class PlacementController extends Controller
                
     
         if(!empty($params['skusearch'])){
-            $maindata->where('photography_products.sku',$params['skusearch']);
+            $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
         }
        if(!empty($params['category'])){
         $maindata->where('photography_products.category_id',$params['category']);
@@ -226,7 +226,7 @@ Get Rework Ajax List
                
     
         if(!empty($params['skusearch'])){
-            $maindata->where('photography_products.sku',$params['skusearch']);
+            $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
         }
        if(!empty($params['category'])){
         $maindata->where('photography_products.category_id',$params['category']);

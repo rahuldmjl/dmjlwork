@@ -55,7 +55,7 @@ class EditingController extends Controller
       $order = $params['order'][0]['column'];
       $order_direc = strtoupper($params['order'][0]['dir']);
       if(!empty($params['skusearch'])){
-          $maindata->where('photography_products.sku',$params['skusearch']);
+          $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
       }
      if(!empty($params['category'])){
       $maindata->where('photography_products.category_id',$params['category']);
@@ -133,7 +133,7 @@ class EditingController extends Controller
       $order = $params['order'][0]['column'];
       $order_direc = strtoupper($params['order'][0]['dir']);
       if(!empty($params['skusearch'])){
-          $maindata->where('photography_products.sku',$params['skusearch']);
+          $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
       }
      if(!empty($params['category'])){
       $maindata->where('photography_products.category_id',$params['category']);
@@ -206,7 +206,7 @@ class EditingController extends Controller
       $order = $params['order'][0]['column'];
       $order_direc = strtoupper($params['order'][0]['dir']);
       if(!empty($params['skusearch'])){
-          $maindata->where('photography_products.sku',$params['skusearch']);
+          $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
       }
      if(!empty($params['category'])){
       $maindata->where('photography_products.category_id',$params['category']);

@@ -256,6 +256,11 @@ use App\Helpers\PhotoshopHelper;
 		        confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
 		        }).then(function(data) {
 		        	if (data.value) {
+                swal({
+		      title: 'Delete Message',
+		       type: 'success',
+				   text:'Product Delete Successfull '
+		        })
 		        		window.location.href = deleteUrl;
 		        	}
 

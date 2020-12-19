@@ -47,7 +47,7 @@ public function Photography_product_ajax(Request $request){
     $order_direc = strtoupper($params['order'][0]['dir']);
    
    if(!empty($params['skusearch'])){
-        $maindata->where('sku',$params['skusearch']);
+        $maindata->where('sku', 'LIKE', '%' . $params['skusearch']. '%');
     }
    if(!empty($params['category'])){
     $maindata->where('category_id',$params['category']);
