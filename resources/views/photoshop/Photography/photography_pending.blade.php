@@ -148,8 +148,7 @@
 									<div class="form-group">
 										<input class="btn btn-primary" style="height: 43px;" id="searchfilter"   type="submit" value="Apply">
                      <button class="btn btn-default" namwe="reset" id="reset" type="button">Reset</button>
-                    
-                                	</div>
+                 	</div>
 								</div>
 							</div>
 						</form>
@@ -191,10 +190,10 @@ $i=1;
 	</td>
 		<td>
 			<form action="" method="POST">
-			<input type="hidden" value="{{$item->id}}" name="product_id"/>
-			<input type="hidden" value="{{$item->category_id}}" name="category_id"/>
+			<input type="hidden" value="{{$item->id}}" id="product_id" name="product_id"/>
+			<input type="hidden" value="{{$item->category_id}}" id="category_id" name="category_id"/>
 				@csrf
-				<select name="status" class="form-control" style="height:20px;width:150px;float: left;">
+				<select name="status" id="status" onchange="statuschange(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
 					<option value="2">Pending</option>
 					<option value="1">In processing</option>
 					<option value="3">Done</option>
@@ -370,5 +369,28 @@ $.ajaxSetup({
     });
 	table.draw();
   });
+
+  function statuschange(){
+        swal({
+		         title: 'Are you sure?',
+		         type: 'info',
+			    	 text:'To change the Status of the product',
+		         showCancelButton: true,
+		         confirmButtonText: 'Confirm',
+		         confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
+		        }).then(function(data){
+              if(data.value){
+             
+                var product_id=$('#product_id').val();
+                var category_id=$('#category_id').val();
+                var status = $('#status').children("option:selected").val();
+                alert("Ok"+product_id);
+              }
+              else{
+                alert("cancel");
+              }
+            });
+
+  }
 	</script>
 @endsection

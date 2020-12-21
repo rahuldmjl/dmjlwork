@@ -28,6 +28,7 @@ class CreatePhotographyProductsTable extends Migration
           
             $table->Integer('deleted_at');
             $table->Integer('status');
+            $table->Integer('userid');
             $table->timestamps();
         });
     }

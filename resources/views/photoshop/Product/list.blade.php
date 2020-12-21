@@ -142,6 +142,16 @@ use App\Helpers\PhotoshopHelper;
 										</select>	
 									</div>
 								</div>
+                <div class="col-md-3">
+									<div class="form-group">
+										<select class="form-control" name="userFilter" id="userFilter">
+											<option value="">Select User</option>
+                      @foreach($user_assign as $user_assign_list)
+											<option value="{{$user_assign_list->id}}">{{$user_assign_list->name}}</option>
+										@endforeach
+										</select>	
+									</div>
+								</div>
 								<div class="col-md-3">
 									<div class="form-group">
 										<input class="form-control" name="sku" id="sku" style="height: 43px;" placeholder="Sku Search" type="text">
@@ -149,7 +159,7 @@ use App\Helpers\PhotoshopHelper;
 								</div>
 								<div class="col-md-3">
 									<div class="form-group">
-										<input class="btn btn-primary" style="    height: 43px;" id="searchfilter"   type="submit" value="Apply">
+										<input class="btn btn-primary" style=" height: 43px;" id="searchfilter"   type="submit" value="Apply">
                      <button class="btn btn-default" namwe="reset" id="reset" type="button">Reset</button>
                     
                                 	</div>
@@ -169,18 +179,34 @@ use App\Helpers\PhotoshopHelper;
   			<div class="col-md-12 widget-holder content-area">
   				<div class="widget-bg">
   					<div class="widget-heading clearfix">
-  						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Product List</h5>
-						
+  						<h5 style="float:right" class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Product List</h5>
+              <div id="dub" style="float: right;" class="col-md-4">
+        
+									<div class="form-group">
+                  
+										<select class="form-control mx-2 mr-3 height-35 padding-four" name="userassignid" id="userassignid">
+											<option value="">choose user</option>
+                      @foreach($user_assign as $user_assign_list)
+											<option value="{{$user_assign_list->id}}">{{$user_assign_list->name}}</option>
+										@endforeach
+										</select>	
+                		</div>
+                    <input type="submit"  onclick="userassign()" class="btn btn-primary" value="Assign"/>
+							
+								</div>
   					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
   						
-	                    <table class="table table-striped table-center word-break mt-0"   id="photographytable" >
+	                    <table class="table table-striped table-center word-break mt-0 checkbox checkbox-primary"   id="photographytable" >
   							<thead>
   								<tr class="bg-primary">
+                  <th  data-orderable="false" class="checkboxth"><label><input class="form-check-input" type="checkbox" name="chkAllProduct" id="chkAllProduct"><span class="label-text"></span></label></th>
+                               
                   <th>Sr No</th>
   									<th>Sku</th>
 									  <th>Color</th>
 									  <th>Category</th>
+                    <th>User</th>
 									 <th>Action</th>
   								
   								</tr>
@@ -189,10 +215,13 @@ use App\Helpers\PhotoshopHelper;
                      @foreach($list as $key=>$item)
                        
 	                <tr>
+                  <td><label><input class="form-check-input chkProduct" data-id="{{$item->id}}" value="{{$item->id}}" type="checkbox" name="chkProduct[]" id="chkProduct{{$item->id}}"><span class="label-text"></label></td>
+                                  
                   <td>{{$key+1}}</td>
 		                <td>{{$item->sku}}</td>
 	                    <td>{{$item->color}}</td>
 						     <td>{{$item->category->name}}</td>
+                 <td><?php echo PhotoshopHelper::getUserAssign($item->userid);?></td>
 						 <td>
     
 							<a class="color-content table-action-style btn-delete-customer" data-href="{{ route('delete.product',['id'=>$item->id]) }}" style="cursor:pointer;"><i class="material-icons md-18">delete</i></a>
@@ -207,11 +236,13 @@ use App\Helpers\PhotoshopHelper;
 	  </tbody>
 							  <tfoot>
 								<tr class="bg-primary">
+                <th><input class="form-check-input" type="checkbox" name="chkAllProduct" id="chkAllProduct"></th>
+                                 
                 <th>Sr No</th>
 									<th>Sku</th>
 									<th>Color</th>
 									<th>Category</th>
-								
+								  <th>User</th>
                    <th>Action</th>
 								
 								</tr>
@@ -279,6 +310,9 @@ use App\Helpers\PhotoshopHelper;
             }
         }
     };
+    $("#chkAllProduct").click(function(){
+    $('.chkProduct').prop('checked', this.checked);
+});
 	var table = $('#photographytable').DataTable({
 		"dom": "<'row mb-2 align-items-center'<'col-auto dataTable-length-tb-0'l><'col'B>><'row'<'col-md-12' <'user-roles-main' t>>><'row'<'col-md-3'i><'col-md-6 ml-auto'p>>",
   "lengthMenu": [[10, 50, 100, 200,500], [10, 50, 100, 200,500]],
@@ -330,6 +364,10 @@ use App\Helpers\PhotoshopHelper;
         data.skusearch = skusearch;
     
       }
+      var userFilter = $('#userFilter').children("option:selected").val();
+     if(userFilter != ''){
+       data.userFilter=userFilter;
+     }
       var category = $('#categoryFilter').children("option:selected").val();
      if(category != ''){
        data.category=category;
@@ -339,11 +377,11 @@ use App\Helpers\PhotoshopHelper;
        data.color=color;
      }
     
-     
      var status = $('#statusFilter').children("option:selected").val();
      if(status != ''){
        data.status=status;
      }
+
     },
     complete: function(response){
       hideLoader();
@@ -360,6 +398,7 @@ use App\Helpers\PhotoshopHelper;
 	$('#categoryFilter option[value=""]').attr('selected','selected');
 	$('#colorFilter option[value=""]').attr('selected','selected');
 	$('#statusFilter option[value=""]').attr('selected','selected');
+  $('#userFilter option[value=""]').attr('selected','selected');
 
 	$('#categoryFilter').on('change', function() {
       if(this.value == ''){
@@ -382,7 +421,64 @@ use App\Helpers\PhotoshopHelper;
         $('#statusFilter option[value=""]').removeAttr('selected','selected');
       }
     });
+    
+	$('#userFilter').on('change', function() {
+      if(this.value == ''){
+        $('#userFilter option[value=""]').attr('selected','selected');
+      }else{
+        $('#userFilter option[value=""]').removeAttr('selected','selected');
+      }
+	});
 	table.draw();
   });
+  function userassign(){
+    select = document.getElementById('userassignid');
+    if(select.value){
+      var myCheckboxes = new Array();
+        $("input:checked").each(function() {
+           myCheckboxes.push($(this).val());
+        });
+        var userid=select.value;
+       var len=myCheckboxes.length;
+		 if(len !=0){
+      $.ajax({
+          url: "<?=URL::to('Photoshop/Product/assignproduct');?>",
+          type:"POST",
+          data:{
+            "_token": "{{ csrf_token() }}",
+            userid:userid,
+            pid:myCheckboxes
+         },
+          success:function(response){
+            swal({
+                    title: 'success',
+                    text: response.success,
+                    type: 'success',
+                    buttonClass: 'btn btn-primary'
+                   
+                  });
+                  window.location.href = "";
+          },
+         });
+     }else{
+      swal({
+                    title: 'error',
+                    text: 'Product Check Empty ',
+                    type: 'error',
+                    buttonClass: 'btn btn-primary'
+                   
+                  });
+     }
+   
+    }else{
+      swal({
+                    title: 'error',
+                    text: 'Select user From Product Assign',
+                    type: 'error',
+                    buttonClass: 'btn btn-primary'
+                   
+                  });
+    }
+  }
 	</script>
 @endsection

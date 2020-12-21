@@ -30,7 +30,6 @@ class PhotoshopController extends Controller
     public function index()
     {
 
-      ;
     }
 
     /*
@@ -41,7 +40,7 @@ class PhotoshopController extends Controller
       
         $category_name=$this->category;
         $color_name=$this->color;
-        $list=photography_product::all()->take(10)->where('status', 0);
+        $list=photography_product::all()->take(50)->where('status', 0);
         $done_product_count=photography_product::where('status', 1)->count();
         $totalproduct=$this->product->count();  
         $remaning=count(photography_product::all());
@@ -98,7 +97,7 @@ pending photography pending ajax List
                     '.$csrf.'
 			<input type="hidden" value="'.$p->id.'" name="product_id"/>
 			<input type="hidden" value="'.$p->category_id.'" name="category_id"/>
-            <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
+            <select name="status" onchange="statuschange(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
             <option value="2">Pending</option>
             <option value="1">In processing</option>
             <option value="3">Done</option>

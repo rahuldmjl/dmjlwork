@@ -9,7 +9,9 @@ use DateTime;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
 use App\photography_product;
-
+use App\category;
+use App\color;
+use App\userphotography;
 class PhotoshopHelper
 {
 
@@ -66,15 +68,41 @@ public static function addintoCasheTable($data)
                 ->insert($data);
 
 }
+
+public static  function getCategoryList(){
+    $cat=category::all();
+     return $cat;
+   
+}
+public static function getcolorList(){
+    $color=DB::table('colors')->get();
+     return $color;
+   
+}
 public static function get_product_list(){
     
    $product=DB::table('photography_products as p')
           ->join('categories as c','c.entity_id','p.category_id')
-          ->select('p.id','p.sku','p.color','c.name','c.entity_id','c.name');
+          ->select('p.id','p.sku','p.color','c.name','c.entity_id','c.name','p.status','p.userid');
      return $product;
 }
+public static function getUserAssign($id){
+    $check=userphotography::find($id);
+    if($check){
+        return  $check->name;
+    }
+        else{
+            return  "pending";
+        }
+   
+}
 //Get Placement Data from the join 
+public static function update_user_assign($uid,$pid){
+    
+    DB::table('photography_products')->where(["id"=>$pid])->update(["userid"=>$uid]);
 
+  
+}
 public static function get_placement_product_detail(){
 
    $product=DB::table('placements')
@@ -86,10 +114,9 @@ public static function get_placement_product_detail(){
 
 public static function get_photography_product_list(){
     $product=DB::table('photographies')
-    ->join('photography_products','photography_products.id','photographies.product_id')
-    ->join('categories','categories.entity_id','photographies.category_id');
-    
-     return $product;
+    ->join('photography_products as p','p.id','photographies.product_id')
+    ->join('categories as c','c.entity_id','photographies.category_id');
+    return $product;
 }
 //Get PhotoGraphy Product List Using Joing
 

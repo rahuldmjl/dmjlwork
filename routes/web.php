@@ -721,6 +721,7 @@ Route::get('Photoshop/Product/add','PhotoshopProductController@add_of_product')-
 Route::post('Photoshop/Product/add','PhotoshopProductController@add_action_product')->name('add.product.action');
 Route::post('Photoshop/Product/listAjax','PhotoshopProductController@Photography_product_ajax')->name('Ajax_product_list');
 Route::get('Photoshop/Product/delete/{id}','PhotoshopProductController@deleteproduct')->name('delete.product');
+Route::post('Photoshop/Product/assignproduct','PhotoshopProductController@assign_product')->name('assign_product');
 
 /*
 TEst The Query

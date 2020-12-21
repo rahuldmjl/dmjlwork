@@ -50,7 +50,7 @@ Get Pending Ajax List
     */
 
 public function get_Ajax_pendingList(Request $request){
-     $data=array();
+        $data=array();
         $params = $request->post();
         $params = $request->post();
 		$start = (!empty($params['start']) ? $params['start'] : 0);
@@ -68,13 +68,12 @@ public function get_Ajax_pendingList(Request $request){
             $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
         }
        if(!empty($params['category'])){
-        $maindata->where('photography_products.category_id',$params['category']);
+        $maindata->where('photographies.category_id',$params['category']);
        }
        if(!empty($params['color'])){
         $maindata->where('photography_products.color',$params['color']);
        }
-       
-            $datacoll = $maindata->where(['photographies.status'=>3,'photographies.next_department_status'=>0])->orderBy('photographies.id','DESC');
+           $datacoll = $maindata->where(['photographies.status'=>3,'photographies.next_department_status'=>0])->orderBy('photographies.id','DESC');
             $data["recordsTotal"] =$datacoll->count();
             $data["recordsFiltered"] = $datacoll->count();
             $data['deferLoading'] = $datacoll->count();
