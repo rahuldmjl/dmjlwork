@@ -79,12 +79,16 @@ public static function getcolorList(){
      return $color;
    
 }
-public static function get_product_list(){
-    
-   $product=DB::table('photography_products as p')
-          ->join('categories as c','c.entity_id','p.category_id')
-          ->select('p.id','p.sku','p.color','c.name','c.entity_id','c.name','p.status','p.userid');
-     return $product;
+public static function get_product_list($uid){
+if($uid=="0"){
+    $product=DB::table('photography_products as p');
+  
+}else{
+    $product=DB::table('photography_products as p')->where('userid','=',$uid);
+  
+}
+   $product=DB::table('photography_products as p')->where('userid','=',$uid);
+   return $product;
 }
 public static function getUserAssign($id){
     $check=userphotography::find($id);
@@ -95,6 +99,16 @@ public static function getUserAssign($id){
             return  "pending";
         }
    
+}
+
+public static function get_count_product($model,$status,$userid){
+    $ta=$model."s";
+    if($status=="a"){
+        $count=DB::table($ta)->where('userid','=',$userid)->groupBy(['sku','color'])->get();
+    }else{
+        $count=DB::table($ta)->where("status",$status)->where('userid','=',$userid)->groupBy(['sku','color'])->get();
+    }
+    return count($count);
 }
 //Get Placement Data from the join 
 public static function update_user_assign($uid,$pid){
@@ -112,10 +126,20 @@ public static function get_placement_product_detail(){
 }
 //Get PhotoGraphy Product List Using Joing
 
-public static function get_photography_product_list(){
+public static function get_photography_product_list($userid){
     $product=DB::table('photographies')
     ->join('photography_products as p','p.id','photographies.product_id')
-    ->join('categories as c','c.entity_id','photographies.category_id');
+    ->join('categories as c','c.entity_id','photographies.category_id')
+    ->where('p.userid','=',$userid);
+    return $product;
+}
+//psd Pending List for user assign
+
+public static function get_psd_pending_product_list($userid){
+    $product=DB::table('photographies')
+    ->join('photography_products as p','p.id','photographies.product_id')
+    ->join('categories as c','c.entity_id','photographies.category_id')
+    ->where('photographies.work_assign','=',$userid);
     return $product;
 }
 //Get PhotoGraphy Product List Using Joing
@@ -141,6 +165,16 @@ public static function get_jpeg_product_list(){
     ->join('photography_products','photography_products.id','jpeg_models.product_id')
     ->join('categories','categories.entity_id','jpeg_models.category_id');
      return $product;
+}
+
+
+/*
+Photography Actity Code below
+
+*/
+public static function getUserList(){
+    $user=DB::table('userphotographies')->get();
+    return $user;
 }
 }   
 ?>

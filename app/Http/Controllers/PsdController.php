@@ -20,12 +20,14 @@ class PsdController extends Controller
   public $psd;
   public $user;
   public $product_list;
+  public $userid;
   public function __construct()
   {
+       $this->userid="1";
       $this->photography=photography::getphotographyProduct();
       $this->psd=PhotoshopHelper::get_psd_product_list();
       $user=Auth::user();
-      $this->product_list=PhotoshopHelper::get_photography_product_list();
+      $this->product_list=PhotoshopHelper::get_psd_pending_product_list($this->userid);
       $this->color=color::all();
       $this->category=category::all();
   }

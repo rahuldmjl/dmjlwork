@@ -105,6 +105,18 @@ DB::setTablePrefix('dml_');
                    
                 </ul>
             </li>
+            <li class="@if (\Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*')) current-page @endif menu-item-has-children "><a href="javascript:void(0);" class="ripple"><span class="@if (\Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*')) color-color-scheme @endif"><i class="list-icon material-icons">playlist_add_check</i> <span class="hide-menu">Activity</span></span></a>
+                <ul class="list-unstyled sub-menu @if ( \Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*') ) in @endif">
+                    <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Activity/Photography');?>">Photography Activity</a>
+                    </li>
+                    <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Activity/psd');?>">Psd Activity </a>
+                    </li>
+                    <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Activity/placement');?>">Placement Activity </a>
+                    </li>
+                    <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Activity/Jpeg');?>">Jpeg Activity </a>
+                    </li>
+                </ul>
+            </li>
             <li class="@if (\Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*')) current-page @endif menu-item-has-children "><a href="javascript:void(0);" class="ripple"><span class="@if (\Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*')) color-color-scheme @endif"><i class="list-icon material-icons">settings</i> <span class="hide-menu">Setting</span></span></a>
                 <ul class="list-unstyled sub-menu @if ( \Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*') ) in @endif">
                     <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/setting/category');?>">Category </a>
@@ -114,6 +126,7 @@ DB::setTablePrefix('dml_');
                    
                 </ul>
             </li>
+            
         </ul>
         
     </nav>

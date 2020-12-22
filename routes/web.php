@@ -806,4 +806,10 @@ Route::get('Photoshop/JPEG/rework','JpegController@get_rework_list_jpeg')->name(
 Route::post('Photoshop/JPEG/rework_ajax_list','JpegController@get_ajax_Rework_list')->name('jpeg.ajax.rework');
 Route::post('Photoshop/JPEG/rework','JpegController@submit_done_list_jpeg')->name('jpeg.rework');
 
-
+/*
+Department wise activity routing
+*/
+Route::get('Photoshop/Activity/Photography','PhotoshopActivityController@photography')->name('photography.activity');
+Route::get('Photoshop/Activity/psd','PhotoshopActivityController@psd')->name('photography.activity');
+Route::get('Photoshop/Activity/placement','PhotoshopActivityController@placement')->name('photography.activity');
+Route::get('Photoshop/Activity/Jpeg','PhotoshopActivityController@jpeg')->name('photography.activity');

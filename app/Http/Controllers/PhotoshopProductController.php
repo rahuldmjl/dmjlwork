@@ -15,14 +15,15 @@ class PhotoshopProductController extends Controller
     public $category;
     public $color;
     public $user_assign;
+    public $userid;
     public function __construct()
     {
        $this->list_prpduct=collect(photography_product::get_product_list());
        $this->total_product=collect(photography_product::get_photography_product_count());
        $this->category=PhotoshopHelper::getCategoryList();
-       $this->color=PhotoshopHelper::get_product_list();
+       $this->color=PhotoshopHelper::get_product_list("0");
        $this->user_assign=userphotography::all();
-       
+       $this->userid="1";
     }
     public function list_of_product()
     {
@@ -128,9 +129,10 @@ public function Photography_product_ajax(Request $request){
        'status'=>"0",
        'created_at'=>date("Y-m-d H:i:s"),
        'updated_at'=>date("Y-m-d H:i:s"),
-       'created_by'=>"test",
-       'deleted_at'=>"test",
-       "userid"=>"0"
+       'created_by'=>$this->userid,
+       'deleted_at'=>$this->userid,
+       "userid"=>"0",
+       "work_assign_by"=>$this->userid
       );
       $status=photography_product::productInsert($photography_product);
       if($status){

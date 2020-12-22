@@ -18,17 +18,14 @@ class CreatePhotographyProductsTable extends Migration
             $table->string('sku');
             $table->string('color');
             $table->string('regular_shoot_status');
-			  $table->string('model_shoot_status');
-          
-		    $table->string('instagram_shoot_status');
-          
-		    $table->string('category_id');
-          
-		    $table->string('created_by');
-          
+			$table->string('model_shoot_status');
+            $table->string('instagram_shoot_status');
+            $table->string('category_id');
+            $table->string('created_by');
             $table->Integer('deleted_at');
             $table->Integer('status');
             $table->Integer('userid');
+            $table->Integer('work_assign_by');
             $table->timestamps();
         });
     }

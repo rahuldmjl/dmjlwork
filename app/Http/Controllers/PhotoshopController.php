@@ -15,36 +15,36 @@ class PhotoshopController extends Controller
 {
     public $product;
     public $photography;
-    public $category;
+    public  $category;
     public $color;
     public $product_list;
+    public $userid;
     public function __construct()
     {
-        $this->product=photography_product::groupBy(['sku','color'])->where('status',0)->get();
-        $this->photography=photography::getphotographyProduct();
+        $this->userid="1";
+        $this->product=PhotoshopHelper::get_product_list($this->userid)->where('status',0)->groupBy(['sku','color']);
         $this->category=category::all();
         $this->color=color::all();
-        $this->product_list=PhotoshopHelper::get_photography_product_list();
-       
+        $this->product_list=PhotoshopHelper::get_photography_product_list($this->userid);
+        
     }
     public function index()
     {
 
     }
-
     /*
     Photography pending get data from this function
     */
     public function get_pending_list()
     {
-      
+    
         $category_name=$this->category;
         $color_name=$this->color;
-        $list=photography_product::all()->take(50)->where('status', 0);
-        $done_product_count=photography_product::where('status', 1)->count();
-        $totalproduct=$this->product->count();  
-        $remaning=count(photography_product::all());
-         return view('Photoshop/Photography/photography_pending',compact('list','totalproduct','category_name','color_name','done_product_count','remaning'));
+        $list=$this->product->limit(10)->get();
+         $done_product_count=PhotoshopHelper::get_count_product("photography_product","1",$this->userid);
+         $totalproduct=PhotoshopHelper::get_count_product("photography_product","0",$this->userid);
+        $remaning=$totalproduct-$done_product_count;
+        return view('Photoshop/Photography/photography_pending',compact('list','totalproduct','category_name','color_name','done_product_count','remaning'));
   
     }
     /*
@@ -53,13 +53,13 @@ pending photography pending ajax List
     */
 
     public function Pending_Ajax_list(Request $request){
-        $data = array();
+         $data = array();
         $params = $request->post();
         $start = (!empty($params['start']) ? $params['start'] : 0);
         $length = (!empty($params['length']) ? $params['length'] : 10);
         $stalen = $start / $length;
         $curpage = $stalen;
-        $maindata = photography_product::query();
+        $maindata =$this->product;
         $where = '';
         $offset = '';
         $limit = '';
@@ -78,10 +78,9 @@ pending photography pending ajax List
        if(!empty($params['status'])){
         $maindata->where('status',$params['status']);
        }
-        $datacount = $maindata->count();
-        
-         $datacoll = $maindata->groupBy(['sku','color'])->where('status','0');
-        $datacollection = $datacoll->take($length)->offset($start)->get();
+        $datacount = count($maindata->where('status',0)->get());
+        $datacoll = $maindata;
+        $datacollection = $datacoll->where('status',0)->take($length)->offset($start)->get();
             $csrf=csrf_field();
             $data["recordsTotal"] = $datacount;
 	  	    $data["recordsFiltered"] = $datacount;
@@ -92,21 +91,11 @@ pending photography pending ajax List
                 foreach($datacollection as $key=>$p){
                     $srno = $key + 1 + $start;
                     $c=photography_product::get_category_by_id($p->category_id);
-                    $action='
-                    <form action="" method="POST">
-                    '.$csrf.'
-			<input type="hidden" value="'.$p->id.'" name="product_id"/>
-			<input type="hidden" value="'.$p->category_id.'" name="category_id"/>
-            <select name="status" onchange="statuschange(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
-            <option value="2">Pending</option>
-            <option value="1">In processing</option>
-            <option value="3">Done</option>
-        </select>
-				<button type="submit" style="height: 30px;
-    width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-		
-			</form>
-                    ';
+                    $action='<select name="status" id="status" onchange="statuschange(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+            <option value="2/'.$p->id.'/'.$p->category_id.'">Pending</option>
+            <option value="1/'.$p->id.'/'.$p->category_id.'">In processing</option>
+            <option value="3/'.$p->id.'/'.$p->category_id.'">Done</option>
+        </select>';
                     $data['data'][] = array($srno,$p->sku, $p->color,$c, $action);
                 }
                
@@ -122,12 +111,10 @@ pending photography pending ajax List
     */
     public function get_done_list()
     {
-        $category_name=$this->category;
-        $color_name=$this->color;
-    
+       $category_name=$this->category;
+       $color_name=$this->color;
        $donelist=$this->product_list->where(['photographies.status'=>3])->get();
-  
-      $totalproduct= $this->product->count();
+       $totalproduct= PhotoshopHelper::get_count_product("photography_product","1",$this->userid);;
        $doneproduct=$donelist->count();
      
   return view('Photoshop/Photography/photography_done',compact('donelist','category_name','color_name','totalproduct','doneproduct'));
@@ -261,18 +248,20 @@ pending photography pending ajax List
            </label>
        </div>';
             $token=$request->session()->token();
-             $action='<form action="" method="post" style="margin-right: 110px;">
+             $action="s";
+             /*'<form action="" method="post" style="margin-right: 110px;">
              '.$csrf.'
             <input type="hidden" value="'.$product->product_id.'" name="product_id" id="product_id"/>
              <input type="hidden" value="'.$product->category_id.'" name="category_id" />
                  <select name="status" id="status" class="form-control" style="height:20px;width:120px;float: left;">
                      <option value="0">select status</option>
-                     <option value="4">Rework</option>
+                     <option value="4/''">Rework</option>
                 </select>
                 <button type="submit" style="height: 30px;
                 width: 30px;" class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
                     
              </form>';
+             */
             $data['data'][] = array($srno,$p->sku, $p->color, $ca->name, 'Done', $action);
         }
 
@@ -315,15 +304,19 @@ pending photography pending ajax List
         $photoshop->status=$request->input('status');
         $photoshop->current_status='1';
         $photoshop->next_department_status='0';
-        $photoshop->created_by="user";
+        
+        $photoshop->created_by=$this->userid;
+        $photoshop->work_assign_by="0";
+        $photoshop->work_assign_user="0";
         $url= $request->url();
         $urllink= explode('Photoshop/',$url);
         $link= $urllink[1];
+        $dep=explode("/",$link);
         $cache=array(
             'product_id'=>$request->input('product_id'),
-            'action_name'=>$link,
+            'action_name'=>$dep[0],
             'status'=>$request->input('status'),
-            'action_by'=>"user",
+            'action_by'=>$this->userid,
             "action_date_time"=>date('Y-m-d H:i:s')
 
         );
@@ -331,13 +324,15 @@ pending photography pending ajax List
             $photoshop->save();
             PhotoshopHelper::store_cache_table_data($cache);
           photography_product::update_product($request->input('product_id'));
-          $message="Photoshop Done Change Successfull";
+          $message="Photography Status  Change Successfull";
         }else{
             $message="Please Select The Staus";  
         }
         
-  
- return  redirect('Photoshop/Photography/pending')->with('message',$message);
+        return response()->json(['success'=>$message]);
+ 
+
+ 
     }
 /*
 done list submit for particular product change the photography status
@@ -348,17 +343,18 @@ done to rework
         
       
         $url= $request->url();
+      
         $urllink= explode('Photoshop/',$url);
         $link= $urllink[1];
-      
+        $dep=explode("/",$link);
         if($request->input('status') !='0')
         {
             //cache table data insert 
             $cache=array(
                 'product_id'=>$request->input('product_id'),
-                'action_name'=>$link,
+                'action_name'=>$dep[0],
                 'status'=>$request->input('status'),
-                'action_by'=>"user",
+                'action_by'=>$this->userid,
                 'action_date_time'=>date('Y-m-d H:i:s')
     
             );

@@ -1,4 +1,7 @@
+<?php 
+use App\photography_product;
 
+?>
 @extends('layout.photo_navi')
 
 
@@ -109,7 +112,7 @@
 						<form class="mr-b-30" method="post" action="javascript:void(0);">
 							{{ csrf_field() }}
 							<div class="row">
-								<div class="col-md-3">
+								<div class="col-md-4">
 									<div class="form-group">
 										<select class="form-control" name="categoryFilter" id="categoryFilter">
 											<option value="">Select Category</option>
@@ -119,7 +122,7 @@
 										</select>	
 									</div>
 								</div>
-								<div class="col-md-3">
+								<div class="col-md-4">
 									<div class="form-group">
 										<select class="form-control" name="colorFilter" id="colorFilter">
 											<option value="">Select Color</option>
@@ -130,16 +133,8 @@
 									</div>
 								</div>
 								
-								<div class="col-md-3">
-									<div class="form-group">
-										<select class="form-control" name="statusFilter" id="statusFilter">
-											<option value="">Select Status</option>
-											<option value="0">Pending</option>
-											<option value="1">Done</option>
-										</select>	
-									</div>
-								</div>
-								<div class="col-md-3">
+								
+								<div class="col-md-4">
 									<div class="form-group">
 										<input class="form-control" name="sku" id="sku" style="height: 43px;" placeholder="Sku Search" type="text">
 									</div>
@@ -179,30 +174,25 @@
 $i=1;
                 ?>
  @foreach ($list as $key=>$item)
+ <?php 
+  $c=photography_product::get_category_by_id($item->category_id);
+ ?>
 <tr>
 <td><?php echo $i++;?></td>
 		<td>{{$item->sku}}</td>
 	
 	<td>{{$item->color}} </td>
 	<td>
-{{$item->category->name}}
+<?=$c;?>
 			
 	</td>
 		<td>
-			<form action="" method="POST">
-			<input type="hidden" value="{{$item->id}}" id="product_id" name="product_id"/>
-			<input type="hidden" value="{{$item->category_id}}" id="category_id" name="category_id"/>
-				@csrf
 				<select name="status" id="status" onchange="statuschange(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
-					<option value="2">Pending</option>
-					<option value="1">In processing</option>
-					<option value="3">Done</option>
+					<option value="2/{{$item->id}}/{{$item->category_id}}">Pending</option>
+					<option value="1/{{$item->id}}/{{$item->category_id}}">In processing</option>
+					<option value="3/{{$item->id}}/{{$item->category_id}}">Done</option>
 				</select>
-				<button type="submit" style="height: 30px;
-    width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-		
-			</form>
-			</td>
+				</td>
 
 	</tr>
 	
@@ -211,11 +201,10 @@ $i=1;
 							  <tfoot>
 								<tr class="bg-primary">
 								<th>Sr No</th>
-  							
-									<th>Sku</th>
-									<th>Color</th>
-									<th>Category</th>
-									<th>Action</th>
+  							<th>Sku</th>
+								<th>Color</th>
+								<th>Category</th>
+								<th>Action</th>
 								
 								</tr>
 							</tfoot>
@@ -307,7 +296,7 @@ $.ajaxSetup({
   "ajax":{
     "url": $("#photographylistAjax").val(),
     "data": function(data, callback){
-      console.log(data);
+     
       showLoader();
       data._token = "{{ csrf_token() }}";
 
@@ -371,6 +360,8 @@ $.ajaxSetup({
   });
 
   function statuschange(){
+   
+   
         swal({
 		         title: 'Are you sure?',
 		         type: 'info',
@@ -379,15 +370,44 @@ $.ajaxSetup({
 		         confirmButtonText: 'Confirm',
 		         confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
 		        }).then(function(data){
+              
               if(data.value){
-             
-                var product_id=$('#product_id').val();
-                var category_id=$('#category_id').val();
-                var status = $('#status').children("option:selected").val();
-                alert("Ok"+product_id);
+              var status = $('#status').children("option:selected").val();
+              var data=status.split('/');
+              var status1=data[0];
+               var product_id=data[1];
+               var category_id=data[2];
+               $.ajax({
+          url: "<?=URL::to('Photoshop/Photography/pending');?>",
+          type:"POST",
+          data:{
+            "_token": "{{ csrf_token() }}",
+            status:status1,
+            product_id:product_id,
+            category_id:category_id
+         },
+          success:function(response){
+            swal({
+                    title: 'success',
+                    text: response.success,
+                    type: 'success'
+                   
+                   
+                  });
+                  window.location.href = "";
+          },
+         });
               }
               else{
-                alert("cancel");
+                swal({
+            title: 'Oops!',
+            text: 'Sorry Status no  any Changes',
+            type: 'error',
+            showCancelButton: true,
+            showConfirmButton: false,
+            confirmButtonClass: 'btn btn-danger',
+            cancelButtonText: 'Ok'
+        });
               }
             });
 
