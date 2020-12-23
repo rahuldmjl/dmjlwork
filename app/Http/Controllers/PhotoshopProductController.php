@@ -162,6 +162,73 @@ return response()->json(['success'=>'User Assign Successfull']);
   
 
 }
+
+public function workassign(){
+  $dep="photographies";
+  $category=category::all();
+  $color=color::all();
+  $user=$this->user_assign;
+  $data=PhotoshopHelper::getWorkAssign_List($dep)->get();
+  return view('Photoshop/Product/workassign',compact('data','category','color','user'));
+  
+}
+public function ajax_workassign(Request $request){
+  $data=array();
+  $params = $request->post();
+  $params = $request->post();
+  $start = (!empty($params['start']) ? $params['start'] : 0);
+  $length = (!empty($params['length']) ? $params['length'] : 10);
+  $stalen = $start / $length;
+  $curpage = $stalen;
+  $maindata = PhotoshopHelper::getWorkAssign_List("");
+ 
+  if(!empty($params['departmentfilter'])){
+    $maindata = PhotoshopHelper::getWorkAssign_List($params['departmentfilter']);
+  }
+  
+  if(!empty($params['categoryFilter'])){
+   $maindata->where('p.category_id',$params['categoryFilter']);
+  }
+  
+  if(!empty($params['colorFilter'])){
+    $maindata->where('pro.color',$params['colorFilter']);
+   }
+  $datacoll = $maindata;
+  $data["recordsTotal"] =$datacoll->count();
+  $data["recordsFiltered"] = $datacoll->count();
+  $data['deferLoading'] = $datacoll->count();
+  $donecollection = $datacoll->take($length)->offset($start)->get();
+  if(count($donecollection)>0){
+    foreach($donecollection as $key => $product)
+    {  $srno = $key + 1 + $start;
+      $check='<input class="form-check-input chkProduct" data-id="'.$product->pid.'" value="'.$product->pid.'" type="checkbox" name="chkProduct[]" id="chkProduct'.$product->pid.'"><span class="label-text"></label>';
+       $data['data'][] = array( $check,$srno,$product->sku, $product->color, $product->categoryname);
+    }
+
+   
+  }else{
+    $data['data'][] = array('','','','', '', '', '', '');
+  }
+  echo json_encode($data);exit;
+}
+
+public function user_assign(Request $request){
+  $uid=$request->userid;
+  $length=count($request->pid);
+  $table=$request->tablename;
+  $pid=$request->pid;
+  $data=array();
+
+foreach ($pid as $value) {
+ $data[]=array($value);
+ if($value !="on"){
+  PhotoshopHelper::updateuserassign($table,$value,$uid,$this->userid);
+ }
+
+}
+  $message="Product Assign in ".$table." Department";
+return response()->json(['success'=>$message]);
+}
     /*
 Testing For data fetch 
 

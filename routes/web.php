@@ -722,7 +722,9 @@ Route::post('Photoshop/Product/add','PhotoshopProductController@add_action_produ
 Route::post('Photoshop/Product/listAjax','PhotoshopProductController@Photography_product_ajax')->name('Ajax_product_list');
 Route::get('Photoshop/Product/delete/{id}','PhotoshopProductController@deleteproduct')->name('delete.product');
 Route::post('Photoshop/Product/assignproduct','PhotoshopProductController@assign_product')->name('assign_product');
-
+Route::get('Photoshop/Product/workassign','PhotoshopProductController@workassign')->name('workassign');
+Route::post('Photoshop/Product/workassignlist','PhotoshopProductController@ajax_workassign')->name('ajax_workassignlist');
+Route::post('Photoshop/Product/userassign','PhotoshopProductController@user_assign')->name('userassign');
 /*
 TEst The Query
 
@@ -753,7 +755,7 @@ Route::post('Photoshop/Photography/done_ajax_list','PhotoshopController@get_done
 Route::post('Photoshop/Photography/done','PhotoshopController@submit_done_list')->name('photography.done');
 Route::get('Photoshop/Photography/rework','PhotoshopController@get_rework_list')->name('photography.rework');
 Route::post('Photoshop/Photography/rework','PhotoshopController@submit_done_list')->name('photography.rework');
-Route::post('Photoshop/Photography/rework_ajax_list','PhotoshopController@get_ajax_list')->name('phohography.rework.ajax');
+Route::post('Photoshop/Photography/rework_ajax_list','PhotoshopController@get_rework_ajax_list')->name('phohography.rework.ajax');
 
 
 /*
@@ -810,6 +812,7 @@ Route::post('Photoshop/JPEG/rework','JpegController@submit_done_list_jpeg')->nam
 Department wise activity routing
 */
 Route::get('Photoshop/Activity/Photography','PhotoshopActivityController@photography')->name('photography.activity');
+Route::post('Photoshop/Activity/ajax_load','PhotoshopActivityController@ajax_load_photoshop')->name('ajax.photography.activity');
 Route::get('Photoshop/Activity/psd','PhotoshopActivityController@psd')->name('photography.activity');
 Route::get('Photoshop/Activity/placement','PhotoshopActivityController@placement')->name('photography.activity');
 Route::get('Photoshop/Activity/Jpeg','PhotoshopActivityController@jpeg')->name('photography.activity');

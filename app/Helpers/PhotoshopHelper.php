@@ -87,7 +87,7 @@ if($uid=="0"){
     $product=DB::table('photography_products as p')->where('userid','=',$uid);
   
 }
-   $product=DB::table('photography_products as p')->where('userid','=',$uid);
+  
    return $product;
 }
 public static function getUserAssign($id){
@@ -130,6 +130,7 @@ public static function get_photography_product_list($userid){
     $product=DB::table('photographies')
     ->join('photography_products as p','p.id','photographies.product_id')
     ->join('categories as c','c.entity_id','photographies.category_id')
+    ->groupBy(['p.sku','p.color'])
     ->where('p.userid','=',$userid);
     return $product;
 }
@@ -139,7 +140,8 @@ public static function get_psd_pending_product_list($userid){
     $product=DB::table('photographies')
     ->join('photography_products as p','p.id','photographies.product_id')
     ->join('categories as c','c.entity_id','photographies.category_id')
-    ->where('photographies.work_assign','=',$userid);
+    ->groupBy(['p.sku','p.color'])
+    ->where('photographies.work_assign_user','=',$userid);
     return $product;
 }
 //Get PhotoGraphy Product List Using Joing
@@ -148,9 +150,7 @@ public static function get_psd_product_list(){
     $product=DB::table('psds')
     ->join('photography_products','photography_products.id','psds.product_id')
     ->join('categories','categories.entity_id','psds.category_id');
-    
-    
-    return $product;
+     return $product;
 }
 //Get Editing Product List
 public static function get_editing_product_list(){
@@ -175,6 +175,42 @@ Photography Actity Code below
 public static function getUserList(){
     $user=DB::table('userphotographies')->get();
     return $user;
+}
+//Default load Data in Photography Activity function
+public static function getDefaultLoadIn_photography_activity(){
+    $data=DB::table('photographies as p')
+        ->join('photography_products as pro','p.product_id','pro.id')
+        ->join('categories as c','c.entity_id','p.category_id')
+        ->join('userphotographies as u','p.created_by','u.id')
+        ->join('photoshop_caches as cs','pro.id','cs.product_id')
+        ->select('pro.sku','pro.id','c.name','pro.color','u.name as username','p.status','cs.action_name','p.created_at')
+        ->where('p.work_assign_user','=',0)
+        ->groupBy(['pro.sku','pro.color']);
+        return $data;
+    
+}
+
+public static function getWorkAssign_List($department){
+    if($department==""){
+        $department="photographies";
+    }else{
+        $department=$department;
+    }
+    $data=DB::table($department .' as p')
+        ->join('photography_products as pro','p.product_id','pro.id')
+        ->join('categories as c','p.category_id','c.entity_id')
+        ->select('pro.sku','pro.color','c.name as categoryname','p.product_id as pid')
+        ->where('p.work_assign_user',0);
+     return $data;
+}
+
+public static function updateuserassign($table,$pid,$uid,$loginuser){
+    $status=DB::table($table)->where(["product_id"=>$pid])->update(["work_assign_user"=>$uid,'work_assign_by'=>$loginuser]);
+    if($status){
+        return true;
+    }else{
+        return false;
+    }
 }
 }   
 ?>

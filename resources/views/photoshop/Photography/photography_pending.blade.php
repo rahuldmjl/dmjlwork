@@ -218,9 +218,7 @@ $i=1;
 </main>
 <!-- /.main-wrappper -->
 <input type="hidden" id="photographylistAjax" value="<?=URL::to('Photoshop/Photography/pending_ajax_list');?>">
-<style type="text/css">
-.form-control[readonly] {background-color: #fff;}
-</style>
+
 @endsection
 
 @section('distinct_footer_script')

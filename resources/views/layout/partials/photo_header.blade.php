@@ -102,7 +102,8 @@ DB::setTablePrefix('dml_');
                     </li>
                     <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Product/list');?>">List </a>
                     </li>
-                   
+                    <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('Photoshop/Product/workassign');?>">Work Assign </a>
+                    </li>
                 </ul>
             </li>
             <li class="@if (\Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*')) current-page @endif menu-item-has-children "><a href="javascript:void(0);" class="ripple"><span class="@if (\Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*')) color-color-scheme @endif"><i class="list-icon material-icons">playlist_add_check</i> <span class="hide-menu">Activity</span></span></a>

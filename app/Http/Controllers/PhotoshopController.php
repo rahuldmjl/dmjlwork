@@ -132,10 +132,8 @@ pending photography pending ajax List
 		$length = (!empty($params['length']) ? $params['length'] : 10);
 		$stalen = $start / $length;
 		$curpage = $stalen;
-        $maindata = photography::query();
-        $maindata->join('photography_products','photographies.product_id','photography_products.id');
-        $maindata->join('categories','photographies.category_id','categories.entity_id');
-        $where = '';
+        $maindata =$this->product_list;
+         $where = '';
         $offset = '';
         $limit = '';
         $order = $params['order'][0]['column'];
@@ -163,28 +161,11 @@ pending photography pending ajax List
       if(count($donecollection)>0){
         foreach($donecollection as $key => $product)
         {  $srno = $key + 1 + $start;
-            $csrf=csrf_field();
-           $p=$product->getProduct;
-           $ca=$product->category;
-           $check='<div class="checkbox checkbox-primary" style="width: 100px;">
-           <label>
-           <input type="checkbox" class="chkProduct" value="'.$p->id.'" name="chkProduct" id="chkProduct"> <span class="label-text"></span>
-           </label>
-       </div>';
-            $token=$request->session()->token();
-             $action='<form action="" method="post" style="margin-right: 110px;">
-             '.$csrf.'
-            <input type="hidden" value="'.$product->product_id.'" name="product_id" id="product_id"/>
-             <input type="hidden" value="'.$product->category_id.'" name="category_id" />
-                 <select name="status" id="status" class="form-control" style="height:20px;width:120px;float: left;">
+           $action='<select name="status" id="status" onchange="donetorework(this.value)" class="form-control" style="height:20px;width:120px;float: left;">
                      <option value="0">select status</option>
-                     <option value="4">Rework</option>
-                </select>
-                <button type="submit" style="height: 30px;
-                width: 30px;" class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-                    
-             </form>';
-            $data['data'][] = array($srno,$p->sku, $p->color, $ca->name, 'Done', $action);
+                     <option value="4/'.$product->product_id.'/'.$product->category_id.'">Rework</option>
+                </select>'  ;
+            $data['data'][] = array($srno,$product->sku, $product->color, $product->name, 'Done', $action);
         }
 
        
@@ -200,7 +181,7 @@ pending photography pending ajax List
     Photography Rework Ajax List
     
     */
-    public function get_ajax_list(Request $request){
+    public function get_rework_ajax_list(Request $request){
         $data=array();
         $params = $request->post();
         $params = $request->post();
@@ -208,9 +189,7 @@ pending photography pending ajax List
 		$length = (!empty($params['length']) ? $params['length'] : 10);
 		$stalen = $start / $length;
 		$curpage = $stalen;
-        $maindata = photography::query();
-        $maindata->join('photography_products','photographies.product_id','photography_products.id');
-        $maindata->join('categories','photographies.category_id','categories.entity_id');
+        $maindata = $this->product_list;
         $where = '';
         $offset = '';
         $limit = '';
@@ -226,43 +205,22 @@ pending photography pending ajax List
        if(!empty($params['color'])){
         $maindata->where('photography_products.color',$params['color']);
        }
-       
-            $datacoll = $maindata->where(['photographies.status'=>4])->orderBy('photographies.id','DESC');
+         $datacoll = $maindata->where(['photographies.status'=>4])->orderBy('photographies.id','DESC');
             $data["recordsTotal"] =$datacoll->count();
             $data["recordsFiltered"] = $datacoll->count();
             $data['deferLoading'] = $datacoll->count();
-            $csrf=csrf_field();
-          
-              
-        $donecollection = $datacoll->take($length)->offset($start)->get();
+            $donecollection = $datacoll->take($length)->offset($start)->get();
        
       if(count($donecollection)>0){
         foreach($donecollection as $key => $product)
         {  $srno = $key + 1 + $start;
-            $csrf=csrf_field();
-           $p=$product->getProduct;
-           $ca=$product->category;
-           $check='<div class="checkbox checkbox-primary" style="width: 100px;">
-           <label>
-           <input type="checkbox" class="chkProduct" value="'.$p->id.'" name="chkProduct" id="chkProduct"> <span class="label-text"></span>
-           </label>
-       </div>';
-            $token=$request->session()->token();
-             $action="s";
-             /*'<form action="" method="post" style="margin-right: 110px;">
-             '.$csrf.'
-            <input type="hidden" value="'.$product->product_id.'" name="product_id" id="product_id"/>
-             <input type="hidden" value="'.$product->category_id.'" name="category_id" />
-                 <select name="status" id="status" class="form-control" style="height:20px;width:120px;float: left;">
-                     <option value="0">select status</option>
-                     <option value="4/''">Rework</option>
-                </select>
-                <button type="submit" style="height: 30px;
-                width: 30px;" class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-                    
-             </form>';
-             */
-            $data['data'][] = array($srno,$p->sku, $p->color, $ca->name, 'Done', $action);
+             $action='
+                 <select name="status"id="status" onchange="reworktodone(this.value)" class="form-control" style="height:20px;width:120px;float: left;">
+                     <option value="0/'.$product->product_id.'/'.$product->category_id.'">select status</option>
+                     <option value="3/'.$product->product_id.'/'.$product->category_id.'">Done</option>
+                </select>';
+           
+            $data['data'][] = array($srno,$product->sku, $product->color, $product->name, 'Done', $action);
         }
 
        
@@ -360,19 +318,18 @@ done to rework
             );
             PhotoshopHelper::store_cache_table_data($cache);
             photography::update_photography_status($request->get('product_id'),$request->input('status'));
-         if($request->input('status')=='4')
+            $message="Photography Status Change Successfull";
+       
+            if($request->input('status')=='4')
          {
              photography::delete_from_below_department($request->input('product_id'));
              photography::getUpdatestatusdone($request->input('product_id'));
-             
+             $message="Photography product Done to Rework";
          }
          
-            return redirect()->back()->with('success', 'Photography status Change Successfull');
         }
-        else{
-            return redirect()->back()->with('success', 'Select the photography status');
-        }
-  
+        
+        return response()->json(['success'=>$message]);
         
         
     }

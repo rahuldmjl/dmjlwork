@@ -59,7 +59,7 @@ public function get_Ajax_pendingList(Request $request){
 		$length = (!empty($params['length']) ? $params['length'] : 10);
 		$stalen = $start / $length;
 		$curpage = $stalen;
-        $maindata = PhotoshopHelper::get_photography_product_list();
+        $maindata =$this->product_list->where(['photographies.status'=>'3','photographies.next_department_status'=>'0']);
         $where = '';
         $offset = '';
         $limit = '';
@@ -288,6 +288,9 @@ public function get_Ajax_pendingList(Request $request){
           $photoshop->status=$request->input('status');
           $photoshop->current_status='1';
           $photoshop->next_department_status='0';
+          $photoshop->created_by=$this->userid;
+          $photoshop->work_assign_by="0";
+          $photoshop->work_assign_user="0";
           $url= $request->url();
           $urllink= explode('Photoshop/',$url);
           $link= $urllink[1];

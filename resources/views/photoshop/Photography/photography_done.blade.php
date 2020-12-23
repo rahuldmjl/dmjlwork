@@ -192,36 +192,23 @@
 		</td>
     <td>{{$item->name}}</td>
     <td>Done</td>
-		<td style="    float: right;">
-			<form action="" method="POST">
-				<input type="hidden" value="{{$item->product_id}}" name="product_id"/>
-				<input type="hidden" value="{{$item->category_id}}" name="category_id"/>
-			
-           		@csrf
-				<select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-					<option value="0">select status</option>
-					<option value="4">Rework</option>
+		<td>
+					<select name="status" id="status" onchange="donetorework(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+					<option value="0/{{$item->product_id}}/{{$item->category_id}}">select status</option>
+					<option value="4/{{$item->product_id}}/{{$item->category_id}}">Rework</option>
 				</select>
-				<button type="submit" style="height: 30px;
-    width: 30px;" class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-		
-			</form>
-			</td>
-	
-	
-	</tr>
-
-									
-									@endforeach
+				</form>
+		</td>
+	 </tr>
+	@endforeach
 							  </tbody>
 							  <tfoot>
 								<tr class="bg-primary">
-								<th>Sr No</th>
-  								
-									<th>Sku</th>
+								  <th>Sr No</th>
+  							 	<th>Sku</th>
 									<th>Color</th>
-                                    <th>Category</th>
-                                    <th>Status</th>
+                  <th>Category</th>
+                  <th>Status</th>
 									<th>Action</th>
 								
 								</tr>
@@ -367,6 +354,44 @@ $.ajaxSetup({
     });
 	table.draw();
   });
-	
+	function donetorework(str){
+   var data=str.split('/');
+   var status1=data[0];
+   var product_id=data[1];
+   var category_id=data[2];
+   
+   if(status1 !=0){
+    $.ajax({
+          url: "<?=URL::to('Photoshop/Photography/done');?>",
+          type:"POST",
+          data:{
+            "_token": "{{ csrf_token() }}",
+            status:status1,
+            product_id:product_id,
+            category_id:category_id
+         },
+          success:function(response){
+            swal({
+                    title: 'success',
+                    text: response.success,
+                    type: 'success'
+                   
+                   
+                  });
+                  window.location.href = "";
+          },
+         });
+   }else{
+    swal({
+            title: 'Oops!',
+            text: 'Select Status First',
+            type: 'error',
+            showCancelButton: true,
+            showConfirmButton: false,
+            confirmButtonClass: 'btn btn-danger',
+            cancelButtonText: 'Ok'
+        });
+   }
+  }
 </script>
 @endsection
