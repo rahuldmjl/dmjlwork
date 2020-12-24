@@ -209,7 +209,7 @@ $i=1;
 								</tr>
 							</tfoot>
 	  					</table>
-  					</div>
+              </div>
   				</div>
   			</div>
   		</div>
@@ -218,13 +218,10 @@ $i=1;
 </main>
 <!-- /.main-wrappper -->
 <input type="hidden" id="photographylistAjax" value="<?=URL::to('Photoshop/Photography/pending_ajax_list');?>">
-
 @endsection
-
 @section('distinct_footer_script')
 <script src="<?=URL::to('/');?>/cdnjs.cloudflare.com/ajax/libs/datatables/1.10.15/js/jquery.dataTables.min.js"></script>
 <script src="<?=URL::to('/');?>/cdnjs.cloudflare.com/ajax/libs/datatables/1.10.15/js/jquery.dataTables.min.js"></script>
-
 <script src="https://cdn.datatables.net/buttons/1.6.0/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.flash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -312,9 +309,7 @@ $.ajaxSetup({
      if(color != ''){
        data.color=color;
      }
-    
-     
-     var status = $('#statusFilter').children("option:selected").val();
+ var status = $('#statusFilter').children("option:selected").val();
      if(status != ''){
        data.status=status;
      }

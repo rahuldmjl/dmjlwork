@@ -61,7 +61,7 @@
                             <div class="widget-body">
                                 <div class="widget-counter">
                                     <h6>Total Product <small class="text-inverse"></small></h6>
-                                    <h3 class="h1"><span class="counter">{{count($psdpending)}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h3 class="h1"><span class="counter">{{$totalproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                             </div>
                          </div>
@@ -72,7 +72,7 @@
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
                                     <h6>Done  <small class="text-inverse"></small></h6>
-                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h3 class="h1"><span class="counter">{{$doneproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                              </div>
                          </div>
@@ -83,7 +83,7 @@
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
                                     <h6>Pending <small></small></h6>
-                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h3 class="h1"><span class="counter">{{$pending}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                                 <!-- /.widget-counter -->
                             </div>
@@ -168,7 +168,7 @@
 	                    <table class="table table-striped table-center word-break mt-0"   id="psdpendingtable" >
   							<thead>
   								<tr class="bg-primary">
-								  <th>Sr No</th>
+								    <th>Sr No</th>
   									<th>Sku</th>
 									  <th>Color</th>
 									  <th>Category</th>
@@ -181,35 +181,23 @@
 							  $i=1;
 							?>
 		 @foreach ($psdpending as $item)
-		
-		
-	
-	<tr>
+		 <tr>
 	<td><?php echo $i++;?></td>
 		<td>{{$item->sku}}</td>
 		<td>{{$item->color}}
 		</td>
     <td>{{$item->name}}</td>
-    
-		<td style="float: right;">
-			<form action="" method="POST">
-				@csrf
-				<input type="hidden" value="{{$item->product_id}}" name="product_id"/>
-				<input type="hidden" value="{{$item->category_id}}" name="category_id"/>
-			
-				<select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-					<option value="2">Pending</option>
-					<option value="1">In processing</option>
-					<option value="3">Done</option>
+     <td>
+			<select name="status" onchange="psdpendingtodone(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+					<option value="2/{{$item->product_id}}/{{$item->category_id}}">Pending</option>
+					<option value="1/{{$item->product_id}}/{{$item->category_id}}">In processing</option>
+					<option value="3/{{$item->product_id}}/{{$item->category_id}}">Done</option>
 				</select>
-				<button type="submit" style="height: 30px;
-    width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-	
-			</form>
+			
 			</td>
 	
 	
-	</tr>
+	  </tr>
 
 									
 									@endforeach
@@ -303,7 +291,7 @@ $.ajaxSetup({
     /*"sProcessing": "<div class='spinner-border' style='width: 3rem; height: 3rem;'' role='status'><span class='sr-only'>Loading...</span></div>"*/
   },
   "order": [[ 0, "desc" ]],
-  "deferLoading": <?=$psdpending->count()?>,
+  "deferLoading": <?=$psdpending->count();?>,
   "processing": true,
   "serverSide": true,
   "searching": false,
@@ -374,5 +362,58 @@ $.ajaxSetup({
     });
 	table.draw();
   });
+function psdpendingtodone(str){
+var data=str.split("/");
+var status=data[0];
+var product_id=data[1];
+var category_id=data[2];
+if(status !="2"){
+  swal({
+		         title: 'Are you sure?',
+		         type: 'info',
+			    	 text:'To change the Status of the product',
+		         showCancelButton: true,
+		         confirmButtonText: 'Confirm',
+		         confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
+		        }).then(function(data){
+              
+              if(data.value){
+                 
+               $.ajax({
+          url: "<?=URL::to('Photoshop/psd/pending');?>",
+          type:"POST",
+          data:{
+            "_token": "{{ csrf_token() }}",
+            status:status,
+            product_id:product_id,
+            category_id:category_id
+         },
+          success:function(response){
+            swal({
+                    title: 'success',
+                    text: response.success,
+                    type: 'success'
+                   
+                   
+                  });
+                  window.location.href = "";
+          },
+         });
+              }
+            });
+
+}else{
+  swal({
+            title: 'Oops!',
+            text: 'Sorry Status no  any Changes',
+            type: 'error',
+            showCancelButton: true,
+            showConfirmButton: false,
+            confirmButtonClass: 'btn btn-danger',
+            cancelButtonText: 'Ok'
+        });
+}
+}
+
 	</script>
 @endsection

@@ -25,7 +25,7 @@ class PhotoshopController extends Controller
         $this->product=PhotoshopHelper::get_product_list($this->userid)->where('status',0)->groupBy(['sku','color']);
         $this->category=category::all();
         $this->color=color::all();
-        $this->product_list=PhotoshopHelper::get_photography_product_list($this->userid);
+        $this->product_list=PhotoshopHelper::get_photoshop_product_list("photographies",$this->userid);
         
     }
     public function index()
@@ -78,19 +78,18 @@ pending photography pending ajax List
        if(!empty($params['status'])){
         $maindata->where('status',$params['status']);
        }
-        $datacount = count($maindata->where('status',0)->get());
-        $datacoll = $maindata;
-        $datacollection = $datacoll->where('status',0)->take($length)->offset($start)->get();
-            $csrf=csrf_field();
-            $data["recordsTotal"] = $datacount;
-	  	    $data["recordsFiltered"] = $datacount;
-            $data['deferLoading'] = $datacount;
-            $token=$request->session()->token();
-            $i=1;
+        $datacount =$maindata;
+        $datacoll = $maindata->count();
+        $datacollection = $datacoll->take($length)->offset($start)->get();
+        $data["draw"] = $params['draw'];
+		$data["page"] = $curpage;
+            $data["recordsTotal"] = $datacoll;
+	  	    $data["recordsFiltered"] = $datacoll;
+            $data['deferLoading'] = $datacoll;
+            
              if(count($datacollection)>0){
                 foreach($datacollection as $key=>$p){
                     $srno = $key + 1 + $start;
-                    $c=photography_product::get_category_by_id($p->category_id);
                     $action='<select name="status" id="status" onchange="statuschange(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
             <option value="2/'.$p->id.'/'.$p->category_id.'">Pending</option>
             <option value="1/'.$p->id.'/'.$p->category_id.'">In processing</option>
@@ -113,9 +112,10 @@ pending photography pending ajax List
     {
        $category_name=$this->category;
        $color_name=$this->color;
-       $donelist=$this->product_list->where(['photographies.status'=>3])->get();
-       $totalproduct= PhotoshopHelper::get_count_product("photography_product","1",$this->userid);;
-       $doneproduct=$donelist->count();
+       $donelist=$this->product_list->where(['pro.status'=>3])->limit(10)->get();
+       $doneproduct= PhotoshopHelper::getCountAllDepartment("photographies",$this->userid,3);
+       $rework= PhotoshopHelper::getCountAllDepartment("photographies",$this->userid,4);
+       $totalproduct=$doneproduct+$rework;
      
   return view('Photoshop/Photography/photography_done',compact('donelist','category_name','color_name','totalproduct','doneproduct'));
     }
@@ -125,6 +125,7 @@ pending photography pending ajax List
     */
 
     public function get_done_ajax__list(Request $request){
+        $totaldonecount=PhotoshopHelper::getCountAllDepartment("photographies",$this->userid,3);
         $data=array();
         $params = $request->post();
         $params = $request->post();
@@ -140,25 +141,21 @@ pending photography pending ajax List
         $order_direc = strtoupper($params['order'][0]['dir']);
                
      if(!empty($params['skusearch'])){
-            $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+            $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
         }
        if(!empty($params['category'])){
-        $maindata->where('photography_products.category_id',$params['category']);
+        $maindata->where('p.category_id',$params['category']);
        }
        if(!empty($params['color'])){
-        $maindata->where('photography_products.color',$params['color']);
+        $maindata->where('p.color',$params['color']);
        }
        
-            $datacoll = $maindata->where(['photographies.status'=>3])->orderBy('photographies.id','DESC');
-            $data["recordsTotal"] =$datacoll->count();
-            $data["recordsFiltered"] = $datacoll->count();
-            $data['deferLoading'] = $datacoll->count();
-            $csrf=csrf_field();
-          
-              
-        $donecollection = $datacoll->take($length)->offset($start)->get();
-       
-      if(count($donecollection)>0){
+            $datacoll = $maindata->where(['pro.status'=>3]);
+            $data["recordsTotal"] =$totaldonecount;
+            $data["recordsFiltered"] =$totaldonecount;
+            $data['deferLoading'] = $totaldonecount;
+           $donecollection = $datacoll->take($length)->offset($start)->get();
+       if(count($donecollection)>0){
         foreach($donecollection as $key => $product)
         {  $srno = $key + 1 + $start;
            $action='<select name="status" id="status" onchange="donetorework(this.value)" class="form-control" style="height:20px;width:120px;float: left;">
@@ -197,15 +194,15 @@ pending photography pending ajax List
         $order_direc = strtoupper($params['order'][0]['dir']);
                
      if(!empty($params['skusearch'])){
-            $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+            $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
         }
        if(!empty($params['category'])){
-        $maindata->where('photography_products.category_id',$params['category']);
+        $maindata->where('p.category_id',$params['category']);
        }
        if(!empty($params['color'])){
-        $maindata->where('photography_products.color',$params['color']);
+        $maindata->where('p.color',$params['color']);
        }
-         $datacoll = $maindata->where(['photographies.status'=>4])->orderBy('photographies.id','DESC');
+         $datacoll = $maindata->where(['pro.status'=>4])->orderBy('pro.id','DESC');
             $data["recordsTotal"] =$datacoll->count();
             $data["recordsFiltered"] = $datacoll->count();
             $data['deferLoading'] = $datacoll->count();
@@ -239,11 +236,12 @@ pending photography pending ajax List
      
         $category_name=$this->category;
         $color_name=$this->color;
-    
-       $reworklist=$this->product_list->where(['photographies.status'=>4])->get();
-  
-    // $reworklist=collect($this->photography)->where('status','=',4);
-      return view('Photoshop/Photography/photography_rework',compact('reworklist','category_name','color_name'));
+        $doneproduct= PhotoshopHelper::getCountAllDepartment("photographies",$this->userid,3);
+        $rework= PhotoshopHelper::getCountAllDepartment("photographies",$this->userid,4);
+        $totalproduct=$doneproduct+$rework;
+ 
+       $reworklist=$this->product_list->where(['pro.status'=>4])->get();
+      return view('Photoshop/Photography/photography_rework',compact('reworklist','category_name','color_name','totalproduct','rework','doneproduct'));
     }
 
     /*

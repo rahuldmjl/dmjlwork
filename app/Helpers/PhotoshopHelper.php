@@ -82,7 +82,6 @@ public static function getcolorList(){
 public static function get_product_list($uid){
 if($uid=="0"){
     $product=DB::table('photography_products as p');
-  
 }else{
     $product=DB::table('photography_products as p')->where('userid','=',$uid);
   
@@ -110,6 +109,16 @@ public static function get_count_product($model,$status,$userid){
     }
     return count($count);
 }
+//Get Count For All Department and All Status
+public static function getCountAllDepartment($model,$userid,$status){
+    $totalrecord=DB::table($model .' as m')
+                ->join('photography_products as p','m.product_id','p.id')
+                ->groupBy(['sku','color'])
+                ->where(['m.created_by'=>$userid,'m.status'=>$status])
+                ->get()->count();
+             return $totalrecord;   
+
+}
 //Get Placement Data from the join 
 public static function update_user_assign($uid,$pid){
     
@@ -126,32 +135,27 @@ public static function get_placement_product_detail(){
 }
 //Get PhotoGraphy Product List Using Joing
 
-public static function get_photography_product_list($userid){
-    $product=DB::table('photographies')
-    ->join('photography_products as p','p.id','photographies.product_id')
-    ->join('categories as c','c.entity_id','photographies.category_id')
+public static function get_photoshop_product_list($table,$userid){
+    $product=DB::table($table.' as pro')
+    ->join('photography_products as p','p.id','pro.product_id')
+    ->join('categories as c','c.entity_id','pro.category_id')
     ->groupBy(['p.sku','p.color'])
-    ->where('p.userid','=',$userid);
+    ->where('pro.created_by','=',$userid)
+    ->orderBy('pro.id','DESC');
     return $product;
 }
 //psd Pending List for user assign
 
-public static function get_psd_pending_product_list($userid){
-    $product=DB::table('photographies')
-    ->join('photography_products as p','p.id','photographies.product_id')
-    ->join('categories as c','c.entity_id','photographies.category_id')
+public static function get_photoshop_product_list_user($table,$userid){
+    $product=DB::table($table.' as pro')
+    ->join('photography_products as p','p.id','pro.product_id')
+    ->join('categories as c','c.entity_id','pro.category_id')
     ->groupBy(['p.sku','p.color'])
-    ->where('photographies.work_assign_user','=',$userid);
+    ->where('pro.work_assign_user','=',$userid)
+    ->orderBy('pro.id','DESC');
     return $product;
 }
-//Get PhotoGraphy Product List Using Joing
 
-public static function get_psd_product_list(){
-    $product=DB::table('psds')
-    ->join('photography_products','photography_products.id','psds.product_id')
-    ->join('categories','categories.entity_id','psds.category_id');
-     return $product;
-}
 //Get Editing Product List
 public static function get_editing_product_list(){
     $product=DB::table('editing_models')
@@ -200,7 +204,8 @@ public static function getWorkAssign_List($department){
         ->join('photography_products as pro','p.product_id','pro.id')
         ->join('categories as c','p.category_id','c.entity_id')
         ->select('pro.sku','pro.color','c.name as categoryname','p.product_id as pid')
-        ->where('p.work_assign_user',0);
+        ->groupBy(['pro.sku','pro.color'])
+        ->where(['p.work_assign_user'=>0,'p.status'=>3]);
      return $data;
 }
 

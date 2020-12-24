@@ -23,11 +23,10 @@ class PsdController extends Controller
   public $userid;
   public function __construct()
   {
-       $this->userid="1";
-      $this->photography=photography::getphotographyProduct();
-      $this->psd=PhotoshopHelper::get_psd_product_list();
+      $this->userid="1";
       $user=Auth::user();
-      $this->product_list=PhotoshopHelper::get_psd_pending_product_list($this->userid);
+      $this->product_list=PhotoshopHelper::get_photoshop_product_list_user("photographies",$this->userid);
+      $this->psd=PhotoshopHelper::get_photoshop_product_list('psds',$this->userid);
       $this->color=color::all();
       $this->category=category::all();
   }
@@ -41,17 +40,21 @@ class PsdController extends Controller
     */
     public function get_psd_pending_list()
     {
-      $categorylist=$this->category;
-      $colorlist=$this->color;
-      $psdpending= $this->product_list->where(['photographies.status'=>'3','photographies.next_department_status'=>'0'])->get();
+        $categorylist=$this->category;
+         $colorlist=$this->color;
+         $totalproduct= PhotoshopHelper::getCountAllDepartment("photographies",$this->userid,3);
+        $doneproduct= PhotoshopHelper::getCountAllDepartment("psds",$this->userid,3);
+        $pending=$totalproduct-$doneproduct;
+        $psdpending= $this->product_list->where(['pro.status'=>'3','pro.next_department_status'=>0])->limit(10)->get();
    
-      return view('Photoshop/PSD/psd_pending',compact('psdpending','categorylist','colorlist'));
+        return view('Photoshop/PSD/psd_pending',compact('psdpending','categorylist','colorlist','totalproduct','doneproduct','pending'));
     }
     /*
-Get Pending Ajax List 
+    Get Pending Ajax List 
     */
 
 public function get_Ajax_pendingList(Request $request){
+  
         $data=array();
         $params = $request->post();
         $params = $request->post();
@@ -59,7 +62,7 @@ public function get_Ajax_pendingList(Request $request){
 		$length = (!empty($params['length']) ? $params['length'] : 10);
 		$stalen = $start / $length;
 		$curpage = $stalen;
-        $maindata =$this->product_list->where(['photographies.status'=>'3','photographies.next_department_status'=>'0']);
+        $maindata =$this->product_list->where(['pro.status'=>'3','pro.next_department_status'=>0]);
         $where = '';
         $offset = '';
         $limit = '';
@@ -67,42 +70,27 @@ public function get_Ajax_pendingList(Request $request){
         $order_direc = strtoupper($params['order'][0]['dir']);
                
      if(!empty($params['skusearch'])){
-            $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+            $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
         }
        if(!empty($params['category'])){
-        $maindata->where('photographies.category_id',$params['category']);
+        $maindata->where('p.category_id',$params['category']);
        }
        if(!empty($params['color'])){
-        $maindata->where('photography_products.color',$params['color']);
+        $maindata->where('p.color',$params['color']);
        }
-           $datacoll = $maindata->where(['photographies.status'=>3,'photographies.next_department_status'=>0])->orderBy('photographies.id','DESC');
-            $data["recordsTotal"] =$datacoll->count();
-            $data["recordsFiltered"] = $datacoll->count();
-            $data['deferLoading'] = $datacoll->count();
-            $csrf=csrf_field();
-          
-              
-        $donecollection = $datacoll->take($length)->offset($start)->get();
-       
-      if(count($donecollection)>0){
+           $datacoll = $maindata->get()->count();
+            $data["recordsTotal"] =$datacoll;
+            $data["recordsFiltered"] = $datacoll;
+            $data['deferLoading'] = $datacoll;
+         $donecollection = $maindata->take($length)->offset($start)->get();
+       if(count($donecollection)>0){
         foreach($donecollection as $key => $product)
         {  $srno = $key + 1 + $start;
-            $csrf=csrf_field();
-        
-            $token=$request->session()->token();
-             $action='<form action="" method="post" style="margin-right: 110px;">
-             '.$csrf.'
-            <input type="hidden" value="'.$product->product_id.'" name="product_id" id="product_id"/>
-             <input type="hidden" value="'.$product->category_id.'" name="category_id" />
-                 <select name="status" id="status" class="form-control" style="height:20px;width:120px;float: left;">
-                 <option value="2">Pending</option>
-                 <option value="1">In processing</option>
-                 <option value="3">Done</option>
-                </select>
-                <button type="submit" style="height: 30px;
-                width: 30px;" class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-                    
-             </form>';
+            $action='<select name="status" id="status" onchange="psdpendingtodone(this.value)" class="form-control" style="height:20px;width:120px;float: left;">
+                 <option value="2/'.$product->product_id.'/'.$product->category_id.'">Pending</option>
+                 <option value="1'.$product->product_id.'/'.$product->category_id.'">In processing</option>
+                 <option value="3'.$product->product_id.'/'.$product->category_id.'">Done</option>
+             ';
             $data['data'][] = array($srno,$product->sku, $product->color, $product->name, $action);
         }
 
@@ -123,7 +111,7 @@ public function get_Ajax_pendingList(Request $request){
     {
       $categorylist=$this->category;
       $colorlist=$this->color;
-      $psd_done_list=$this->psd->where(['psds.status'=>3])->orderBy('psds.id','DESC')->get();
+      $psd_done_list=$this->psd->where(['pro.status'=>3])->orderBy('pro.id','DESC')->get();
       return view('Photoshop/PSD/psd_done',compact('psd_done_list','categorylist','colorlist'));
     }
 
@@ -147,42 +135,32 @@ public function get_Ajax_pendingList(Request $request){
       $order_direc = strtoupper($params['order'][0]['dir']);
              
    if(!empty($params['skusearch'])){
-          $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+          $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
       }
      if(!empty($params['category'])){
-      $maindata->where('photography_products.category_id',$params['category']);
+      $maindata->where('p.category_id',$params['category']);
      }
      if(!empty($params['color'])){
-      $maindata->where('photography_products.color',$params['color']);
+      $maindata->where('p.color',$params['color']);
      }
      
-          $datacoll = $maindata->where(['psds.status'=>3])->orderBy('psds.id','DESC');
-          $data["recordsTotal"] =$datacoll->count();
-          $data["recordsFiltered"] = $datacoll->count();
-          $data['deferLoading'] = $datacoll->count();
+          $datacoll = $maindata->where(['pro.status'=>3])->get()->count();
+          $data["recordsTotal"] =$datacoll;
+          $data["recordsFiltered"] = $datacoll;
+          $data['deferLoading'] = $datacoll;
           $csrf=csrf_field();
         
             
-      $donecollection = $datacoll->take($length)->offset($start)->get();
+      $donecollection = $maindata->take($length)->offset($start)->orderBy('pro.id','DESC')->get();
      
     if(count($donecollection)>0){
       foreach($donecollection as $key => $product)
       {  $srno = $key + 1 + $start;
-          $csrf=csrf_field();
-      
-          $token=$request->session()->token();
-           $action='<form action="" method="post" style="margin-right: 110px;">
-           '.$csrf.'
-          <input type="hidden" value="'.$product->product_id.'" name="product_id" id="product_id"/>
-           <input type="hidden" value="'.$product->category_id.'" name="category_id" />
-               <select name="status" id="status" class="form-control" style="height:20px;width:120px;float: left;">
-             	<option value="0">select status</option>
-											<option value="4">Rework</option>
-									  </select>
-              <button type="submit" style="height: 30px;
-              width: 30px;" class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-                  
-           </form>';
+           $action='  <select name="status" onchange="donetorework(this.value)" class="form-control" style="height:20px;width:120px;float: left;">
+             	<option value="0/'.$product->product_id.'/'.$product->category_id.'">select status</option>
+											<option value="4/'.$product->product_id.'/'.$product->category_id.'">Rework</option>
+									  </select> ';
+            
           $data['data'][] = array($srno,$product->sku, $product->color, $product->name, $action);
       }
 
@@ -201,7 +179,7 @@ public function get_Ajax_pendingList(Request $request){
     public function get_psd_rework_list()
     {    $categorylist=$this->category;
       $colorlist=$this->color;
-       $psd_rework=$this->psd->where(['psds.status'=>4])->get();
+       $psd_rework=$this->psd->where(['pro.status'=>4])->get();
         return view('Photoshop/PSD/psd_rework',compact('psd_rework','categorylist','colorlist'));
     }
 
@@ -224,16 +202,16 @@ public function get_Ajax_pendingList(Request $request){
       $order_direc = strtoupper($params['order'][0]['dir']);
              
    if(!empty($params['skusearch'])){
-          $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+          $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
       }
      if(!empty($params['category'])){
-      $maindata->where('photography_products.category_id',$params['category']);
+      $maindata->where('p.category_id',$params['category']);
      }
      if(!empty($params['color'])){
-      $maindata->where('photography_products.color',$params['color']);
+      $maindata->where('p.color',$params['color']);
      }
      
-          $datacoll = $maindata->where(['psds.status'=>4])->orderBy('psds.id','DESC');
+          $datacoll = $maindata->where(['pro.status'=>4])->orderBy('pro.id','DESC');
           $data["recordsTotal"] =$datacoll->count();
           $data["recordsFiltered"] = $datacoll->count();
           $data['deferLoading'] = $datacoll->count();
@@ -245,21 +223,10 @@ public function get_Ajax_pendingList(Request $request){
     if(count($donecollection)>0){
       foreach($donecollection as $key => $product)
       {  $srno = $key + 1 + $start;
-          $csrf=csrf_field();
-      
-          $token=$request->session()->token();
-           $action='<form action="" method="post" style="margin-right: 110px;">
-           '.$csrf.'
-          <input type="hidden" value="'.$product->product_id.'" name="product_id" id="product_id"/>
-           <input type="hidden" value="'.$product->category_id.'" name="category_id" />
-               <select name="status" id="status" class="form-control" style="height:20px;width:120px;float: left;">
-           	        	<option value="1">In Process</option>
-											<option value="3">Done</option>
-													  </select>
-              <button type="submit" style="height: 30px;
-              width: 30px;" class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-                  
-           </form>';
+            $action='<select name="status"  onchange="reworktodone(this.value)" class="form-control" style="height:20px;width:120px;float: left;">
+           	        	<option value="1/'.$product->product_id.'/'.$product->category_id.'">In Process</option>
+											<option value="3/'.$product->product_id.'/'.$product->category_id.'">Done</option>
+											</select>';
           $data['data'][] = array($srno,$product->sku, $product->color, $product->name, $action);
       }
 
@@ -302,18 +269,19 @@ public function get_Ajax_pendingList(Request $request){
             'product_id'=>$request->input('product_id'),
             'action_name'=>$link,
             'status'=>$request->input('status'),
-            'action_by'=>"user",
+            'action_by'=> $this->userid,
             'action_date_time'=>date('Y-m-d H:i:s')
   
   
           );
            PhotoshopHelper::store_cache_table_data($cache);
            photography::getUpdatenextdepartmentdone($request->input('product_id'));
-         }
+        $message="Psd Status Change Successfull";
+          }
         
       }
-        return redirect()->back()->with('success', 'Psd status Change Successfull');
-     
+      return response()->json(['success'=>$message]);
+       
     }
 
     public function submit_done_list(Request $request)
@@ -328,19 +296,22 @@ public function get_Ajax_pendingList(Request $request){
           'product_id'=>$request->input('product_id'),
           'action_name'=>$link,
           'status'=>$request->input('status'),
-          'action_by'=>"user",
+          'action_by'=> $this->userid,
           'action_date_time'=>date('Y-m-d H:i:s')
 
       );
       PhotoshopHelper::store_cache_table_data($cache);
       psd::update_psd_status($request->get('product_id'),$request->input('status'));
-       }
+      $message='Psd status Change Successfull';
+    }
     if($request->input('status')=='4')
     {
        psd::delete_from_below_department($request->get('product_id'));
        psd::getUpdatestatus_psd($request->input('product_id'));
+       $message='Psd status Change Successfull';
     }
-       return redirect()->back()->with('success', 'Psd status Change Successfull');
+      
+      return response()->json(['success'=>$message]);
     }
-
+ 
 }

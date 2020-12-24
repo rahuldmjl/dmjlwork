@@ -192,18 +192,11 @@
 					   <td>{{$item->name}}</td>
 					  
 					   <td style="    float: right;">
-					   <form action="" method="POST">
-					   @csrf
-					   <input type="hidden" value="{{$item->product_id}}" name="product_id"/>
-					   <input type="hidden" value="{{$item->category_id}}" name="category_id"/>
-					  <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-											<option value="1">In Process</option>
-											<option value="3">Done</option>
+					         <select name="status" onchange="reworktodone(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+											<option value="1/{{$item->product_id}}/{{$item->category_id}}">In Process</option>
+											<option value="3/{{$item->product_id}}/{{$item->category_id}}">Done</option>
 										</select>
-										<button type="submit" style="height: 30px;
-    width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-	
-									</form>
+										
 									</td>
 							
 							
@@ -374,5 +367,57 @@ $.ajaxSetup({
     });
 	table.draw();
   });
+  function reworktodone(str){
+    var data=str.split("/");
+var status=data[0];
+var product_id=data[1];
+var category_id=data[2];
+if(status !="1"){
+  swal({
+		         title: 'Are you sure?',
+		         type: 'info',
+			    	 text:'To change the Status of the product',
+		         showCancelButton: true,
+		         confirmButtonText: 'Confirm',
+		         confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
+		        }).then(function(data){
+              
+              if(data.value){
+                 
+               $.ajax({
+          url: "<?=URL::to('Photoshop/psd/rework');?>",
+          type:"POST",
+          data:{
+            "_token": "{{ csrf_token() }}",
+            status:status,
+            product_id:product_id,
+            category_id:category_id
+         },
+          success:function(response){
+            swal({
+                    title: 'success',
+                    text: response.success,
+                    type: 'success'
+                   
+                   
+                  });
+                  window.location.href = "";
+          },
+         });
+              }
+            });
+
+}else{
+  swal({
+            title: 'Oops!',
+            text: 'Sorry Status no  any Changes',
+            type: 'error',
+            showCancelButton: true,
+            showConfirmButton: false,
+            confirmButtonClass: 'btn btn-danger',
+            cancelButtonText: 'Ok'
+        });
+}
+  }
 	</script>
 @endsection

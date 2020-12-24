@@ -61,7 +61,7 @@
                             <div class="widget-body">
                                 <div class="widget-counter">
                                     <h6>Total Product <small class="text-inverse"></small></h6>
-                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h3 class="h1"><span class="counter">{{$totalproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                                 <!-- /.widget-counter -->
                             </div>
@@ -75,8 +75,8 @@
                         <div class="widget-bg bg-color-scheme text-inverse">
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
-                                    <h6>Done  <small class="text-inverse"></small></h6>
-                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h6>Rework  <small class="text-inverse"></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$rework}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                                 <!-- /.widget-counter -->
                             </div>
@@ -90,8 +90,8 @@
                         <div class="widget-bg">
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
-                                    <h6>Pending <small></small></h6>
-                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h6>Done <small></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$doneproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                                 <!-- /.widget-counter -->
                             </div>
