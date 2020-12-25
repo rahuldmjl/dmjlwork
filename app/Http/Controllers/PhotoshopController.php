@@ -22,7 +22,7 @@ class PhotoshopController extends Controller
     public function __construct()
     {
         $this->userid="1";
-        $this->product=PhotoshopHelper::get_product_list($this->userid)->where('status',0)->groupBy(['sku','color']);
+        $this->product=PhotoshopHelper::get_product_list($this->userid);
         $this->category=category::all();
         $this->color=color::all();
         $this->product_list=PhotoshopHelper::get_photoshop_product_list("photographies",$this->userid);
@@ -41,10 +41,11 @@ class PhotoshopController extends Controller
         $category_name=$this->category;
         $color_name=$this->color;
         $list=$this->product->limit(10)->get();
+       
          $done_product_count=PhotoshopHelper::get_count_product("photography_product","1",$this->userid);
          $totalproduct=PhotoshopHelper::get_count_product("photography_product","0",$this->userid);
         $remaning=$totalproduct-$done_product_count;
-        return view('Photoshop/Photography/photography_pending',compact('list','totalproduct','category_name','color_name','done_product_count','remaning'));
+       return view('Photoshop/Photography/photography_pending',compact('list','totalproduct','category_name','color_name','done_product_count','remaning'));
   
     }
     /*
@@ -78,18 +79,18 @@ pending photography pending ajax List
        if(!empty($params['status'])){
         $maindata->where('status',$params['status']);
        }
-        $datacount =$maindata;
-        $datacoll = $maindata->count();
-        $datacollection = $datacoll->take($length)->offset($start)->get();
-        $data["draw"] = $params['draw'];
-		$data["page"] = $curpage;
-            $data["recordsTotal"] = $datacoll;
-	  	    $data["recordsFiltered"] = $datacoll;
-            $data['deferLoading'] = $datacoll;
-            
+        $datacount =$maindata->get()->count();
+        $datacoll = $maindata;
+             $data["recordsTotal"] = $datacount;
+	  	    $data["recordsFiltered"] = $datacount;
+            $data['deferLoading'] = $datacount;
+            $datacollection = $datacoll->take($length)->offset($start)->get();
+  
+            $i=1;
              if(count($datacollection)>0){
                 foreach($datacollection as $key=>$p){
                     $srno = $key + 1 + $start;
+                    $c=photography_product::get_category_by_id($p->category_id);
                     $action='<select name="status" id="status" onchange="statuschange(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
             <option value="2/'.$p->id.'/'.$p->category_id.'">Pending</option>
             <option value="1/'.$p->id.'/'.$p->category_id.'">In processing</option>
@@ -200,9 +201,9 @@ pending photography pending ajax List
         $maindata->where('p.category_id',$params['category']);
        }
        if(!empty($params['color'])){
-        $maindata->where('p.color',$params['color']);
+            $maindata->where('p.color',$params['color']);
        }
-         $datacoll = $maindata->where(['pro.status'=>4])->orderBy('pro.id','DESC');
+            $datacoll = $maindata->where(['p.status'=>4])->orderBy('p.id','DESC');
             $data["recordsTotal"] =$datacoll->count();
             $data["recordsFiltered"] = $datacoll->count();
             $data['deferLoading'] = $datacoll->count();

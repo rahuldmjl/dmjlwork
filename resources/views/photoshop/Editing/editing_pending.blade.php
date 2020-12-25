@@ -199,22 +199,12 @@
 		</td>
 	<td>{{$item->name}}</td>
 	<td>Pending</td>
-		<td style="float: right;">
-			<form action="" method="POST">
-				<input type="hidden" name="product_id" value="{{$item->product_id}}"/>
-				<input type="hidden" name="category_id" value="{{$item->category_id}}"/>
-	
-			@csrf
-				<select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-					<option value="2">Pending</option>
-					<option value="1">In processing</option>
-					<option value="3">Done</option>
-				</select>
+		<td>
+			<select name="status" onchange="pendinttodone(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+					<option value="2/{{$item->product_id}}/{{$item->category_id}}">Pending</option>
+					<option value="1/{{$item->product_id}}/{{$item->category_id}}">In processing</option>
+					<option value="3/{{$item->product_id}}/{{$item->category_id}}">Done</option>
 			
-				<button type="submit"  style="height: 30px;
-      width: 30px;" class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-		
-			</form>
 			</td>
 	
 	
@@ -386,5 +376,58 @@ $.ajaxSetup({
     });
 	table.draw();
   });
+  function pendinttodone(str){
+    var data=str.split("/");
+    var status=data[0];
+    var product_id=data[1];
+    var category_id=data[2];
+ 
+ if(status !="2"){
+  swal({
+		         title: 'Are you sure?',
+		         type: 'info',
+			    	 text:'To change the Status of the product',
+		         showCancelButton: true,
+		         confirmButtonText: 'Confirm',
+		         confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
+		        }).then(function(data){
+              
+              if(data.value){
+                 
+               $.ajax({
+          url: "<?=URL::to('Photoshop/Editing/pending');?>",
+          type:"POST",
+          data:{
+            "_token": "{{ csrf_token() }}",
+            status:status,
+            product_id:product_id,
+            category_id:category_id
+         },
+          success:function(response){
+            swal({
+                    title: 'success',
+                    text: response.success,
+                    type: 'success'
+                   
+                   
+                  });
+                  window.location.href = "";
+          },
+         });
+              }
+            });
+
+}else{
+  swal({
+            title: 'Oops!',
+            text: 'Sorry Status no  any Changes',
+            type: 'error',
+            showCancelButton: true,
+            showConfirmButton: false,
+            confirmButtonClass: 'btn btn-danger',
+            cancelButtonText: 'Ok'
+        });
+}
+  }
 	</script>
 @endsection

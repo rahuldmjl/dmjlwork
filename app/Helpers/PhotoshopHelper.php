@@ -16,23 +16,6 @@ class PhotoshopHelper
 {
 
 
-//Get the Status From SELECT * from photosraphy_status
-public static function getStatus($id)
-{
-    DB::setTablePrefix('');
-    $status=DB::table('photosraphy_status')
-            ->where('entity_id','=',$id)
-            ->get();
-            DB::setTablePrefix('dml_');
-   return $status;
-}
-//Get department from url 
-public static function getDepartment($url)
-{
-    $url=explode('Photoshop/',$url);
-    $depart=explode('/',$url[1]);
-    return $depart[0];
-}
 
 public static function get_product_validation($id){
     $data=DB::table('photography_products')
@@ -42,13 +25,6 @@ public static function get_product_validation($id){
     return $data->status;
 }
 
-public static function get_status($name)
-{
-    $status=DB::table('photoshop_status_types')
-            ->where('status_name','=',$name)
-            ->get();
-            return $status;
-}
 
 public static function getCategory_name_by_id($id){
     $status=DB::table('categories')
@@ -83,7 +59,7 @@ public static function get_product_list($uid){
 if($uid=="0"){
     $product=DB::table('photography_products as p');
 }else{
-    $product=DB::table('photography_products as p')->where('userid','=',$uid);
+    $product=DB::table('photography_products as p')->where(['userid'=>$uid,'status'=>0])->groupBy(['sku','color']);
   
 }
   
@@ -120,20 +96,12 @@ public static function getCountAllDepartment($model,$userid,$status){
 
 }
 //Get Placement Data from the join 
-public static function update_user_assign($uid,$pid){
+public static function update_user_assign($uid,$pid,$loginid){
     
-    DB::table('photography_products')->where(["id"=>$pid])->update(["userid"=>$uid]);
+    DB::table('photography_products')->where(["id"=>$pid])->update(["userid"=>$uid,"work_assign_by"=>$loginid]);
 
   
 }
-public static function get_placement_product_detail(){
-
-   $product=DB::table('placements')
-    ->join('photography_products','photography_products.id','placements.product_id')
-    ->join('categories','categories.entity_id','placements.category_id');
-    return $product;
-}
-//Get PhotoGraphy Product List Using Joing
 
 public static function get_photoshop_product_list($table,$userid){
     $product=DB::table($table.' as pro')
@@ -156,20 +124,6 @@ public static function get_photoshop_product_list_user($table,$userid){
     return $product;
 }
 
-//Get Editing Product List
-public static function get_editing_product_list(){
-    $product=DB::table('editing_models')
-    ->join('photography_products','photography_products.id','editing_models.product_id')
-    ->join('categories','categories.entity_id','editing_models.category_id');
-     return $product;
-}
-//Get Editing Product List
-public static function get_jpeg_product_list(){
-    $product=DB::table('jpeg_models')
-    ->join('photography_products','photography_products.id','jpeg_models.product_id')
-    ->join('categories','categories.entity_id','jpeg_models.category_id');
-     return $product;
-}
 
 
 /*
@@ -200,6 +154,7 @@ public static function getWorkAssign_List($department){
     }else{
         $department=$department;
     }
+    
     $data=DB::table($department .' as p')
         ->join('photography_products as pro','p.product_id','pro.id')
         ->join('categories as c','p.category_id','c.entity_id')

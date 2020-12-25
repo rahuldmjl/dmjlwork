@@ -17,13 +17,14 @@ class JpegController extends Controller
    public $jpeg_pending_list;
    public $category;
    public $color;
-  
+  public $userid;
    public function __construct()
    {
-      $this->jpeg_pending_list=PhotoshopHelper::get_editing_product_list();
+       $this->userid=1;
+      $this->jpeg_pending_list=PhotoshopHelper::get_photoshop_product_list_user("editing_models",$this->userid);
         $this->category=category::all();
       $this->color=color::all();
-      $this->product=PhotoshopHelper::get_jpeg_product_list();
+      $this->product=PhotoshopHelper::get_photoshop_product_list('jpeg_models',$this->userid);
     
    }
    /*
@@ -31,7 +32,7 @@ class JpegController extends Controller
    */
    public function get_pending_list_jpeg()
    {
-     $list=$this->jpeg_pending_list->where(['editing_models.status'=>3,'editing_models.next_department_status'=>0])->get();
+     $list=$this->jpeg_pending_list->where(['pro.status'=>3,'pro.next_department_status'=>0])->get();
       $categorylist=$this->category;
       $colorlist=$this->color;
      return view('Photoshop/JPEG/jpeg_pending',compact('list','categorylist','colorlist'));
@@ -46,52 +47,38 @@ public function get_pending_Ajax_list(Request $request){
    $length = (!empty($params['length']) ? $params['length'] : 10);
    $stalen = $start / $length;
    $curpage = $stalen;
-   $maindata = EditingModel::query();
-   $maindata->join('photography_products','editing_models.product_id','photography_products.id');
-   $maindata->join('categories','editing_models.category_id','categories.entity_id');
-  $maindata->where(['editing_models.next_department_status'=>0,'editing_models.status'=>3]);
-   $where = '';
+   $maindata =$this->jpeg_pending_list;
+      $where = '';
    $offset = '';
    $limit = '';
    $order = $params['order'][0]['column'];
    $order_direc = strtoupper($params['order'][0]['dir']);
    if(!empty($params['skusearch'])){
-       $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+       $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
    }
   if(!empty($params['category'])){
-   $maindata->where('photography_products.category_id',$params['category']);
+   $maindata->where('p.category_id',$params['category']);
   }
   if(!empty($params['color'])){
-   $maindata->where('photography_products.color',$params['color']);
+   $maindata->where('p.color',$params['color']);
   }
   
     $datacount = $maindata->count();
-   $datacoll = $maindata;
-       $data["recordsTotal"] = $datacount;
-   $data["recordsFiltered"] = $datacount;
-   $data['deferLoading'] = $datacount;
-       $csrf=csrf_field();
-     
+   $datacoll = $maindata->where(['pro.status'=>3,'pro.next_department_status'=>0])->orderBy('pro.id','DESC');
+     $data["recordsTotal"] = $datacount;
+    $data["recordsFiltered"] = $datacount;
+    $data['deferLoading'] = $datacount;
        $datacollection = $datacoll->take($length)->offset($start)->get();
        
         if(count($datacollection)>0){
            foreach($datacollection as $key=>$p){
                $srno = $key + 1 + $start;
-               $action='
-                   <form action="" method="POST">
-                   '.$csrf.'
-     <input type="hidden" value="'.$p->id.'" name="product_id"/>
-     <input type="hidden" value="'.$p->category_id.'" name="category_id"/>
-           <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-           <option value="2">Pending</option>
-           <option value="1">In processing</option>
+               $action='<select name="status" onchange="pendingtodone(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+           <option value="2/'.$p->id.'/'.$p->category_id.'">Pending</option>
+           <option value="1/'.$p->id.'/'.$p->category_id.'">In processing</option>
            <option value="3">Done</option>
        </select>
-       <button type="submit" style="height: 30px;
-   width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-   
-     </form>
-                   ';
+        ';
             
                $data['data'][] = array($srno,$p->sku, $p->color,$p->name, $action);
            }
@@ -107,7 +94,7 @@ public function get_pending_Ajax_list(Request $request){
 
    public function get_done_list_jpeg()
    {
-         $done_list=$this->product->where(['jpeg_models.status'=>3])->get();
+         $done_list=$this->product->where(['pro.status'=>3])->get();
          $categorylist=$this->category;
          $colorlist=$this->color;
        return view('Photoshop/JPEG/jpeg_done',compact('done_list','categorylist','colorlist'));
@@ -123,27 +110,24 @@ public function get_pending_Ajax_list(Request $request){
    $length = (!empty($params['length']) ? $params['length'] : 10);
    $stalen = $start / $length;
    $curpage = $stalen;
-   $maindata = jpegModel::query();
-   $maindata->join('photography_products','jpeg_models.product_id','photography_products.id');
-   $maindata->join('categories','jpeg_models.category_id','categories.entity_id');
-  $maindata->where(['jpeg_models.next_department_status'=>0,'jpeg_models.status'=>3]);
+   $maindata = $this->product;
    $where = '';
    $offset = '';
    $limit = '';
    $order = $params['order'][0]['column'];
    $order_direc = strtoupper($params['order'][0]['dir']);
    if(!empty($params['skusearch'])){
-       $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+       $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
    }
   if(!empty($params['category'])){
-   $maindata->where('photography_products.category_id',$params['category']);
+   $maindata->where('p.category_id',$params['category']);
   }
   if(!empty($params['color'])){
-   $maindata->where('photography_products.color',$params['color']);
+   $maindata->where('p.color',$params['color']);
   }
   
     $datacount = $maindata->count();
-   $datacoll = $maindata;
+   $datacoll = $maindata->where(['pro.status'=>3]);
        $data["recordsTotal"] = $datacount;
    $data["recordsFiltered"] = $datacount;
    $data['deferLoading'] = $datacount;
@@ -154,21 +138,11 @@ public function get_pending_Ajax_list(Request $request){
         if(count($datacollection)>0){
            foreach($datacollection as $key=>$p){
                $srno = $key + 1 + $start;
-               $action='
-                   <form action="" method="POST">
-                   '.$csrf.'
-     <input type="hidden" value="'.$p->id.'" name="product_id"/>
-     <input type="hidden" value="'.$p->category_id.'" name="category_id"/>
-           <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-           <option value="0">select status</option>
-           <option value="4">Rework</option>
-     
-       </select>
-       <button type="submit" style="height: 30px;
-   width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-   
-     </form>
-                   ';
+               $action='<select name="status" onchange="donetorework(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+           <option value="0/'.$p->id.'/'.$p->category_id.'">select status</option>
+           <option value="4/'.$p->id.'/'.$p->category_id.'">Rework</option>
+            
+           </select>';
             
                $data['data'][] = array($srno,$p->sku, $p->color,$p->name,"Done", $action);
            }
@@ -183,7 +157,7 @@ public function get_pending_Ajax_list(Request $request){
    //get all Rework list of JPEG Department
    public function get_rework_list_jpeg()
    { 
-      $rework_list=$this->product->where(['jpeg_models.status'=>4])->get();
+      $rework_list=$this->product->where(['pro.status'=>4])->get();
       $categorylist=$this->category;
       $colorlist=$this->color;
       return view('Photoshop/JPEG/jpeg_rework',compact('rework_list','categorylist','colorlist'));
@@ -198,27 +172,24 @@ public function get_ajax_Rework_list(Request $request){
    $length = (!empty($params['length']) ? $params['length'] : 10);
    $stalen = $start / $length;
    $curpage = $stalen;
-   $maindata = jpegModel::query();
-   $maindata->join('photography_products','jpeg_models.product_id','photography_products.id');
-   $maindata->join('categories','jpeg_models.category_id','categories.entity_id');
-  $maindata->where(['jpeg_models.next_department_status'=>0,'jpeg_models.status'=>4]);
+   $maindata = $this->product;
    $where = '';
    $offset = '';
    $limit = '';
    $order = $params['order'][0]['column'];
    $order_direc = strtoupper($params['order'][0]['dir']);
    if(!empty($params['skusearch'])){
-       $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+       $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
    }
   if(!empty($params['category'])){
-   $maindata->where('photography_products.category_id',$params['category']);
+   $maindata->where('p.category_id',$params['category']);
   }
   if(!empty($params['color'])){
-   $maindata->where('photography_products.color',$params['color']);
+   $maindata->where('p.color',$params['color']);
   }
   
     $datacount = $maindata->count();
-   $datacoll = $maindata;
+   $datacoll = $maindata->where(['pro.status'=>4]);
        $data["recordsTotal"] = $datacount;
    $data["recordsFiltered"] = $datacount;
    $data['deferLoading'] = $datacount;
@@ -229,21 +200,10 @@ public function get_ajax_Rework_list(Request $request){
         if(count($datacollection)>0){
            foreach($datacollection as $key=>$p){
                $srno = $key + 1 + $start;
-               $action='
-                   <form action="" method="POST">
-                   '.$csrf.'
-     <input type="hidden" value="'.$p->id.'" name="product_id"/>
-     <input type="hidden" value="'.$p->category_id.'" name="category_id"/>
-           <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-           <option value="1">In Process</option>
-           <option value="3">Done</option>
-     
-       </select>
-       <button type="submit" style="height: 30px;
-   width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-   
-     </form>
-                   ';
+               $action=' <select name="status" onchange="reworktodone(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+           <option value="1/'.$p->id.'/'.$p->category_id.'">In Process</option>
+           <option value="3/'.$p->id.'/'.$p->category_id.'">Done</option>
+                            </select>';
             
                $data['data'][] = array($srno,$p->sku, $p->color,$p->name,"Rework", $action);
            }
@@ -260,6 +220,7 @@ public function get_ajax_Rework_list(Request $request){
       $url= $request->url();
       $urllink= explode('Photoshop/',$url);
       $link= $urllink[1];
+      $dep=explode("/",$link);
       $user=Auth::user();
       $jpeg=new jpegModel();
       if($request->input('status') !="1")
@@ -269,25 +230,29 @@ public function get_ajax_Rework_list(Request $request){
           $jpeg->status=$request->input('status');
           $jpeg->current_status='1';
           $jpeg->next_department_status='0';
-       
+         
+          $jpeg->created_by=$this->userid;
+          $jpeg->work_assign_by="0";
+          $jpeg->work_assign_user="0";
          //Cache table data Insert
          if($request->input('status')=='3')
          {
           $jpeg->save();
           $cache=array(
             'product_id'=>$request->input('product_id'),
-            'action_name'=>$link,
+            'action_name'=>$dep[0],
             'status'=>$request->input('status'),
-            'action_by'=>"user",
+            'action_by'=>$this->userid,
             'action_date_time'=>date('Y-m-d H:i:s')
                       );
            PhotoshopHelper::store_cache_table_data($cache);
            jpegModel::getUpdatestatusdone($request->input('product_id'));
          }
+         $message="Jpeg status Change Successfull";
         
       }
-      return redirect()->back()->with('success', 'Jpeg status Change Successfull');
-      
+        return response()->json(['success'=>$message]);
+   
    }
 
    public function submit_done_list_jpeg(Request $request)
@@ -295,29 +260,26 @@ public function get_ajax_Rework_list(Request $request){
       $url= $request->url();
       $urllink= explode('Photoshop/',$url);
       $link= $urllink[1];
+      $dep=explode("/",$link);
       if($request->input('status') !='0')
       {
      
          $cache=array(
             'product_id'=>$request->input('product_id'),
-            'action_name'=>$link,
+            'action_name'=>$dep[0],
             'status'=>$request->input('status'),
-            'action_by'=>"user",
+            'action_by'=>$this->userid,
             'action_date_time'=>date('Y-m-d H:i:s')
   
         );
         PhotoshopHelper::store_cache_table_data($cache);
         jpegModel::update_Jpeg_status($request->get('product_id'),$request->input('status'));
-     $message=array(
-      'success'=>'Jpeg Done Change Successfull',
-      'class'=>'alert alert-success',
-  );
+     $message="Jpeg Done Change Successfull";
+ 
       }
       else{
-         $message=array(
-            'success'=>'Jpeg Select Status',
-            'class'=>'alert alert-danger',
-        );
+        $message="Jpeg Done Change Successfull";
+ 
       }
       return redirect()->back()->with($message);
    }

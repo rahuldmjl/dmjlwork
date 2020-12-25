@@ -371,7 +371,7 @@ if(status !="2"){
   swal({
 		         title: 'Are you sure?',
 		         type: 'info',
-			    	 text:'To change the Status of the product',
+			    	 text:'<?php echo Config::get('constants.photoshop_message.photoshop_alert'); ?>',
 		         showCancelButton: true,
 		         confirmButtonText: 'Confirm',
 		         confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
@@ -391,7 +391,7 @@ if(status !="2"){
           success:function(response){
             swal({
                     title: 'success',
-                    text: response.success,
+                    text: '<?php echo Config::get('constants.photoshop_message.psd_change'); ?>',
                     type: 'success'
                    
                    
@@ -405,12 +405,12 @@ if(status !="2"){
 }else{
   swal({
             title: 'Oops!',
-            text: 'Sorry Status no  any Changes',
+            text: '<?php echo Config::get('constants.photoshop_message.select'); ?>',
             type: 'error',
             showCancelButton: true,
             showConfirmButton: false,
-            confirmButtonClass: 'btn btn-danger',
-            cancelButtonText: 'Ok'
+           // confirmButtonClass: 'btn btn-danger',
+            cancelButtonText: false
         });
 }
 }

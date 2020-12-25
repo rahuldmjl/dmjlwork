@@ -154,7 +154,7 @@ public function assign_product(Request $request){
 
 foreach ($pid as $value) {
  $data[]=array($value);
- $PhotoshopHelper=PhotoshopHelper::update_user_assign($uid,$value);
+ $PhotoshopHelper=PhotoshopHelper::update_user_assign($uid,$value,$this->userid);
 }
   
 return response()->json(['success'=>'User Assign Successfull']);
@@ -226,7 +226,7 @@ foreach ($pid as $value) {
  }
 
 }
-  $message="Product Assign in ".$table." Department";
+  $message="Product  Sucessfully Assign";
 return response()->json(['success'=>$message]);
 }
     /*

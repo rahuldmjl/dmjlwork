@@ -346,6 +346,18 @@ return [
 		"VB_Edit" => "Virtual Box Updated successfully.",
 		/* Virtual Box Manager - End */
 	],
+
+	//Photoshop Message
+	'photoshop_message'=>[
+		"Photography_change"=>"Photography Status Change Successfull.",
+		"psd_change"=>"Psd Status Change Successfull.",
+		"placement_change"=>"Placement Status Change Successfull.",
+		"editing_change"=>"Editing Status Change Successfull.",
+		"jpeg_change"=>"Jpeg Status Change Successfull.",
+		"select"=>"Error Status Select",
+		"photoshop_alert"=>"To Change the Status of Product",
+	],
+
 	//COSTING ENUM
 	'enum' => [
 		'costing_types' => [

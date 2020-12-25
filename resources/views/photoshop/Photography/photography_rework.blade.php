@@ -381,7 +381,16 @@ $.ajaxSetup({
     var category_id=data[2];
     
     if(status2==3){
-      $.ajax({
+      swal({
+		         title: 'Are you sure?',
+		         type: 'info',
+			    	 text:'To change the Status of the product',
+		         showCancelButton: true,
+		         confirmButtonText: 'Confirm',
+		         confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
+		        }).then(function(data){
+              if(data.value){
+                $.ajax({
           url: "<?=URL::to('Photoshop/Photography/rework');?>",
           type:"POST",
           data:{
@@ -393,7 +402,7 @@ $.ajaxSetup({
           success:function(response){
             swal({
                     title: 'success',
-                    text: response.success,
+                    text: '<?php echo Config::get('constants.photoshop_message.Photography_change'); ?>',
                     type: 'success'
                    
                    
@@ -401,6 +410,9 @@ $.ajaxSetup({
                   window.location.href = "";
           },
          });
+              }
+            });
+   
     }else{
       swal({
             title: 'Oops!',

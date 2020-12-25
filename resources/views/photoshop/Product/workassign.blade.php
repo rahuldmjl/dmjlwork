@@ -114,9 +114,11 @@
 										<select class="form-control" name="departmentfilter" id="departmentfilter">
 											<option value="">Select Department</option>
 											<option value="photographies">Photography</option>
-                                            <option value="psds">Psd</option>
-									
-                                        </select>	
+                      <option value="psds">Psd</option>
+                      <option value="placements">Editing</option>
+                      <option value="editing_models">Jpeg</option>
+                                   
+                    </select>	
 									</div>
 								</div>
 								<div class="col-md-4">

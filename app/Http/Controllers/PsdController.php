@@ -111,8 +111,8 @@ public function get_Ajax_pendingList(Request $request){
     {
       $categorylist=$this->category;
       $colorlist=$this->color;
-      $psd_done_list=$this->psd->where(['pro.status'=>3])->orderBy('pro.id','DESC')->get();
-      return view('Photoshop/PSD/psd_done',compact('psd_done_list','categorylist','colorlist'));
+      $psd_done_list=$this->psd->where(['pro.status'=>3])->limit(10)->get();
+   return view('Photoshop/PSD/psd_done',compact('psd_done_list','categorylist','colorlist'));
     }
 
     /*
@@ -260,14 +260,15 @@ public function get_Ajax_pendingList(Request $request){
           $photoshop->work_assign_user="0";
           $url= $request->url();
           $urllink= explode('Photoshop/',$url);
-          $link= $urllink[1];
+        $link= $urllink[1];
+        $dep=explode("/",$link);
          //Cache table data Insert
          if($request->input('status')=='3')
          {
           $photoshop->save();
           $cache=array(
             'product_id'=>$request->input('product_id'),
-            'action_name'=>$link,
+            'action_name'=>$dep[0],
             'status'=>$request->input('status'),
             'action_by'=> $this->userid,
             'action_date_time'=>date('Y-m-d H:i:s')
@@ -276,7 +277,7 @@ public function get_Ajax_pendingList(Request $request){
           );
            PhotoshopHelper::store_cache_table_data($cache);
            photography::getUpdatenextdepartmentdone($request->input('product_id'));
-        $message="Psd Status Change Successfull";
+          $message="Psd Status Change Successfull";
           }
         
       }
@@ -289,12 +290,13 @@ public function get_Ajax_pendingList(Request $request){
       $url= $request->url();
       $urllink= explode('Photoshop/',$url);
       $link= $urllink[1];
-        $psd=psd::find($request->input('id'));
+      $dep=explode("/",$link);
+    $psd=psd::find($request->input('id'));
        if($request->input('status') !='0')
        {
         $cache=array(
           'product_id'=>$request->input('product_id'),
-          'action_name'=>$link,
+          'action_name'=> $dep[0],
           'status'=>$request->input('status'),
           'action_by'=> $this->userid,
           'action_date_time'=>date('Y-m-d H:i:s')

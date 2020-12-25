@@ -169,8 +169,8 @@
 								  <th>Sr No</th>
   									<th>Sku</th>
 									  <th>Color</th>
-                                      <th>Category</th>
-                                      <th>Status</th>
+                     <th>Category</th>
+                     <th>Status</th>
   									<th>Action</th>
   								
   								</tr>
@@ -298,7 +298,7 @@ $.ajaxSetup({
   "ajax":{
     "url": $("#photography_done_listAjax").val(),
     "data": function(data, callback){
-      console.log(data);
+   
       showLoader();
       data._token = "{{ csrf_token() }}";
     
@@ -359,9 +359,17 @@ $.ajaxSetup({
    var status1=data[0];
    var product_id=data[1];
    var category_id=data[2];
-   
-   if(status1 !=0){
-    $.ajax({
+    if(status1 !=0){
+      swal({
+		         title: 'Are you sure?',
+		         type: 'info',
+			    	 text:'To change the Status of the product',
+		         showCancelButton: true,
+		         confirmButtonText: 'Confirm',
+		         confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
+		        }).then(function(data){
+                if(data.value){
+                  $.ajax({
           url: "<?=URL::to('Photoshop/Photography/done');?>",
           type:"POST",
           data:{
@@ -373,7 +381,7 @@ $.ajaxSetup({
           success:function(response){
             swal({
                     title: 'success',
-                    text: response.success,
+                    text: '<?php echo Config::get('constants.photoshop_message.Photography_change'); ?>',
                     type: 'success'
                    
                    
@@ -381,10 +389,13 @@ $.ajaxSetup({
                   window.location.href = "";
           },
          });
+                }
+            });
+  
    }else{
     swal({
             title: 'Oops!',
-            text: 'Select Status First',
+            text: '<?php echo Config::get('constants.photoshop_message.select'); ?>',
             type: 'error',
             showCancelButton: true,
             showConfirmButton: false,

@@ -18,12 +18,13 @@ class EditingController extends Controller
     public $editing_product;
    public $category;
    public $color;
+   public $userid;
     public function __construct()
     {
-       
+       $this->userid=1;
         $user=Auth::user();
-        $this->editing_pending_list=PhotoshopHelper::get_placement_product_detail();
-        $this->editing_product=PhotoshopHelper::get_editing_product_list();
+        $this->editing_pending_list=PhotoshopHelper::get_photoshop_product_list_user("placements",$this->userid);
+        $this->editing_product=PhotoshopHelper::get_photoshop_product_list('editing_models',$this->userid);;
         $this->category=category::all();
         $this->color=color::all();
     }
@@ -32,7 +33,7 @@ class EditingController extends Controller
     {
         $categorylist=$this->category;
         $colorlist=$this->color;
-        $pending_list=$this->editing_pending_list->where(['placements.status'=>3,'next_department_status'=>0])->get();  
+        $pending_list= $this->editing_pending_list->where(['pro.status'=>3,'pro.next_department_status'=>0])->get(); 
         return view('Photoshop/Editing/editing_pending',compact('pending_list','categorylist','colorlist'));
     }
 
@@ -45,52 +46,36 @@ class EditingController extends Controller
       $length = (!empty($params['length']) ? $params['length'] : 10);
       $stalen = $start / $length;
       $curpage = $stalen;
-      $maindata = Placement::query();
-      $maindata->join('photography_products','placements.product_id','photography_products.id');
-      $maindata->join('categories','placements.category_id','categories.entity_id');
-      $maindata->where(['placements.next_department_status'=>0]);
+      $maindata = $this->editing_pending_list;
       $where = '';
       $offset = '';
       $limit = '';
       $order = $params['order'][0]['column'];
       $order_direc = strtoupper($params['order'][0]['dir']);
       if(!empty($params['skusearch'])){
-          $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+          $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
       }
      if(!empty($params['category'])){
-      $maindata->where('photography_products.category_id',$params['category']);
+      $maindata->where('p.category_id',$params['category']);
      }
      if(!empty($params['color'])){
-      $maindata->where('photography_products.color',$params['color']);
+      $maindata->where('p.color',$params['color']);
      }
      
        $datacount = $maindata->count();
-      $datacoll = $maindata;
+      $datacoll = $maindata->where(['pro.status'=>3,'pro.next_department_status'=>0]);
           $data["recordsTotal"] = $datacount;
       $data["recordsFiltered"] = $datacount;
       $data['deferLoading'] = $datacount;
-          $csrf=csrf_field();
-        
-          $datacollection = $datacoll->take($length)->offset($start)->get();
-          
-           if(count($datacollection)>0){
+           $datacollection = $datacoll->take($length)->offset($start)->get();
+            if(count($datacollection)>0){
               foreach($datacollection as $key=>$p){
                   $srno = $key + 1 + $start;
-                  $action='
-                      <form action="" method="POST">
-                      '.$csrf.'
-        <input type="hidden" value="'.$p->id.'" name="product_id"/>
-        <input type="hidden" value="'.$p->category_id.'" name="category_id"/>
-              <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-              <option value="2">Pending</option>
-              <option value="1">In processing</option>
-              <option value="3">Done</option>
-          </select>
-          <button type="submit" style="height: 30px;
-      width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-      
-        </form>
-                      ';
+                  $action='<select name="status" onchange="pendinttodone(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+              <option value="2/'.$p->id.'/'.$p->category_id.'">Pending</option>
+              <option value="1/'.$p->id.'/'.$p->category_id.'">In processing</option>
+              <option value="3/'.$p->id.'/'.$p->category_id.'">Done</option>
+          </select>';
                
                   $data['data'][] = array($srno,$p->sku, $p->color,$p->name,"pending", $action);
               }
@@ -110,7 +95,7 @@ class EditingController extends Controller
       
         $categorylist=$this->category;
         $colorlist=$this->color;
-        $done_list=$this->editing_product->where(['editing_models.status'=>3])->get();
+        $done_list=$this->editing_product->where(['pro.status'=>3])->get();
          return view('Photoshop/Editing/editing_done',compact('done_list','categorylist','colorlist'));
 
     }
@@ -123,23 +108,20 @@ class EditingController extends Controller
       $length = (!empty($params['length']) ? $params['length'] : 10);
       $stalen = $start / $length;
       $curpage = $stalen;
-      $maindata = EditingModel::query();
-      $maindata->join('photography_products','editing_models.product_id','photography_products.id');
-      $maindata->join('categories','editing_models.category_id','categories.entity_id');
-     $maindata->where(['editing_models.next_department_status'=>0,'editing_models.status'=>3]);
+      $maindata = $this->editing_product;
       $where = '';
       $offset = '';
       $limit = '';
       $order = $params['order'][0]['column'];
       $order_direc = strtoupper($params['order'][0]['dir']);
       if(!empty($params['skusearch'])){
-          $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+          $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
       }
      if(!empty($params['category'])){
-      $maindata->where('photography_products.category_id',$params['category']);
+      $maindata->where('p.category_id',$params['category']);
      }
      if(!empty($params['color'])){
-      $maindata->where('photography_products.color',$params['color']);
+      $maindata->where('p.color',$params['color']);
      }
      
        $datacount = $maindata->count();
@@ -154,21 +136,10 @@ class EditingController extends Controller
            if(count($datacollection)>0){
               foreach($datacollection as $key=>$p){
                   $srno = $key + 1 + $start;
-                  $action='
-                      <form action="" method="POST">
-                      '.$csrf.'
-        <input type="hidden" value="'.$p->id.'" name="product_id"/>
-        <input type="hidden" value="'.$p->category_id.'" name="category_id"/>
-              <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-              <option value="0">select status</option>
-              <option value="4">Rework</option>
-            
-          </select>
-          <button type="submit" style="height: 30px;
-      width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-      
-        </form>
-                      ';
+                  $action='<select name="status" onchange="donetorework(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+              <option value="0/'.$p->product_id.'/'.$p->category_id.'">select status</option>
+              <option value="4/'.$p->product_id.'/'.$p->category_id.'">Rework</option>
+            </select> ';
                
                   $data['data'][] = array($srno,$p->sku, $p->color,$p->name,"Done", $action);
               }
@@ -184,7 +155,7 @@ class EditingController extends Controller
     {
         $categorylist=$this->category;
         $colorlist=$this->color;
-        $editing_rework_list=$this->editing_product->where(['editing_models.status'=>4])->get();
+        $editing_rework_list=$this->editing_product->where(['pro.status'=>4])->get();
        return view('Photoshop/Editing/editing_rework',compact('editing_rework_list','categorylist','colorlist'));
     }
 
@@ -196,23 +167,20 @@ class EditingController extends Controller
       $length = (!empty($params['length']) ? $params['length'] : 10);
       $stalen = $start / $length;
       $curpage = $stalen;
-      $maindata = EditingModel::query();
-      $maindata->join('photography_products','editing_models.product_id','photography_products.id');
-      $maindata->join('categories','editing_models.category_id','categories.entity_id');
-     $maindata->where(['editing_models.next_department_status'=>0,'editing_models.status'=>4]);
-      $where = '';
+      $maindata =$this->editing_product;
+       $where = '';
       $offset = '';
       $limit = '';
       $order = $params['order'][0]['column'];
       $order_direc = strtoupper($params['order'][0]['dir']);
       if(!empty($params['skusearch'])){
-          $maindata->where('photography_products.sku','LIKE', '%' . $params['skusearch']. '%');
+          $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
       }
      if(!empty($params['category'])){
-      $maindata->where('photography_products.category_id',$params['category']);
+      $maindata->where('p.category_id',$params['category']);
      }
      if(!empty($params['color'])){
-      $maindata->where('photography_products.color',$params['color']);
+      $maindata->where('p.color',$params['color']);
      }
      
        $datacount = $maindata->count();
@@ -227,21 +195,11 @@ class EditingController extends Controller
            if(count($datacollection)>0){
               foreach($datacollection as $key=>$p){
                   $srno = $key + 1 + $start;
-                  $action='
-                      <form action="" method="POST">
-                      '.$csrf.'
-        <input type="hidden" value="'.$p->id.'" name="product_id"/>
-        <input type="hidden" value="'.$p->category_id.'" name="category_id"/>
-              <select name="status" class="form-control" style="height:20px;width:150px;float: left;">
-              <option value="0">select status</option>
-              <option value="3">Done</option>
-            
-          </select>
-          <button type="submit" style="height: 30px;
-      width: 30px;"  class="btn btn-primary btn-circle"><i class="material-icons list-icon">check</i></button>
-      
-        </form>
-                      ';
+                  $action=' <select name="status" onchange="reworktodone(this.value)" class="form-control" style="height:20px;width:150px;float: left;">
+              <option value="0/'.$p->product_id.'/'.$p->category_id.'">select status</option>
+              <option value="3/'.$p->product_id.'/'.$p->category_id.'">Done</option>
+                           </select>
+          ';
                
                   $data['data'][] = array($srno,$p->sku, $p->color,$p->name,"Rework", $action);
               }
@@ -259,6 +217,7 @@ class EditingController extends Controller
         $url= $request->url();
       $urllink= explode('Photoshop/',$url);
       $link= $urllink[1];
+      $dep=explode("/",$link);
       $editing=new EditingModel();
       if($request->input('status') !="1")
       {
@@ -270,27 +229,30 @@ class EditingController extends Controller
           $editing->status=$request->input('status');
           $editing->current_status='1';
           $editing->next_department_status='0';
-       
+         
+          $editing->created_by=$this->userid;
+          $editing->work_assign_by="0";
+          $editing->work_assign_user="0";
          //Cache table data Insert
          if($request->input('status')=='3')
          {
           $editing->save();
           $cache=array(
             'product_id'=>$request->input('product_id'),
-            'action_name'=>$link,
+            'action_name'=>$dep[0],
             'status'=>$request->input('status'),
-            'action_by'=>"user",
+            'action_by'=>$this->userid,
             'action_date_time'=>date('Y-m-d H:i:s')
   
           );
            PhotoshopHelper::store_cache_table_data($cache);
            EditingModel::getUpdatestatusdone($request->input('product_id'));
+           $message="Editing status Change Successfull";
          }
-        
-      }
-        return redirect()->back()->with('success', 'Editing status Change Successfull');
-     
+         return response()->json(['success'=>$message]);
    
+      }
+        
      
       //  return redirect()->back()->with($message);
     }
@@ -300,41 +262,33 @@ class EditingController extends Controller
         $url= $request->url();
         $urllink= explode('Photoshop/',$url);
         $link= $urllink[1];
+        $dep=explode("/",$link);
      if($request->input('status')=='0')
      {
       
-        $message=array(
-            'success'=>'Editing Select Status',
-            'class'=>'alert alert-danger'
-        );
-        
+        $message="Editing Select Status";
+           
      }
      else{
 
 
         $cache=array(
             'product_id'=>$request->input('product_id'),
-            'action_name'=>$link,
+            'action_name'=>$dep[0],
             'status'=>$request->input('status'),
-            'action_by'=>"user",
+            'action_by'=>$this->userid,
             'action_date_time'=>date('Y-m-d H:i:s')
   
         );
        PhotoshopHelper::store_cache_table_data($cache);
        EditingModel::update_editing_status($request->get('product_id'),$request->input('status'));
-     
-      
-       
-        $message=array(
-            'success'=>'Editing Rework Successfull',
-            'class'=>'alert alert-success'
-        );
+       $message="Editing Rework Successfull";
        if($request->input('status')=='4')
        {
         EditingModel::getUpdatestatusrework($request->input('product_id'));
         EditingModel::delete_from_jpeg_List($request->input('product_id'));
        }
-       
+       $message="Editing Rework Successfull";
       
      }
     return redirect()->back()->with($message);   

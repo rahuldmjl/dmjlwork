@@ -282,7 +282,7 @@ $.ajaxSetup({
     /*"sProcessing": "<div class='spinner-border' style='width: 3rem; height: 3rem;'' role='status'><span class='sr-only'>Loading...</span></div>"*/
   },
   "order": [[ 0, "desc" ]],
-  "deferLoading": <?=$totalproduct?>,
+  "deferLoading": <?=$list->count()?>,
   "processing": true,
   "serverSide": true,
   "searching": false,
@@ -358,7 +358,7 @@ $.ajaxSetup({
         swal({
 		         title: 'Are you sure?',
 		         type: 'info',
-			    	 text:'To change the Status of the product',
+			    	 text:'<?php echo Config::get('constants.photoshop_message.photoshop_alert'); ?>',
 		         showCancelButton: true,
 		         confirmButtonText: 'Confirm',
 		         confirmButtonClass: 'btn-confirm-all-productexcel btn btn-info'
@@ -382,26 +382,14 @@ $.ajaxSetup({
           success:function(response){
             swal({
                     title: 'success',
-                    text: response.success,
+                    text: '<?php echo Config::get('constants.photoshop_message.Photography_change'); ?>',
                     type: 'success'
-                   
-                   
-                  });
+                   });
                   window.location.href = "";
           },
          });
               }
-              else{
-                swal({
-            title: 'Oops!',
-            text: 'Sorry Status no  any Changes',
-            type: 'error',
-            showCancelButton: true,
-            showConfirmButton: false,
-            confirmButtonClass: 'btn btn-danger',
-            cancelButtonText: 'Ok'
-        });
-              }
+              
             });
 
   }
