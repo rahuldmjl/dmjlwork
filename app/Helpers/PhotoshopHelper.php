@@ -28,10 +28,9 @@ public static function get_product_validation($id){
 
 public static function getCategory_name_by_id($id){
     $status=DB::table('categories')
-    ->select('name')
-    ->where('entity_id','=',$id)
+     ->where('entity_id','=',$id)
     ->get();
-    return $status;
+   return $status;
 }
 
 public static function store_cache_table_data($cache)
@@ -146,6 +145,13 @@ public static function getDefaultLoadIn_photography_activity(){
         ->groupBy(['pro.sku','pro.color']);
         return $data;
     
+}
+
+public static function activity_load(){
+    $data=DB::table('photoshop_caches as cache')
+        ->join('photography_products as pro','cache.product_id','pro.id')
+        ->join('categories as c','c.entity_id','pro.category_id');
+    return $data;
 }
 
 public static function getWorkAssign_List($department){

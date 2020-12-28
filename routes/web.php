@@ -811,8 +811,5 @@ Route::post('Photoshop/JPEG/rework','JpegController@submit_done_list_jpeg')->nam
 /*
 Department wise activity routing
 */
-Route::get('Photoshop/Activity/Photography','PhotoshopActivityController@photography')->name('photography.activity');
-Route::post('Photoshop/Activity/ajax_load','PhotoshopActivityController@ajax_load_photoshop')->name('ajax.photography.activity');
-Route::get('Photoshop/Activity/psd','PhotoshopActivityController@psd')->name('photography.activity');
-Route::get('Photoshop/Activity/placement','PhotoshopActivityController@placement')->name('photography.activity');
-Route::get('Photoshop/Activity/Jpeg','PhotoshopActivityController@jpeg')->name('photography.activity');
+Route::get('Photoshop/Activity/index','PhotoshopActivityController@Activityload')->name('photoshop.activity');
+Route::post('Photoshop/Activity/activity_ajax','PhotoshopActivityController@Activityload_ajax')->name('photoshop.activity.ajax');

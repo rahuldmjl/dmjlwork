@@ -16,80 +16,79 @@ class PhotoshopActivityController extends Controller
     public $defaultload;
 
     public function __construct(){
-        
-        $this->user=PhotoshopHelper::getUserList();
-        $this->category=category::all();
-        $this->color=color::all();
-       $this->defaultload=PhotoshopHelper::getDefaultLoadIn_photography_activity();
-    }
-//Photography Activiy function 
-    public function photography(){
-        
-        $user_detail=$this->user;
-        $category_list=$this->category;
-        $color_list=$this->color;
-        $dataList=$this->defaultload->get();
-        return view('Photoshop/Activity/photography',compact('user_detail','category_list','color_list','dataList'));
-   
+     $this->category=PhotoshopHelper::getCategoryList();
+     $this->color=PhotoshopHelper::getcolorList();
+     $this->user=userphotography::all();
+     $this->defaultload=PhotoshopHelper::activity_load();
+     
     }
 
-    public function ajax_load_photoshop(Request $request){
-        $data=array();
+
+
+    public function Activityload(Request $request){
         $params = $request->post();
+        $start = (!empty($params['start']) ? $params['start'] : 0);
+        $length = (!empty($params['length']) ? $params['length'] : 10);
+        $categorylist=$this->category;
+        $colorlist=$this->color;
+        $userlist=$this->user;
+        $record=$this->defaultload->take($length)->offset($start)->get();
+          $totalrecordcount=$this->defaultload->count();
+       return view('Photoshop/Activity/index',compact('categorylist','colorlist','userlist','record','totalrecordcount'));
+  
+    }
+
+    public function Activityload_ajax(Request $request){
+        $data = array();
         $params = $request->post();
-		$start = (!empty($params['start']) ? $params['start'] : 0);
-		$length = (!empty($params['length']) ? $params['length'] : 10);
-		$stalen = $start / $length;
+        $start = (!empty($params['start']) ? $params['start'] : 0);
+        $length = (!empty($params['length']) ? $params['length'] : 10);
+        $stalen = $start / $length;
         $curpage = $stalen;
         $maindata =$this->defaultload;
+        if(!empty($params['skusearch'])){
+            $maindata->where('pro.sku','LIKE', '%' . $params['skusearch']. '%');
+      
+        }
         if(!empty($params['departmentFilter'])){
-            $maindata->where('cs.action_name', $params['departmentFilter']);
-        }
-        if(!empty($params['statusFilter'])){
-            $maindata->where('p.status', $params['statusFilter']);
-        }
-        if(!empty($params['colorFilter'])){
-            $maindata->where('pro.color', $params['colorFilter']);
+            $maindata->where('cache.action_name',$params['departmentFilter']);
         }
         if(!empty($params['categoryFilter'])){
-            $maindata->where('c.name', $params['categoryFilter']);
+            $maindata->where('pro.category_id',$params['categoryFilter']);
+       
+        }
+        if(!empty($params['colorFilter'])){
+            $maindata->where('pro.color',$params['colorFilter']);
+       
+        }
+        if(!empty($params['statusFilter'])){
+            $maindata->where('cache.status',$params['statusFilter']);
+      
         }
         if(!empty($params['userfilter'])){
-            $maindata->where('u.name', $params['userfilter']);
+            $maindata->where('cache.action_by',$params['userfilter']);
+        
         }
-        $datacoll = $maindata;
-        $data["recordsTotal"] =$this->defaultload->get()->count();
-        $data["recordsFiltered"] = $this->defaultload->get()->count();
-        $data['deferLoading'] =$this->defaultload->get()->count();
-       $donecollection = $datacoll->take($length)->offset($start)->get();
-       if(count($donecollection)>0){
-        foreach($donecollection as $key => $product)
-        {  
-            $srno = $key + 1 + $start;
-            if($product->status=="3"){
-                $status="Done";
+        $datacount =$maindata->get()->count();
+
+          $datacoll = $maindata;
+             $data["recordsTotal"] = $datacount;
+	  	    $data["recordsFiltered"] = $datacount;
+            $data['deferLoading'] = $datacount;
+            $datacollection = $datacoll->take($length)->offset($start)->get();
+  
+            $i=1;
+             if(count($datacollection)>0){
+                foreach($datacollection as $key=>$p){
+                    $srno = $key + 1 + $start;
+                    $data['data'][] = array($srno,$p->sku,$p->color,$p->name,0,0,$p->action_name,$p->action_date_time);
+                }
+               
+            }else{
+                $data['data'][] = array('', '', '', '','','','','');
+          
             }
-            if($product->status=="4"){
-                $status="Rework";
-            }
-            $data['data'][] = array($product->sku,$product->color,$product->name, $product->username, $status, $product->action_name,$product->created_at);
-   
-        }
-    }else{
-        $data['data'][] = array('','','', '', '', '', '');
-    }
-   
-    
- 
-  echo json_encode($data);exit;
-    }
-    public function psd(){
-        echo "psd";
-    }
-    public function placement(){
-        echo "placement";
-    }
-    public function jpeg(){
-        echo "jpeg";
+         echo json_encode($data);
+        exit;
     }
 }
