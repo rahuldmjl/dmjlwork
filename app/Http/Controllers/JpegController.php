@@ -32,10 +32,11 @@ class JpegController extends Controller
    */
    public function get_pending_list_jpeg()
    {
-     $list=$this->jpeg_pending_list->where(['pro.status'=>3,'pro.next_department_status'=>0])->get();
+    $total=$this->jpeg_pending_list->get()->count();
+     $list=$this->jpeg_pending_list->where(['pro.status'=>3,'pro.next_department_status'=>0])->limit(10)->get();
       $categorylist=$this->category;
       $colorlist=$this->color;
-     return view('Photoshop/JPEG/jpeg_pending',compact('list','categorylist','colorlist'));
+     return view('Photoshop/JPEG/jpeg_pending',compact('total','list','categorylist','colorlist'));
    }
  /*
    Get Jpeg Ajax Pending List with Load
@@ -63,7 +64,7 @@ public function get_pending_Ajax_list(Request $request){
    $maindata->where('p.color',$params['color']);
   }
   
-    $datacount = $maindata->count();
+    $datacount = $maindata->get()->count();
    $datacoll = $maindata->where(['pro.status'=>3,'pro.next_department_status'=>0])->orderBy('pro.id','DESC');
      $data["recordsTotal"] = $datacount;
     $data["recordsFiltered"] = $datacount;

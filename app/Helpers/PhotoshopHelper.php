@@ -56,7 +56,7 @@ public static function getcolorList(){
 }
 public static function get_product_list($uid){
 if($uid=="0"){
-    $product=DB::table('photography_products as p');
+    $product=DB::table('photography_products as p')->where(['status'=>0])->groupBy(['sku','color']);
 }else{
     $product=DB::table('photography_products as p')->where(['userid'=>$uid,'status'=>0])->groupBy(['sku','color']);
   
@@ -64,6 +64,8 @@ if($uid=="0"){
   
    return $product;
 }
+
+
 public static function getUserAssign($id){
     $check=userphotography::find($id);
     if($check){
@@ -76,13 +78,14 @@ public static function getUserAssign($id){
 }
 
 public static function get_count_product($model,$status,$userid){
+    
     $ta=$model."s";
     if($status=="a"){
         $count=DB::table($ta)->where('userid','=',$userid)->groupBy(['sku','color'])->get();
     }else{
-        $count=DB::table($ta)->where("status",$status)->where('userid','=',$userid)->groupBy(['sku','color'])->get();
+        $count=DB::table($ta)->where(["status"=>$status,'userid'=>$userid])->get();
     }
-    return count($count);
+    return $count;
 }
 //Get Count For All Department and All Status
 public static function getCountAllDepartment($model,$userid,$status){
@@ -101,7 +104,6 @@ public static function update_user_assign($uid,$pid,$loginid){
 
   
 }
-
 public static function get_photoshop_product_list($table,$userid){
     $product=DB::table($table.' as pro')
     ->join('photography_products as p','p.id','pro.product_id')
@@ -112,7 +114,6 @@ public static function get_photoshop_product_list($table,$userid){
     return $product;
 }
 //psd Pending List for user assign
-
 public static function get_photoshop_product_list_user($table,$userid){
     $product=DB::table($table.' as pro')
     ->join('photography_products as p','p.id','pro.product_id')
@@ -149,8 +150,11 @@ public static function getDefaultLoadIn_photography_activity(){
 
 public static function activity_load(){
     $data=DB::table('photoshop_caches as cache')
+       
         ->join('photography_products as pro','cache.product_id','pro.id')
-        ->join('categories as c','c.entity_id','pro.category_id');
+        ->join('categories as c','c.entity_id','pro.category_id')
+        ->select('pro.sku','pro.color','pro.userid','c.name','cache.status','cache.action_name','cache.action_date_time');
+        
     return $data;
 }
 
@@ -160,13 +164,12 @@ public static function getWorkAssign_List($department){
     }else{
         $department=$department;
     }
-    
-    $data=DB::table($department .' as p')
-        ->join('photography_products as pro','p.product_id','pro.id')
+      $data=DB::table($department .' as p')
+        ->rightjoin('photography_products as pro','p.product_id','pro.id')
         ->join('categories as c','p.category_id','c.entity_id')
-        ->select('pro.sku','pro.color','c.name as categoryname','p.product_id as pid')
-        ->groupBy(['pro.sku','pro.color'])
-        ->where(['p.work_assign_user'=>0,'p.status'=>3]);
+        ->select('pro.sku','pro.color','pro.userid','c.name as categoryname','p.status','p.product_id as pid')
+        ->groupBy(['pro.sku','pro.color']);
+       
      return $data;
 }
 
@@ -177,6 +180,25 @@ public static function updateuserassign($table,$pid,$uid,$loginuser){
     }else{
         return false;
     }
+}
+
+public static function getCategoryname($id){
+   
+    $data=DB::table('categories')
+        ->select('name as catname')
+        ->where('entity_id',$id)
+        ->get();
+
+      return $data;  
+}
+public static function getuserbyname($id){
+   
+    $data=DB::table('userphotographies')
+        ->select('name as uname')
+         ->where('id',$id)
+        ->get();
+
+      return $data;  
 }
 }   
 ?>

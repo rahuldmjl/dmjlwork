@@ -111,8 +111,10 @@ public function get_Ajax_pendingList(Request $request){
     {
       $categorylist=$this->category;
       $colorlist=$this->color;
+       $done_product_count=$this->psd->get()->count();
+ 
       $psd_done_list=$this->psd->where(['pro.status'=>3])->limit(10)->get();
-   return view('Photoshop/PSD/psd_done',compact('psd_done_list','categorylist','colorlist'));
+    return view('Photoshop/PSD/psd_done',compact('psd_done_list','categorylist','colorlist','done_product_count'));
     }
 
     /*
@@ -277,9 +279,9 @@ public function get_Ajax_pendingList(Request $request){
           );
            PhotoshopHelper::store_cache_table_data($cache);
            photography::getUpdatenextdepartmentdone($request->input('product_id'));
-          $message="Psd Status Change Successfull";
+         
           }
-        
+         $message="Psd Status Change Successfull";
       }
       return response()->json(['success'=>$message]);
        

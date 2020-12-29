@@ -137,7 +137,7 @@
 									</div>
 								</div>
 								
-								<div class="col-md-3">
+								<div class="col-md-3" style="display:none" >
 									<div class="form-group">
 										<select class="form-control" name="statusFilter" id="statusFilter">
 											<option value="">Select Status</option>
@@ -300,7 +300,7 @@ $.ajaxSetup({
     /*"sProcessing": "<div class='spinner-border' style='width: 3rem; height: 3rem;'' role='status'><span class='sr-only'>Loading...</span></div>"*/
   },
   "order": [[ 0, "desc" ]],
-  "deferLoading": <?=$done_list->count()?>,
+  "deferLoading": <?=$total?>,
   "processing": true,
   "serverSide": true,
   "searching": false,

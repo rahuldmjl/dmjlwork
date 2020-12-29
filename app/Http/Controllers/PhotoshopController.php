@@ -19,6 +19,7 @@ class PhotoshopController extends Controller
     public $color;
     public $product_list;
     public $userid;
+  
     public function __construct()
     {
         $this->userid="1";
@@ -26,7 +27,6 @@ class PhotoshopController extends Controller
         $this->category=category::all();
         $this->color=color::all();
         $this->product_list=PhotoshopHelper::get_photoshop_product_list("photographies",$this->userid);
-        
     }
     public function index()
     {
@@ -41,11 +41,10 @@ class PhotoshopController extends Controller
         $category_name=$this->category;
         $color_name=$this->color;
         $list=$this->product->limit(10)->get();
-       
-         $done_product_count=PhotoshopHelper::get_count_product("photography_product","1",$this->userid);
-         $totalproduct=PhotoshopHelper::get_count_product("photography_product","0",$this->userid);
-        $remaning=$totalproduct-$done_product_count;
-       return view('Photoshop/Photography/photography_pending',compact('list','totalproduct','category_name','color_name','done_product_count','remaning'));
+          $totalproduct=PhotoshopHelper::get_count_product("photography_product","0",$this->userid)->count();
+          $done_product_count=PhotoshopHelper::get_count_product("photography_product","1",$this->userid)->count();
+          $remaning=$totalproduct-$done_product_count;
+         return view('Photoshop/Photography/photography_pending',compact('list','totalproduct','category_name','color_name','done_product_count','remaning'));
   
     }
     /*

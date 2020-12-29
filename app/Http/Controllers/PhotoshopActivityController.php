@@ -22,10 +22,7 @@ class PhotoshopActivityController extends Controller
      $this->defaultload=PhotoshopHelper::activity_load();
      
     }
-
-
-
-    public function Activityload(Request $request){
+ public function Activityload(Request $request){
         $params = $request->post();
         $start = (!empty($params['start']) ? $params['start'] : 0);
         $length = (!empty($params['length']) ? $params['length'] : 10);
@@ -33,7 +30,7 @@ class PhotoshopActivityController extends Controller
         $colorlist=$this->color;
         $userlist=$this->user;
         $record=$this->defaultload->take($length)->offset($start)->get();
-          $totalrecordcount=$this->defaultload->count();
+        $totalrecordcount=$this->defaultload->count();
        return view('Photoshop/Activity/index',compact('categorylist','colorlist','userlist','record','totalrecordcount'));
   
     }
@@ -69,19 +66,27 @@ class PhotoshopActivityController extends Controller
             $maindata->where('cache.action_by',$params['userfilter']);
         
         }
-        $datacount =$maindata->get()->count();
-
-          $datacoll = $maindata;
-             $data["recordsTotal"] = $datacount;
+            $datacount =$maindata->get()->count();
+            $datacoll = $maindata;
+            $data["recordsTotal"] = $datacount;
 	  	    $data["recordsFiltered"] = $datacount;
             $data['deferLoading'] = $datacount;
             $datacollection = $datacoll->take($length)->offset($start)->get();
   
-            $i=1;
-             if(count($datacollection)>0){
+            if(count($datacollection)>0){
                 foreach($datacollection as $key=>$p){
-                    $srno = $key + 1 + $start;
-                    $data['data'][] = array($srno,$p->sku,$p->color,$p->name,0,0,$p->action_name,$p->action_date_time);
+                    $username=collect(PhotoshopHelper::getuserbyname($p->userid));
+                    if($p->status=="3"){
+                        $status="done";
+                    }
+                    else if($p->status=="2"){
+                        $status="pending";
+                    }else if($p->status=="4"){
+                        $status="Rework";
+                    }else{
+
+                    }
+                     $data['data'][] = array($p->sku,$p->color,$p->name,$username[0]->uname,$status,$p->action_name,$p->action_date_time);
                 }
                
             }else{

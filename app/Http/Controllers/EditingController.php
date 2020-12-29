@@ -33,8 +33,9 @@ class EditingController extends Controller
     {
         $categorylist=$this->category;
         $colorlist=$this->color;
-        $pending_list= $this->editing_pending_list->where(['pro.status'=>3,'pro.next_department_status'=>0])->get(); 
-        return view('Photoshop/Editing/editing_pending',compact('pending_list','categorylist','colorlist'));
+         $totalpeoduct=$this->editing_pending_list->get()->count();
+        $pending_list= $this->editing_pending_list->where(['pro.status'=>3,'pro.next_department_status'=>0])->limit(10)->get(); 
+       return view('Photoshop/Editing/editing_pending',compact('totalpeoduct','pending_list','categorylist','colorlist'));
     }
 
     //Get Ajax Pending List
@@ -62,7 +63,7 @@ class EditingController extends Controller
       $maindata->where('p.color',$params['color']);
      }
      
-       $datacount = $maindata->count();
+       $datacount = $maindata->get()->count();
       $datacoll = $maindata->where(['pro.status'=>3,'pro.next_department_status'=>0]);
           $data["recordsTotal"] = $datacount;
       $data["recordsFiltered"] = $datacount;
@@ -95,8 +96,9 @@ class EditingController extends Controller
       
         $categorylist=$this->category;
         $colorlist=$this->color;
-        $done_list=$this->editing_product->where(['pro.status'=>3])->get();
-         return view('Photoshop/Editing/editing_done',compact('done_list','categorylist','colorlist'));
+        $total=$this->editing_product->where(['pro.status'=>3])->get()->count();
+        $done_list=$this->editing_product->where(['pro.status'=>3])->limit(10)->get();
+         return view('Photoshop/Editing/editing_done',compact('total','done_list','categorylist','colorlist'));
 
     }
 
@@ -124,7 +126,7 @@ class EditingController extends Controller
       $maindata->where('p.color',$params['color']);
      }
      
-       $datacount = $maindata->count();
+       $datacount = $maindata->get()->count();
       $datacoll = $maindata;
           $data["recordsTotal"] = $datacount;
       $data["recordsFiltered"] = $datacount;
@@ -190,7 +192,7 @@ class EditingController extends Controller
       $data['deferLoading'] = $datacount;
           $csrf=csrf_field();
         
-          $datacollection = $datacoll->take($length)->offset($start)->get();
+          $datacollection = $datacoll->where(['pro.status'=>4])->take($length)->offset($start)->get();
           
            if(count($datacollection)>0){
               foreach($datacollection as $key=>$p){

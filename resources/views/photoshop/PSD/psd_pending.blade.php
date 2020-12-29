@@ -130,7 +130,7 @@
 									</div>
 								</div>
 								
-								<div class="col-md-3">
+								<div class="col-md-3" style="display:none" >
 									<div class="form-group">
 										<select class="form-control" name="statusFilter" id="statusFilter">
 											<option value="">Select Status</option>

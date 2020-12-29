@@ -176,7 +176,7 @@
   								<tr class="bg-primary">
                                   <th  data-orderable="false" class="checkboxth"><label><input class="form-check-input" type="checkbox" name="chkAllProduct" id="chkAllProduct"><span class="label-text"></span></label></th>
                
-								  	<th>Sr No</th>
+							
   									<th>Sku</th>
 									<th>Color</th>
 									<th>Category</th>
@@ -188,7 +188,7 @@
                           @foreach($data as $d)
 		                      <tr>
                                      <td><label><input class="form-check-input chkProduct" data-id="{{$d->pid}}" value="{{$d->pid}}" type="checkbox" name="chkProduct[]" id="chkProduct{{$d->pid}}"><span class="label-text"></label></td>
-                                    <td><?=$i++;?></td>
+                                  
                                     <td>{{$d->sku}}</td>
                                     <td>{{$d->color}}</td>
                                     <td>{{$d->categoryname}}</td>
@@ -199,7 +199,7 @@
 								<tr class="bg-primary">
                                 <th></th>
                
-								    <th>Sr No</th>
+								  
 									<th>Sku</th>
 									<th>Color</th>
 									<th>Category</th>

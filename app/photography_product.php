@@ -8,7 +8,7 @@ class photography_product extends Model
 {
     public static function get_product_list()
     {
-          return photography_product::where('status','=',0) ->orderBy('id', 'DESC')->take(10)->get();
+          return photography_product::where('status','=',0)->groupby(['sku','color']) ->orderBy('id', 'DESC')->take(10)->get();
     }
     public function category()
     {
@@ -17,7 +17,7 @@ class photography_product extends Model
  
     public static function get_photography_product_count(){
 
-        return photography_product::all();
+        return photography_product::where('status','=',0)->groupby(['sku','color'])  ->orderBy('id', 'DESC')->get();
     }
     public static function productInsert($data){
     

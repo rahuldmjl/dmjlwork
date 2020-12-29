@@ -135,30 +135,42 @@ use App\Helpers\PhotoshopHelper;
   					  <table class="table table-striped table-center word-break mt-0"   id="activitydatatable">
   							<thead>
   								<tr class="bg-primary">
-                                  <th>Sr No</th>
-								   	<th>Sku</th>
-									<th>Color</th>
+                    <th>Sku</th>
+									 <th>Color</th>
 									<th>Category</th>
-  									<th>User</th>
+  								<th>User</th>
 									<th>Status</th>
 									<th>Department</th>
-                                    <th>Date</th>
+                  <th>Date</th>
   								</tr>
   							</thead>
   						<tbody>
-                        <?php $i=1;?>
+                       <?php 
+  
+                       ?>
                           @foreach($record as $data)
-                      
-				    <tr>
-                    <td><?=$i++;?>
+                        <?php 
+                       $username=collect(PhotoshopHelper::getuserbyname($data->userid));
+            
+                        ?>
+				          <tr>
+                   
                             <td>{{$data->sku}}</td>
                             <td>{{$data->color}}</td>
                             <td>{{$data->name}}</td>
-                            <td>0</td>
+                            <td><?= $username[0]->uname;?></td>
                             <td>
-							  0
-							</td>
-							<td>{{$data->action_name}}</td>
+                            @if($data->status=="3")
+                            done
+                            @endif
+                            @if($data->status=="2")
+                            pending
+                            @endif
+                            @if($data->status=="4")
+                            Rework
+                            @endif
+                           </td>
+						     	         <td>{{$data->action_name}}</td>
                             <td>{{$data->action_date_time}}</td>
                            
 	                </tr>
@@ -167,14 +179,14 @@ use App\Helpers\PhotoshopHelper;
                         </tbody>
 							  <tfoot>
 								<tr class="bg-primary">
-                                    <th>Sr No</th>
-  									<th>Sku</th>
-									<th>Color</th>
-									<th>Category</th>
+                    
+  								  <th>Sku</th>
+									  <th>Color</th>
+								  	<th>Category</th>
   									<th>User</th>
-									<th>Status</th>
-									<th>Department</th>
-                                    <th>Date</th>
+									  <th>Status</th>
+									  <th>Department</th>
+                    <th>Date</th>
 								</tr>
 							</tfoot>
 	  					</table>

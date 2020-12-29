@@ -28,7 +28,7 @@ class PhotoshopProductController extends Controller
     public function list_of_product()
     {
        $total=count($this->total_product);
-       $pending=count($this->total_product->where('status','=',0));
+       $pending=count($this->total_product->where('userid','=',0));
        $done=count($this->total_product->where('status','=',1));
        $list=$this->list_prpduct;
        $category=category::all();
@@ -46,7 +46,7 @@ public function Photography_product_ajax(Request $request){
     $length = (!empty($params['length']) ? $params['length'] : 10);
     $stalen = $start / $length;
     $curpage = $stalen;
-    $maindata = photography_product::query();
+    $maindata =photography_product::where('status',0)->groupby(['sku','color']);
     $where = '';
     $offset = '';
     $limit = '';
@@ -67,8 +67,8 @@ public function Photography_product_ajax(Request $request){
    if(!empty($params['userFilter'])){
      $maindata->where('userid',$params['userFilter']);
    }
-   $datacoll = $maindata->where('status',0);
-    $datacount = $maindata->count();
+   $datacoll = $maindata->where(['status'=>0,'userid'=>0]);
+    $datacount = $maindata->get()->count();
 	  $data["recordsTotal"] = $datacount;
 		$data["recordsFiltered"] = $datacount;
 		$data['deferLoading'] = $datacount;
@@ -164,11 +164,11 @@ return response()->json(['success'=>'User Assign Successfull']);
 }
 
 public function workassign(){
-  $dep="photographies";
-  $category=category::all();
+   $category=category::all();
   $color=color::all();
   $user=$this->user_assign;
-  $data=PhotoshopHelper::getWorkAssign_List($dep)->get();
+  $data=PhotoshopHelper::getWorkAssign_List("")->get();
+
   return view('Photoshop/Product/workassign',compact('data','category','color','user'));
   
 }
@@ -194,15 +194,15 @@ public function ajax_workassign(Request $request){
     $maindata->where('pro.color',$params['colorFilter']);
    }
   $datacoll = $maindata;
-  $data["recordsTotal"] =$datacoll->count();
-  $data["recordsFiltered"] = $datacoll->count();
-  $data['deferLoading'] = $datacoll->count();
+  $data["recordsTotal"] =$datacoll->get()->count();
+  $data["recordsFiltered"] = $datacoll->get()->count();
+  $data['deferLoading'] = $datacoll->get()->count();
   $donecollection = $datacoll->take($length)->offset($start)->get();
   if(count($donecollection)>0){
     foreach($donecollection as $key => $product)
-    {  $srno = $key + 1 + $start;
+    { 
       $check='<input class="form-check-input chkProduct" data-id="'.$product->pid.'" value="'.$product->pid.'" type="checkbox" name="chkProduct[]" id="chkProduct'.$product->pid.'"><span class="label-text"></label>';
-       $data['data'][] = array( $check,$srno,$product->sku, $product->color, $product->categoryname);
+       $data['data'][] = array( $check,$product->sku, $product->color, $product->categoryname);
     }
 
    
