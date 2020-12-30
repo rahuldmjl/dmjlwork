@@ -43,6 +43,27 @@ class PhotoshopActivityController extends Controller
         $stalen = $start / $length;
         $curpage = $stalen;
         $maindata =$this->defaultload;
+        $order = $params['order'][0]['column'];
+        $order_direc = strtoupper($params['order'][0]['dir']);
+      
+        if ($order == "1") {
+			$order_by = 'sku';
+		} elseif ($order == "2") {
+			$order_by = 'color';
+        }
+        elseif ($order == "3") {
+			$order_by = 'category_id';
+		} elseif ($order == "4") {
+			$order_by = 'action_by';
+        } elseif ($order == "5") {
+			$order_by = 'pro.status';
+        }
+         elseif ($order == "7") {
+			$order_by = 'action_date_time';
+		}
+         else {
+			$order_by = 'sku';
+		}
         if(!empty($params['skusearch'])){
             $maindata->where('pro.sku','LIKE', '%' . $params['skusearch']. '%');
       
@@ -71,7 +92,7 @@ class PhotoshopActivityController extends Controller
             $data["recordsTotal"] = $datacount;
 	  	    $data["recordsFiltered"] = $datacount;
             $data['deferLoading'] = $datacount;
-            $datacollection = $datacoll->take($length)->offset($start)->get();
+            $datacollection = $datacoll->take($length)->offset($start)->orderBy($order_by, $order_direc)->get();
   
             if(count($datacollection)>0){
                 foreach($datacollection as $key=>$p){

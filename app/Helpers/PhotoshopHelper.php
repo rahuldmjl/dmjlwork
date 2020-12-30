@@ -150,25 +150,27 @@ public static function getDefaultLoadIn_photography_activity(){
 
 public static function activity_load(){
     $data=DB::table('photoshop_caches as cache')
-       
         ->join('photography_products as pro','cache.product_id','pro.id')
         ->join('categories as c','c.entity_id','pro.category_id')
         ->select('pro.sku','pro.color','pro.userid','c.name','cache.status','cache.action_name','cache.action_date_time');
-        
+      
     return $data;
 }
 
 public static function getWorkAssign_List($department){
     if($department==""){
         $department="photographies";
+        
     }else{
         $department=$department;
     }
-      $data=DB::table($department .' as p')
-        ->rightjoin('photography_products as pro','p.product_id','pro.id')
+      $data=DB::table('photography_products as pro')
+        ->join($department .' as p','p.product_id','pro.id')
         ->join('categories as c','p.category_id','c.entity_id')
         ->select('pro.sku','pro.color','pro.userid','c.name as categoryname','p.status','p.product_id as pid')
+        ->where('p.next_department_status',0)
         ->groupBy(['pro.sku','pro.color']);
+        
        
      return $data;
 }

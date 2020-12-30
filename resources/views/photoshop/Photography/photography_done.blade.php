@@ -166,12 +166,12 @@
 	                    <table class="table table-striped table-center word-break mt-0"  id="photography_rework">
   							<thead>
   								<tr class="bg-primary">
-								  <th>Sr No</th>
+								  <th data-orderable="false">Sr No</th>
   									<th>Sku</th>
 									  <th>Color</th>
                      <th>Category</th>
-                     <th>Status</th>
-  									<th>Action</th>
+                     <th data-orderable="false">Status</th>
+  									<th data-orderable="false">Action</th>
   								
   								</tr>
   							</thead>

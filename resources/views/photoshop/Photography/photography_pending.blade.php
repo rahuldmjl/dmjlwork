@@ -162,11 +162,11 @@ use App\photography_product;
   					  <table class="table table-striped table-center word-break mt-0"   id="photographydepartment">
   							<thead>
   								<tr class="bg-primary">
-								  <th>Sr No</th>
+								  <th  data-orderable="false">Sr No</th>
   									<th>Sku</th>
 									  <th>Color</th>
 									  <th>Category</th>
-  									<th>Action</th>
+  									<th data-orderable="false">Action</th>
   								</tr>
   							</thead>
   							<tbody>
@@ -178,7 +178,7 @@ $i=1;
   $c=photography_product::get_category_by_id($item->category_id);
  ?>
 <tr>
-<td><?php echo $i++;?></td>
+<td ><?php echo $i++;?></td>
 		<td>{{$item->sku}}</td>
 	
 	<td>{{$item->color}} </td>

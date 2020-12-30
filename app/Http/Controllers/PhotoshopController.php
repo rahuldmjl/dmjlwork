@@ -65,6 +65,18 @@ pending photography pending ajax List
         $limit = '';
         $order = $params['order'][0]['column'];
         $order_direc = strtoupper($params['order'][0]['dir']);
+        if ($order == "1") {
+			$order_by = 'sku';
+		} elseif ($order == "2") {
+			$order_by = 'color';
+        }
+        elseif ($order == "3") {
+			$order_by = 'category_id';
+		} 
+         else {
+			$order_by = 'id';
+		}
+
          if(!empty($params['skusearch']))
         {
             $maindata->where('sku','LIKE', '%' . $params['skusearch']. '%');
@@ -83,7 +95,7 @@ pending photography pending ajax List
              $data["recordsTotal"] = $datacount;
 	  	    $data["recordsFiltered"] = $datacount;
             $data['deferLoading'] = $datacount;
-            $datacollection = $datacoll->take($length)->offset($start)->get();
+            $datacollection = $datacoll->take($length)->offset($start)->orderBy($order_by, $order_direc)->get();
   
             $i=1;
              if(count($datacollection)>0){
@@ -139,8 +151,18 @@ pending photography pending ajax List
         $limit = '';
         $order = $params['order'][0]['column'];
         $order_direc = strtoupper($params['order'][0]['dir']);
-               
-     if(!empty($params['skusearch'])){
+        if ($order == "1") {
+			$order_by = 'sku';
+		} elseif ($order == "2") {
+			$order_by = 'color';
+        }
+        elseif ($order == "3") {
+			$order_by = 'category_id';
+		} 
+         else {
+			$order_by = 'sku';
+		}
+       if(!empty($params['skusearch'])){
             $maindata->where('p.sku','LIKE', '%' . $params['skusearch']. '%');
         }
        if(!empty($params['category'])){
@@ -149,12 +171,13 @@ pending photography pending ajax List
        if(!empty($params['color'])){
         $maindata->where('p.color',$params['color']);
        }
-       
+            $totaldonecount1=$maindata->where(['pro.status'=>3])->get()->count();
             $datacoll = $maindata->where(['pro.status'=>3]);
-            $data["recordsTotal"] =$totaldonecount;
-            $data["recordsFiltered"] =$totaldonecount;
-            $data['deferLoading'] = $totaldonecount;
-           $donecollection = $datacoll->take($length)->offset($start)->get();
+            $data["recordsTotal"] =$totaldonecount1;
+            $data["recordsFiltered"] =$totaldonecount1;
+            $data['deferLoading'] = $totaldonecount1;
+            $donecollection = $datacoll->take($length)->offset($start)->orderBy($order_by, $order_direc)->get();
+  
        if(count($donecollection)>0){
         foreach($donecollection as $key => $product)
         {  $srno = $key + 1 + $start;
