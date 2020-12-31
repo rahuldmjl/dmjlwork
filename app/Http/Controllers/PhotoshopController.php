@@ -11,6 +11,7 @@ use DB;
 use Auth;
 use App\category;
 use App\color;
+use App\shootModel;
 class PhotoshopController extends Controller
 {
     public $product;
@@ -354,6 +355,54 @@ done to rework
         
         
     }
+//Shoot in Photography Department
 
+public function shoot(Request $request){
+  $model_name=$request->model."_shoot_status";
+ 
+$title=strtoupper($request->model);
+$data=PhotoshopHelper::get_shoot_data();
+$shoot_data=PhotoshopHelper::get_shoot_data_from_shoot_table($title);
+$done=$shoot_data->where('s.status','=',3)->get();
+$rework=$shoot_data->where('s.status','=',4)->get();
+ $pending=$data->where($model_name,'=',0)->get();
+return view('Photoshop/Photography/shoot/index',compact('title','done','pending','rework'));
   
+}
+  public function shoot_action(Request $request){
+     // $data=array(['model'=>$request->model,'status'=>$request->status]);
+     $user=Auth::user();
+       
+     $shoot=new shootModel();
+     $shoot->product_id=$request->pid;
+     $shoot->category_id=$request->category_id;
+     $shoot->status=$request->statusmode;
+    $shoot->shootModule=$request->model;
+      $shoot->created_by=$this->userid;
+ $attribute=$request->attribute;
+    $model=$request->model;
+    $ss=$model."_shoot_status";
+    $check=PhotoshopHelper::getShootData($request->pid,$model);
+       
+      if($request->status=="pending"){
+        $message="Select The Done Or Rework Status Only";
+        $status="error";
+       
+      }else{
+        if($check==0){
+            $shoot->save();
+            $sta=PhotoshopHelper::updateshoot($ss,"1",$request->pid);
+            $message=$model." Status change successfull";
+        }else{
+          $update=PhotoshopHelper:: updateshoottable($request->pid,$request->statusmode);
+          $message=$model." Status Update successfull";
+        }
+       
+        
+      
+        $status="success";
+      }
+      return response()->json(['success'=>$message,"type"=>$status]);
+   
+  }
 }

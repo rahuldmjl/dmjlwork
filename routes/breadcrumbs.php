@@ -553,6 +553,7 @@ Breadcrumbs::for ('photography.pending', function ($trail) {
 	$trail->parent('dashboard');
 	$trail->push('Photography Pending', route('photography.pending'));
 });
+
 Breadcrumbs::for ('photography.index', function ($trail) {
 	$trail->parent('dashboard');
 	$trail->push('Photography', route('photography.index'));

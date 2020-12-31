@@ -44,15 +44,32 @@ DB::setTablePrefix('dml_');
                 <ul class="nav in side-menu">
                     <li class="@if (\Request::is('/') || \Request::is('/')) current-page @endif"><a href="<?=URL::to('/Photoshop/Photography');?>" class="ripple"><span class="color-color-scheme"><i class="list-icon material-icons">network_check</i> <span class="hide-menu">Dashboard </span></span></a>
                </li>
-              
                <li class="@if (\Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*')) current-page @endif menu-item-has-children "><a href="javascript:void(0);" class="ripple"><span class="@if (\Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*')) color-color-scheme @endif"><i class="list-icon material-icons">add_a_photo</i> <span class="hide-menu">Photography</span></span></a>
                 <ul class="list-unstyled sub-menu @if ( \Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*') ) in @endif">
-                    <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('/Photoshop/Photography/pending');?>">Pending &nbsp;<span class="badge badge-border badge-border-inverted bg-primary">0</span></a>
+                <li class="menu-item-has-children"><a href="javascript:void(0)" class="ripple"><span class=""><span class="hide-menu">Photography </span></span></a>
+                        <ul class="list-unstyled sub-menu">
+                        <li class="@if(\Request::is('users*')) active @endif"><a href="<?=URL::to('/Photoshop/Photography/pending');?>">Pending &nbsp;<span class="badge badge-border badge-border-inverted bg-primary">0</span></a>
                     </li>
                     <li class="@if(\Request::is('roles*')) active @endif"><a href="<?=URL::to('/Photoshop/Photography/done');?>">Done &nbsp;<span class="badge badge-border badge-border-inverted bg-primary">0</span></a>
                     </li>
                     <li class="@if(\Request::is('permissions*')) active @endif"><a href="<?=URL::to('/Photoshop/Photography/rework');?>">Rework &nbsp;<span class="badge badge-border badge-border-inverted bg-primary">0</span></a>
                     </li>
+                        </ul>
+                    </li> 
+                   
+                </ul>
+                <ul class="list-unstyled sub-menu @if ( \Request::is('users*') || \Request::is('roles*') || \Request::is('permissions*') ) in @endif">
+                <li class="menu-item-has-children"><a href="javascript:void(0)" class="ripple"><span class=""><span class="hide-menu">Shoot </span></span></a>
+                        <ul class="list-unstyled sub-menu">
+                        <li class="@if(\Request::is('users*')) active @endif"><a href="{{ URL::route('photography.shoot',['model'=>'regular']) }}">Regular</a>
+                       </li>
+                    <li class="@if(\Request::is('roles*')) active @endif"><a href="{{ URL::route('photography.shoot',['model'=>'model']) }}">Model </a>
+                    </li>
+                    <li class="@if(\Request::is('permissions*')) active @endif"><a href="{{ URL::route('photography.shoot',['model'=>'instagram']) }}">Instagram</span></a>
+                    </li>
+                        </ul>
+                    </li> 
+                   
                 </ul>
             </li>
 

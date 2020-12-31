@@ -756,6 +756,8 @@ Route::post('Photoshop/Photography/done','PhotoshopController@submit_done_list')
 Route::get('Photoshop/Photography/rework','PhotoshopController@get_rework_list')->name('photography.rework');
 Route::post('Photoshop/Photography/rework','PhotoshopController@submit_done_list')->name('photography.rework');
 Route::post('Photoshop/Photography/rework_ajax_list','PhotoshopController@get_rework_ajax_list')->name('phohography.rework.ajax');
+Route::get('Photoshop/Photography/shoot/{model}','PhotoshopController@shoot')->name('photography.shoot');
+Route::post('Photoshop/Photography/shoot/{model}','PhotoshopController@shoot_action')->name('photography.shoot_action');
 
 
 /*

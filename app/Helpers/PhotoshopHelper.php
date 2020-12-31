@@ -12,6 +12,7 @@ use App\photography_product;
 use App\category;
 use App\color;
 use App\userphotography;
+use App\shootModel;
 class PhotoshopHelper
 {
 
@@ -201,6 +202,40 @@ public static function getuserbyname($id){
         ->get();
 
       return $data;  
+}
+
+public static function get_shoot_data(){
+
+    $data=DB::table('photography_products as p')
+          ->join('categories as c','p.category_id','c.entity_id')
+          ->select('p.id','p.sku','p.category_id','c.name','p.color')
+          ->where('p.status','=',1);
+
+    return $data;
+ }
+
+public static function get_shoot_data_from_shoot_table($model){
+    $data=DB::table('shoot_models as s')
+        ->join('photography_products as p','p.id','s.product_id')
+        ->join('categories as c','s.category_id','c.entity_id')
+        ->where(['shootModule'=>$model]);
+    return $data;      
+}
+public static function updateshoot($attrbute,$status,$productid){
+   $shoot=photography_product::where('id','=',$productid)->first();
+   $shoot->$attrbute=$status;
+   $shoot->save();
+   return true;
+}
+public static function getShootData($pid,$model){
+    $status=shootModel::where(["product_id"=>$pid,'shootModule'=>$model])->get();
+    return $status->count();
+}
+public static function updateshoottable($pid,$status){
+    $shoot=shootModel::where('product_id','=',$pid)->first();
+    $shoot->status=$status;
+    $shoot->save();
+    return true;
 }
 }   
 ?>

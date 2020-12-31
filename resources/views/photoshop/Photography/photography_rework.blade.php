@@ -176,7 +176,7 @@
 					  @endif
   					<div class="widget-body clearfix dataTable-length-top-0">
   						
-	                    <table class="table table-striped table-center word-break mt-0"   id="photographyreworktable">
+	            <table class="table table-striped table-center word-break mt-0"   id="photographyreworktable">
   							<thead>
   								<tr class="bg-primary">
 								  <th>Sr No</th>
