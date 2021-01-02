@@ -60,38 +60,30 @@
                         <div class="widget-bg bg-primary text-inverse">
                             <div class="widget-body">
                                 <div class="widget-counter">
-                                    <h6>Total Product <small class="text-inverse"></small></h6>
+                                    <h6>Photography Pending <small class="text-inverse"></small></h6>
                                     <h3 class="h1"><span class="counter">{{$totalproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
-                                <!-- /.widget-counter -->
                             </div>
-                            <!-- /.widget-body -->
-                        </div>
-                        <!-- /.widget-bg -->
-                    </div>
-                    <!-- /.widget-holder -->
-                    <!-- Counter: Subscriptions -->
+                         </div>
+                     </div>
+                  
                     <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
                         <div class="widget-bg bg-color-scheme text-inverse">
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
-                                    <h6>Rework  <small class="text-inverse"></small></h6>
-                                    <h3 class="h1"><span class="counter">{{$rework}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h6>Photography Done   <small class="text-inverse"></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$done_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
-                                <!-- /.widget-counter -->
-                            </div>
-                            <!-- /.widget-body -->
-                        </div>
-                        <!-- /.widget-bg -->
-                    </div>
-                    <!-- /.widget-holder -->
-                    <!-- Counter: Users -->
+                             </div>
+                         </div>
+                     </div>
+                    
                     <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
                         <div class="widget-bg">
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
-                                    <h6>Done <small></small></h6>
-                                    <h3 class="h1"><span class="counter">{{$doneproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h6>Photography<small></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$rework_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                                 <!-- /.widget-counter -->
                             </div>
@@ -99,11 +91,7 @@
                         </div>
                         <!-- /.widget-bg -->
                     </div>
-                    <!-- /.widget-holder -->
-                    <!-- Counter: Pageviews -->
-                    
-                    <!-- /.widget-holder -->
-                </div>
+                  </div>
          </div>
                   <div class="tab-pane active" id="profile-tab">
 						<div class="row">
@@ -179,12 +167,12 @@
 	            <table class="table table-striped table-center word-break mt-0"   id="photographyreworktable">
   							<thead>
   								<tr class="bg-primary">
-								  <th>Sr No</th>
+								  <th data-orderable="false">Sr No</th>
   									<th>Sku</th>
 									  <th>Color</th>
                     <th>Category</th>
-                    <th>Status</th>
-  									<th>Action</th>
+                    <th data-orderable="false">Status</th>
+  									<th data-orderable="false">Action</th>
   								
   								</tr>
   							</thead>

@@ -156,8 +156,7 @@ foreach ($pid as $value) {
  $data[]=array($value);
  $PhotoshopHelper=PhotoshopHelper::update_user_assign($uid,$value,$this->userid);
 }
-  
-return response()->json(['success'=>'User Assign Successfull']);
+ return response()->json(['success'=>config('constants.message.user_assign')]);
  
   
 
@@ -167,8 +166,7 @@ public function workassign(){
    $category=category::all();
   $color=color::all();
   $user=$this->user_assign;
-  $data=PhotoshopHelper::getWorkAssign_List("")->get();
-
+  $data=PhotoshopHelper::getWorkAssign_List("")->where('p.next_department_status',0)->get();
   return view('Photoshop/Product/workassign',compact('data','category','color','user'));
   
 }
@@ -202,7 +200,7 @@ public function ajax_workassign(Request $request){
     foreach($donecollection as $key => $product)
     { 
       $check='<input class="form-check-input chkProduct" data-id="'.$product->pid.'" value="'.$product->pid.'" type="checkbox" name="chkProduct[]" id="chkProduct'.$product->pid.'"><span class="label-text"></label>';
-       $data['data'][] = array( $check,$product->sku, $product->color, $product->categoryname);
+       $data['data'][] = array( $check,$product->sku, $product->color, $product->categoryname,$product->username,$product->created_by);
     }
 
    
@@ -226,7 +224,7 @@ foreach ($pid as $value) {
  }
 
 }
-  $message="Product  Sucessfully Assign";
+  $message=config('constants.message.product_assign');
 return response()->json(['success'=>$message]);
 }
     /*

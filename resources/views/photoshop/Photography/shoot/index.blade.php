@@ -1,11 +1,8 @@
-<?php 
-use App\photography_product;
 
-?>
 @extends('layout.photo_navi')
 
 
-@section('title', 'Shoot')
+@section('title', 'Shoot Module')
 
 @section('distinct_head')
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -32,6 +29,48 @@ use App\photography_product;
     </div>
   </div>
   <div class="widget-list">
+  <div class="row">
+                    <!-- Counter: Sales -->
+                    <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                        <div class="widget-bg bg-primary text-inverse">
+                            <div class="widget-body">
+                                <div class="widget-counter">
+                                    <h6>Pending in {{$title}}<small class="text-inverse"></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$pending->count()}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                </div>
+                            </div>
+                         </div>
+                     </div>
+                  
+                    <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                        <div class="widget-bg bg-color-scheme text-inverse">
+                            <div class="widget-body clearfix">
+                                <div class="widget-counter">
+                                    <h6>Done in {{$title}} <small class="text-inverse"></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$done->count()}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                </div>
+                             </div>
+                         </div>
+                     </div>
+                    
+                    <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
+                        <div class="widget-bg">
+                            <div class="widget-body clearfix">
+                                <div class="widget-counter">
+                                    <h6>Rework in {{$title}}<small></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$rework->count()}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                </div>
+                                <!-- /.widget-counter -->
+                            </div>
+                            <!-- /.widget-body -->
+                        </div>
+                        <!-- /.widget-bg -->
+                    </div>
+                    <!-- /.widget-holder -->
+                    <!-- Counter: Pageviews -->
+                    
+                    <!-- /.widget-holder -->
+                </div>
                 <div class="row">
                     <!-- Default Tabs -->
                     <div class="col-md-12 widget-holder">
@@ -132,6 +171,7 @@ use App\photography_product;
   								</tr>
   							</thead>
   							<tbody>
+             
                               @foreach($done as $done)
 						
                               <tr>
@@ -142,13 +182,14 @@ use App\photography_product;
 							   <td>
                                <select class="form-control" style="height:20px;width:220px;" onchange="action(this.value)">
                                         <option value="">Select Status</option>
-                                        <option value="rework/{{$pending->id}}/{{$pending->category_id}}/4">Rework</option>
+                                        <option value="rework/{{$done->product_id}}/{{$done->category_id}}/4">Rework</option>
                                     </select>
 								  </td>
 						   
 						     </tr>
 					   
-								@endforeach						   
+								@endforeach		
+                		   
 					
 							  </tbody>
 							  <tfoot>
@@ -191,14 +232,14 @@ use App\photography_product;
             <tbody>
             @foreach($rework as $r)
            <tr>
-             <td>0</td>
-             <td>0</td>
-             <td>0</td>
+             <td>{{$r->sku}}</td>
+             <td>{{$r->color}}</td>
+             <td>{{$r->name}}</td>
           
              <td>
-                     <select name="status" id="status" onchange="reworktodone(this.value)" class="form-control" style="height:20px;width:220px;">
+                     <select name="status" id="status" onchange="action(this.value)" class="form-control" style="height:20px;width:220px;">
                          <option value="">select status</option>
-                         <option value="">Done</option>
+                         <option value="done/{{$r->product_id}}/{{$r->category_id}}/3">Done</option>
                      </select>
                 </td>
          
@@ -276,7 +317,7 @@ function action(data){
             swal({
                     title: response.type,
                     text: response.success,
-                    type: response.type,
+                    type: "success",
                     buttonClass: 'btn btn-primary'
                    
                   });

@@ -261,7 +261,7 @@ Get Rework Ajax List
             );
              PhotoshopHelper::store_cache_table_data($cache);
              placement::getUpdatestatusdone($request->input('product_id'));
-             $message="Placement Status  Change Successfull";
+             $message=config('constants.message.status');;
            }
            return response()->json(['success'=>$message]); 
            
@@ -299,7 +299,7 @@ Get Rework Ajax List
     
       
     }
-    $message="Placement Status  Change Successfull";
+    $message=config('constants.message.status');;
          
         }
         return response()->json(['success'=>$message]);     

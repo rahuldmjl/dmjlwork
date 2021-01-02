@@ -88,6 +88,13 @@ public static function get_count_product($model,$status,$userid){
     }
     return $count;
 }
+public static function get_count_product1($tablename,$status,$userid){
+    
+   
+        $count=DB::table($tablename)->where(["status"=>$status,'created_by'=>$userid])->get();
+   
+    return $count;
+}
 //Get Count For All Department and All Status
 public static function getCountAllDepartment($model,$userid,$status){
     $totalrecord=DB::table($model .' as m')
@@ -155,7 +162,7 @@ public static function activity_load(){
         ->join('categories as c','c.entity_id','pro.category_id')
         ->select('pro.sku','pro.color','pro.userid','c.name','cache.status','cache.action_name','cache.action_date_time');
       
-    return $data;
+      return $data;
 }
 
 public static function getWorkAssign_List($department){
@@ -168,12 +175,12 @@ public static function getWorkAssign_List($department){
       $data=DB::table('photography_products as pro')
         ->join($department .' as p','p.product_id','pro.id')
         ->join('categories as c','p.category_id','c.entity_id')
-        ->select('pro.sku','pro.color','pro.userid','c.name as categoryname','p.status','p.product_id as pid')
+        ->join('userphotographies as u','p.work_assign_user','u.id')
+        ->join('userphotographies as u1','p.created_by','u1.id')
+        ->select('u.name as username','u1.name as created_by','pro.sku','pro.color','pro.userid','c.name as categoryname','p.status','p.product_id as pid')
         ->where('p.next_department_status',0)
         ->groupBy(['pro.sku','pro.color']);
-        
-       
-     return $data;
+       return $data;
 }
 
 public static function updateuserassign($table,$pid,$uid,$loginuser){
@@ -231,11 +238,13 @@ public static function getShootData($pid,$model){
     $status=shootModel::where(["product_id"=>$pid,'shootModule'=>$model])->get();
     return $status->count();
 }
-public static function updateshoottable($pid,$status){
-    $shoot=shootModel::where('product_id','=',$pid)->first();
+public static function updateshoottable($pid,$status,$smode){
+    $shoot=shootModel::where(['product_id'=>$pid,'shootModule'=>$smode])->first();
     $shoot->status=$status;
     $shoot->save();
     return true;
 }
+
+
 }   
 ?>

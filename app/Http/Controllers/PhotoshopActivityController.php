@@ -31,6 +31,7 @@ class PhotoshopActivityController extends Controller
         $userlist=$this->user;
         $record=$this->defaultload->take($length)->offset($start)->get();
         $totalrecordcount=$this->defaultload->count();
+        
        return view('Photoshop/Activity/index',compact('categorylist','colorlist','userlist','record','totalrecordcount'));
   
     }
@@ -56,7 +57,7 @@ class PhotoshopActivityController extends Controller
 		} elseif ($order == "4") {
 			$order_by = 'action_by';
         } elseif ($order == "5") {
-			$order_by = 'pro.status';
+			$order_by = 'status';
         }
          elseif ($order == "7") {
 			$order_by = 'action_date_time';

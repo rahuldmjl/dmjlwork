@@ -133,25 +133,8 @@ use App\Helpers\PhotoshopHelper;
 									</div>
 								</div>
 								
-								<div class="col-md-3">
-									<div class="form-group">
-										<select class="form-control" name="statusFilter" id="statusFilter">
-											<option value="">Select Status</option>
-											<option value="0">Pending</option>
-											<option value="1">Done</option>
-										</select>	
-									</div>
-								</div>
-                <div class="col-md-3">
-									<div class="form-group">
-										<select class="form-control" name="userFilter" id="userFilter">
-											<option value="">Select User</option>
-                      @foreach($user_assign as $user_assign_list)
-											<option value="{{$user_assign_list->id}}">{{$user_assign_list->name}}</option>
-										@endforeach
-										</select>	
-									</div>
-								</div>
+								
+              
 								<div class="col-md-3">
 									<div class="form-group">
 										<input class="form-control" name="sku" id="sku" style="height: 43px;" placeholder="Sku Search" type="text">
@@ -364,10 +347,7 @@ use App\Helpers\PhotoshopHelper;
         data.skusearch = skusearch;
     
       }
-      var userFilter = $('#userFilter').children("option:selected").val();
-     if(userFilter != ''){
-       data.userFilter=userFilter;
-     }
+    
       var category = $('#categoryFilter').children("option:selected").val();
      if(category != ''){
        data.category=category;
@@ -377,10 +357,7 @@ use App\Helpers\PhotoshopHelper;
        data.color=color;
      }
     
-     var status = $('#statusFilter').children("option:selected").val();
-     if(status != ''){
-       data.status=status;
-     }
+     
 
     },
     complete: function(response){

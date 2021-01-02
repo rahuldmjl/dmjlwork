@@ -281,7 +281,7 @@ public function get_Ajax_pendingList(Request $request){
            photography::getUpdatenextdepartmentdone($request->input('product_id'));
          
           }
-         $message="Psd Status Change Successfull";
+         $message=config('constants.message.status');
       }
       return response()->json(['success'=>$message]);
        
@@ -306,13 +306,13 @@ public function get_Ajax_pendingList(Request $request){
       );
       PhotoshopHelper::store_cache_table_data($cache);
       psd::update_psd_status($request->get('product_id'),$request->input('status'));
-      $message='Psd status Change Successfull';
+      $message=config('constants.message.psd_done');
     }
     if($request->input('status')=='4')
     {
        psd::delete_from_below_department($request->get('product_id'));
        psd::getUpdatestatus_psd($request->input('product_id'));
-       $message='Psd status Change Successfull';
+       $message=config('constants.message.psd_done');
     }
       
       return response()->json(['success'=>$message]);

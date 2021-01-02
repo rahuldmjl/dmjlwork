@@ -63,8 +63,8 @@ use App\photography_product;
                         <div class="widget-bg bg-primary text-inverse">
                             <div class="widget-body">
                                 <div class="widget-counter">
-                                    <h6>Total Product <small class="text-inverse"></small></h6>
-                                    <h3 class="h1"><span class="counter">{{$remaning-$done_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h6>Photography Pending <small class="text-inverse"></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$totalproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                             </div>
                          </div>
@@ -74,7 +74,7 @@ use App\photography_product;
                         <div class="widget-bg bg-color-scheme text-inverse">
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
-                                    <h6>Done  <small class="text-inverse"></small></h6>
+                                    <h6>Photography Done   <small class="text-inverse"></small></h6>
                                     <h3 class="h1"><span class="counter">{{$done_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                              </div>
@@ -85,8 +85,8 @@ use App\photography_product;
                         <div class="widget-bg">
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
-                                    <h6>Unique Sku Pending <small></small></h6>
-                                    <h3 class="h1"><span class="counter">{{$totalproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h6>Photography<small></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$rework_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                                 <!-- /.widget-counter -->
                             </div>
@@ -94,11 +94,7 @@ use App\photography_product;
                         </div>
                         <!-- /.widget-bg -->
                     </div>
-                    <!-- /.widget-holder -->
-                    <!-- Counter: Pageviews -->
-                    
-                    <!-- /.widget-holder -->
-                </div>
+                  </div>
          </div>
                   <div class="tab-pane active" id="profile-tab">
 						<div class="row">

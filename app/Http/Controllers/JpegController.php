@@ -275,11 +275,11 @@ public function get_ajax_Rework_list(Request $request){
         );
         PhotoshopHelper::store_cache_table_data($cache);
         jpegModel::update_Jpeg_status($request->get('product_id'),$request->input('status'));
-     $message="Jpeg Done Change Successfull";
+     $message=config('constants.message.status');;
  
       }
       else{
-        $message="Jpeg Done Change Successfull";
+        $message=config('constants.message.status');;
  
       }
       return redirect()->back()->with($message);

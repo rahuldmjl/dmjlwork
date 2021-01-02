@@ -249,7 +249,7 @@ class EditingController extends Controller
           );
            PhotoshopHelper::store_cache_table_data($cache);
            EditingModel::getUpdatestatusdone($request->input('product_id'));
-           $message="Editing status Change Successfull";
+           $message=config('constants.message.status');;
          }
          return response()->json(['success'=>$message]);
    
@@ -268,7 +268,7 @@ class EditingController extends Controller
      if($request->input('status')=='0')
      {
       
-        $message="Editing Select Status";
+        $message=config('constants.message.error');;
            
      }
      else{
@@ -284,13 +284,13 @@ class EditingController extends Controller
         );
        PhotoshopHelper::store_cache_table_data($cache);
        EditingModel::update_editing_status($request->get('product_id'),$request->input('status'));
-       $message="Editing Rework Successfull";
+       $message=config('constants.message.status');;
        if($request->input('status')=='4')
        {
         EditingModel::getUpdatestatusrework($request->input('product_id'));
         EditingModel::delete_from_jpeg_List($request->input('product_id'));
        }
-       $message="Editing Rework Successfull";
+       $message=config('constants.message.status');;
       
      }
     return redirect()->back()->with($message);   

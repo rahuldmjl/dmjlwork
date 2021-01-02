@@ -88,9 +88,11 @@ use App\Helpers\PhotoshopHelper;
 										<option value="Photography">Photography</option>
 											<option value="psd">PSD</option>
 											<option value="Placement">Placement</option>
-                                            <option value="Editing">Editing</option>
+                      <option value="Editing">Editing</option>
 											<option value="JPEG">Jpeg</option>
-										
+                      <option value="REGULAR">Regular</option>
+                      <option value="MODEL">Model</option>
+                      <option value="INSTAGRAM">Instagram</option>
 										</select>	
 									</div>
 								</div>

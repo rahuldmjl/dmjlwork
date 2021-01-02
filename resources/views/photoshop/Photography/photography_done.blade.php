@@ -52,44 +52,36 @@
                                     <!-- /.nav-tabs -->
                                     <div class="tab-content">
                                         <div class="tab-pane " id="home-tab">
-										<div class="row">
+                                        <div class="row">
                     <!-- Counter: Sales -->
                     <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
                         <div class="widget-bg bg-primary text-inverse">
                             <div class="widget-body">
                                 <div class="widget-counter">
-                                    <h6>Total Product <small class="text-inverse"></small></h6>
+                                    <h6>Photography Pending <small class="text-inverse"></small></h6>
                                     <h3 class="h1"><span class="counter">{{$totalproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
-                                <!-- /.widget-counter -->
                             </div>
-                            <!-- /.widget-body -->
-                        </div>
-                        <!-- /.widget-bg -->
-                    </div>
-                    <!-- /.widget-holder -->
-                    <!-- Counter: Subscriptions -->
+                         </div>
+                     </div>
+                  
                     <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
                         <div class="widget-bg bg-color-scheme text-inverse">
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
-                                    <h6>Done  <small class="text-inverse"></small></h6>
-                                    <h3 class="h1"><span class="counter">{{$doneproduct}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h6>Photography Done   <small class="text-inverse"></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$done_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
-                                <!-- /.widget-counter -->
-                            </div>
-                            <!-- /.widget-body -->
-                        </div>
-                        <!-- /.widget-bg -->
-                    </div>
-                    <!-- /.widget-holder -->
-                    <!-- Counter: Users -->
+                             </div>
+                         </div>
+                     </div>
+                    
                     <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
                         <div class="widget-bg">
                             <div class="widget-body clearfix">
                                 <div class="widget-counter">
-                                    <h6>Pending <small></small></h6>
-                                    <h3 class="h1"><span class="counter">0</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
+                                    <h6>Photography<small></small></h6>
+                                    <h3 class="h1"><span class="counter">{{$rework_product_count}}</span></h3><i class="material-icons list-icon">add_shopping_cart</i>
                                 </div>
                                 <!-- /.widget-counter -->
                             </div>
@@ -97,11 +89,7 @@
                         </div>
                         <!-- /.widget-bg -->
                     </div>
-                    <!-- /.widget-holder -->
-                    <!-- Counter: Pageviews -->
-                    
-                    <!-- /.widget-holder -->
-                </div>
+                  </div>
          </div>
                   <div class="tab-pane active" id="profile-tab">
 						<div class="row">
@@ -290,7 +278,7 @@ $.ajaxSetup({
     /*"sProcessing": "<div class='spinner-border' style='width: 3rem; height: 3rem;'' role='status'><span class='sr-only'>Loading...</span></div>"*/
   },
   "order": [[ 0, "desc" ]],
-  "deferLoading": <?=$doneproduct?>,
+  "deferLoading": <?=$done_product_count?>,
   "processing": true,
   "serverSide": true,
   "searching": false,
@@ -301,7 +289,7 @@ $.ajaxSetup({
    
       showLoader();
       data._token = "{{ csrf_token() }}";
-    
+      console.log(data);
       var skusearch = $('#sku').val();
       if(skusearch != ''){
         data.skusearch = skusearch;

@@ -345,6 +345,21 @@ return [
 		"Product_Cat_Not_Match" => "Certificate No. Not Match On This Category",
 		"VB_Edit" => "Virtual Box Updated successfully.",
 		/* Virtual Box Manager - End */
+
+		/* Photoshop Department */
+		"photoshop_done"=>"Photography Done successfully",
+		"photoshop_rework"=>"Photography Rework successfully",
+		"done"=>" Done successfully",
+		"rework"=>"Rework successfully",
+		"status"=>"Status Changed Successfully",
+		"psd_done"=>"Psd Done successfully",
+		"psd_rework"=>"Psd Rework successfully",
+		"error"=>"Select Status",
+		"user_assign"=>"User Assign Successfully",
+		"product_assign"=>"Product Assign SUccessfully",
+
+	
+		
 	],
 
 	//Photoshop Message
@@ -357,6 +372,7 @@ return [
 		"select"=>"Error Status Select",
 		"photoshop_alert"=>"To Change the Status of Product",
 	],
+//Photography Status Count Array
 
 	//COSTING ENUM
 	'enum' => [

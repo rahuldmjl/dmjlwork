@@ -49,11 +49,59 @@
                                         </li>
                                         <li class="nav-item active"><a class="nav-link" href="#profile-tab" data-toggle="tab" aria-expanded="true">Filter</a>
                                         </li>
-                                      
+                                        <li class="nav-item"><a class="nav-link" href="#inprogress-tab" data-toggle="tab" aria-expanded="true">In Progress</a>
+                                        </li>
                                     </ul>
                                     <!-- /.nav-tabs -->
                                     <div class="tab-content">
-                                        <div class="tab-pane " id="home-tab">
+                    <div class="tab-pane " id="inprogress-tab">
+									      	<div class="row">
+                          <div class="widget-body clearfix dataTable-length-top-0">
+  						
+              <table class="table table-striped table-center word-break mt-0" id="inprogress">
+               <thead>
+                 <tr class="bg-primary">
+               
+             
+                   <th>Sku</th>
+                 <th>Color</th>
+                 <th>Category</th>
+               <th>Assign To </th>
+               <th>Done by</th>
+               </tr>
+               </thead>
+             <tbody>
+                     
+                       
+                         @foreach($data as $d)
+                         <tr>
+                                  
+                                   <td>{{$d->sku}}</td>
+                                   <td>{{$d->color}}</td>
+                                   <td>{{$d->categoryname}}</td>
+                                   <td>{{$d->username}}</td>
+                                   <td>{{$d->created_by}}</td>
+                            </tr>
+           @endforeach
+                  </tbody>
+             <tfoot>
+               <tr class="bg-primary">
+              
+              
+                 
+                 <th>Sku</th>
+                 <th>Color</th>
+                 <th>Category</th>
+                 <th>Username</th>
+                 <th>Done by</th>
+               </tr>
+             </tfoot>
+             </table>
+           </div>
+                    
+                   </div>
+                   </div>
+          <div class="tab-pane " id="home-tab">
 										<div class="row">
                     <!-- Counter: Sales -->
                     <div class="col-md-4 col-sm-6 widget-holder widget-full-height">
@@ -91,14 +139,10 @@
                         </div>
                         <!-- /.widget-bg -->
                     </div>
-                    <!-- /.widget-holder -->
-                    <!-- Counter: Pageviews -->
-                    
-                    <!-- /.widget-holder -->
-                </div>
+                   </div>
          </div>
-                  <div class="tab-pane active" id="profile-tab">
-						<div class="row">
+    <div class="tab-pane active" id="profile-tab">
+		<div class="row">
 			<div class="col-md-12 widget-holder content-area">
 				<div class="widget-bg">
 					<div class="widget-heading clearfix">
@@ -171,15 +215,17 @@
                    	</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
   						
-	                    <table class="table table-striped table-center word-break mt-0"  id="workassigndatatable">
+	             <table class="table table-striped table-center word-break mt-0"  id="workassigndatatable">
   							<thead>
   								<tr class="bg-primary">
-                                  <th  data-orderable="false" class="checkboxth"><label><input class="form-check-input" type="checkbox" name="chkAllProduct" id="chkAllProduct"><span class="label-text"></span></label></th>
+                    <th  data-orderable="false" class="checkboxth"><label><input class="form-check-input" type="checkbox" name="chkAllProduct" id="chkAllProduct"><span class="label-text"></span></label></th>
                
 							
   									<th>Sku</th>
 									<th>Color</th>
 									<th>Category</th>
+                <th>Assign To </th>
+                <th>Done by</th>
 								</tr>
   							</thead>
   						<tbody>
@@ -192,6 +238,8 @@
                                     <td>{{$d->sku}}</td>
                                     <td>{{$d->color}}</td>
                                     <td>{{$d->categoryname}}</td>
+                                    <td>{{$d->username}}</td>
+                                    <td>{{$d->created_by}}</td>
                              </tr>
 						@endforeach
 			             </tbody>
@@ -203,6 +251,8 @@
 									<th>Sku</th>
 									<th>Color</th>
 									<th>Category</th>
+                  <th>Username</th>
+                  <th>Done by</th>
 								</tr>
 							</tfoot>
 	  					</table>
@@ -232,6 +282,9 @@
 <script src="<?=URL::to('/');?>/js/jquery.validate.min.js"></script>
 <script src="<?=URL::to('/');?>/js/additional-methods.min.js"></script>
 <script>
+$(document).ready(function() {
+    $('#inprogress').DataTable();
+} );
 	var buttonCommon = {
         exportOptions: {
             format: {
@@ -244,6 +297,7 @@
             }
         }
     };
+
 	var table = $('#workassigndatatable').DataTable({
         "dom": "<'row mb-2 align-items-center'<'col-auto dataTable-length-tb-0'l><'col'B>><'row'<'col-md-12' <'user-roles-main' t>>><'row'<'col-md-3'i><'col-md-6 ml-auto'p>>",
   "lengthMenu": [[10, 50, 100, 200,500], [10, 50, 100, 200,500]],
@@ -394,6 +448,8 @@ $('#assignuser').click(function(){
                   }); 
         }
   }
+ 
 });
+
 </script>
 @endsection
