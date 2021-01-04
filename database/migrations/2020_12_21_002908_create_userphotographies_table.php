@@ -16,6 +16,8 @@ class CreateUserphotographiesTable extends Migration
         Schema::create('userphotographies', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->String('name');
+            $table->String('type');
+            $table->String('department');
             $table->timestamps();
         });
     }

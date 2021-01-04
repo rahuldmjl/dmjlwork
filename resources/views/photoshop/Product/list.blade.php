@@ -180,7 +180,7 @@ use App\Helpers\PhotoshopHelper;
   					</div>
   					<div class="widget-body clearfix dataTable-length-top-0">
   						
-	                    <table class="table table-striped table-center word-break mt-0 checkbox checkbox-primary"   id="photographytable" >
+	            <table class="table table-striped table-center word-break mt-0 checkbox checkbox-primary"   id="photographytable" >
   							<thead>
   								<tr class="bg-primary">
                   <th  data-orderable="false" class="checkboxth"><label><input class="form-check-input" type="checkbox" name="chkAllProduct" id="chkAllProduct"><span class="label-text"></span></label></th>
@@ -231,7 +231,7 @@ use App\Helpers\PhotoshopHelper;
 								</tr>
 							</tfoot>
 	  					</table>
-  					</div>
+  			</div>
   				</div>
   			</div>
   		</div>

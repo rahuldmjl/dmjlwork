@@ -1,7 +1,9 @@
 
 @extends('layout.photo_navi')
 
-
+<?php
+use App\Helpers\PhotoshopHelper;
+?>
 @section('title', 'Work Assignment')
 
 @section('distinct_head')
@@ -49,58 +51,11 @@
                                         </li>
                                         <li class="nav-item active"><a class="nav-link" href="#profile-tab" data-toggle="tab" aria-expanded="true">Filter</a>
                                         </li>
-                                        <li class="nav-item"><a class="nav-link" href="#inprogress-tab" data-toggle="tab" aria-expanded="true">In Progress</a>
-                                        </li>
+                                       
                                     </ul>
                                     <!-- /.nav-tabs -->
                                     <div class="tab-content">
-                    <div class="tab-pane " id="inprogress-tab">
-									      	<div class="row">
-                          <div class="widget-body clearfix dataTable-length-top-0">
-  						
-              <table class="table table-striped table-center word-break mt-0" id="inprogress">
-               <thead>
-                 <tr class="bg-primary">
-               
-             
-                   <th>Sku</th>
-                 <th>Color</th>
-                 <th>Category</th>
-               <th>Assign To </th>
-               <th>Done by</th>
-               </tr>
-               </thead>
-             <tbody>
-                     
-                       
-                         @foreach($data as $d)
-                         <tr>
-                                  
-                                   <td>{{$d->sku}}</td>
-                                   <td>{{$d->color}}</td>
-                                   <td>{{$d->categoryname}}</td>
-                                   <td>{{$d->username}}</td>
-                                   <td>{{$d->created_by}}</td>
-                            </tr>
-           @endforeach
-                  </tbody>
-             <tfoot>
-               <tr class="bg-primary">
-              
-              
-                 
-                 <th>Sku</th>
-                 <th>Color</th>
-                 <th>Category</th>
-                 <th>Username</th>
-                 <th>Done by</th>
-               </tr>
-             </tfoot>
-             </table>
-           </div>
-                    
-                   </div>
-                   </div>
+                   
           <div class="tab-pane " id="home-tab">
 										<div class="row">
                     <!-- Counter: Sales -->
@@ -224,7 +179,7 @@
   									<th>Sku</th>
 									<th>Color</th>
 									<th>Category</th>
-                <th>Assign To </th>
+               
                 <th>Done by</th>
 								</tr>
   							</thead>
@@ -238,7 +193,7 @@
                                     <td>{{$d->sku}}</td>
                                     <td>{{$d->color}}</td>
                                     <td>{{$d->categoryname}}</td>
-                                    <td>{{$d->username}}</td>
+                                   
                                     <td>{{$d->created_by}}</td>
                              </tr>
 						@endforeach
@@ -251,7 +206,7 @@
 									<th>Sku</th>
 									<th>Color</th>
 									<th>Category</th>
-                  <th>Username</th>
+                  
                   <th>Done by</th>
 								</tr>
 							</tfoot>

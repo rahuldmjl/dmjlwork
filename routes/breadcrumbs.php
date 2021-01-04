@@ -567,6 +567,10 @@ Breadcrumbs::for ('photography.rework', function ($trail) {
 	$trail->push('Photography Rework', route('photography.rework'));
 });
 
+Breadcrumbs::for ('admin_detail', function ($trail) {
+	$trail->parent('dashboard');
+	$trail->push('Product Detail', route('admin.product'));
+});
 //PSD
 Breadcrumbs::for ('psd.index', function ($trail) {
 	$trail->parent('dashboard');

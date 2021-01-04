@@ -429,4 +429,11 @@ return view('Photoshop/Photography/shoot/index',compact('title','done','pending'
    
      
   }
+
+  public function admin_module($id){
+      $department=$id;
+      return view('Photoshop/admin/index',compact('department'));
+  
+
+  }
 }

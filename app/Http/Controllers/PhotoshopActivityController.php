@@ -14,12 +14,14 @@ class PhotoshopActivityController extends Controller
     public $category;
     public $color;
     public $defaultload;
+    public $userid;
 
     public function __construct(){
      $this->category=PhotoshopHelper::getCategoryList();
      $this->color=PhotoshopHelper::getcolorList();
      $this->user=userphotography::all();
      $this->defaultload=PhotoshopHelper::activity_load();
+     $this->userid=2;
      
     }
  public function Activityload(Request $request){
@@ -32,7 +34,7 @@ class PhotoshopActivityController extends Controller
         $record=$this->defaultload->take($length)->offset($start)->get();
         $totalrecordcount=$this->defaultload->count();
         
-       return view('Photoshop/Activity/index',compact('categorylist','colorlist','userlist','record','totalrecordcount'));
+      return view('Photoshop/Activity/index',compact('categorylist','colorlist','userlist','record','totalrecordcount'));
   
     }
 
@@ -97,7 +99,7 @@ class PhotoshopActivityController extends Controller
   
             if(count($datacollection)>0){
                 foreach($datacollection as $key=>$p){
-                    $username=collect(PhotoshopHelper::getuserbyname($p->userid));
+                    $username=PhotoshopHelper::getuserbyname($p->userid);
                     if($p->status=="3"){
                         $status="done";
                     }
@@ -108,7 +110,7 @@ class PhotoshopActivityController extends Controller
                     }else{
 
                     }
-                     $data['data'][] = array($p->sku,$p->color,$p->name,$username[0]->uname,$status,$p->action_name,$p->action_date_time);
+                     $data['data'][] = array($p->sku,$p->color,$p->name,$username->uname,$status,$p->action_name,$p->action_date_time);
                 }
                
             }else{
@@ -118,4 +120,17 @@ class PhotoshopActivityController extends Controller
          echo json_encode($data);
         exit;
     }
+
+    //Department Admin Code
+   public function admin(){
+       $data=PhotoshopHelper::getuserbyname($this->userid);
+       $start = (!empty($params['start']) ? $params['start'] : 0);
+       $length = (!empty($params['length']) ? $params['length'] : 10);
+     if($data->type=="admin"){
+           $department=$data->type;
+           $pending=PhotoshopHelper::get_product_list(0)->take($length)->offset($start)->get();
+          return view('Photoshop/admin/index',compact('department','pending'));
+ 
+       }
+   }
 }

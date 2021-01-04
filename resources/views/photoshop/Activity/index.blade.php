@@ -152,7 +152,7 @@ use App\Helpers\PhotoshopHelper;
                        ?>
                           @foreach($record as $data)
                         <?php 
-                       $username=collect(PhotoshopHelper::getuserbyname($data->userid));
+                       $username=PhotoshopHelper::getuserbyname($data->userid);
             
                         ?>
 				          <tr>

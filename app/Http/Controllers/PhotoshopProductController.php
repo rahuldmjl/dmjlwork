@@ -166,8 +166,9 @@ public function workassign(){
    $category=category::all();
   $color=color::all();
   $user=$this->user_assign;
-  $data=PhotoshopHelper::getWorkAssign_List("")->where('p.next_department_status',0)->get();
-  return view('Photoshop/Product/workassign',compact('data','category','color','user'));
+  $data=PhotoshopHelper::getWorkAssign_List("")->get();
+
+return view('Photoshop/Product/workassign',compact('data','category','color','user'));
   
 }
 public function ajax_workassign(Request $request){
@@ -178,7 +179,6 @@ public function ajax_workassign(Request $request){
   $length = (!empty($params['length']) ? $params['length'] : 10);
   $stalen = $start / $length;
   $curpage = $stalen;
-  $maindata = PhotoshopHelper::getWorkAssign_List("");
  
   if(!empty($params['departmentfilter'])){
     $maindata = PhotoshopHelper::getWorkAssign_List($params['departmentfilter']);
@@ -191,6 +191,8 @@ public function ajax_workassign(Request $request){
   if(!empty($params['colorFilter'])){
     $maindata->where('pro.color',$params['colorFilter']);
    }
+   $maindata = PhotoshopHelper::getWorkAssign_List("");
+ 
   $datacoll = $maindata;
   $data["recordsTotal"] =$datacoll->get()->count();
   $data["recordsFiltered"] = $datacoll->get()->count();
@@ -200,7 +202,7 @@ public function ajax_workassign(Request $request){
     foreach($donecollection as $key => $product)
     { 
       $check='<input class="form-check-input chkProduct" data-id="'.$product->pid.'" value="'.$product->pid.'" type="checkbox" name="chkProduct[]" id="chkProduct'.$product->pid.'"><span class="label-text"></label>';
-       $data['data'][] = array( $check,$product->sku, $product->color, $product->categoryname,$product->username,$product->created_by);
+       $data['data'][] = array( $check,$product->sku, $product->color, $product->categoryname,$product->created_by);
     }
 
    

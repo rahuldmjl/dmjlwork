@@ -725,6 +725,8 @@ Route::post('Photoshop/Product/assignproduct','PhotoshopProductController@assign
 Route::get('Photoshop/Product/workassign','PhotoshopProductController@workassign')->name('workassign');
 Route::post('Photoshop/Product/workassignlist','PhotoshopProductController@ajax_workassign')->name('ajax_workassignlist');
 Route::post('Photoshop/Product/userassign','PhotoshopProductController@user_assign')->name('userassign');
+Route::get('Photoshop/Product/assignproduct_list','PhotoshopProductController@assignproduct_list')->name('workassign');
+
 /*
 TEst The Query
 
@@ -745,7 +747,6 @@ Route::get('Photoshop/setting/color','PhotoshopSetting@color')->name('photograph
 /*
 Photoshop department
 */ 
-Route::get('Photoshop/Photography','PhotoshopController@index')->name('photography.index');
 Route::post('Photoshop/Photography/pending','PhotoshopController@pending_list_submit');
 Route::get('Photoshop/Photography/pending','PhotoshopController@get_pending_list')->name('photography.pending');
 Route::post('Photoshop/Photography/pending_ajax_list','PhotoshopController@Pending_Ajax_list')->name('ajax.pending');
@@ -815,3 +816,5 @@ Department wise activity routing
 */
 Route::get('Photoshop/Activity/index','PhotoshopActivityController@Activityload')->name('photoshop.activity');
 Route::post('Photoshop/Activity/activity_ajax','PhotoshopActivityController@Activityload_ajax')->name('photoshop.activity.ajax');
+//Admin Routing
+Route::get('Photoshop/admin/','PhotoshopActivityController@admin')->name('admin.product');

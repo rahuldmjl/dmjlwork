@@ -175,10 +175,9 @@ public static function getWorkAssign_List($department){
       $data=DB::table('photography_products as pro')
         ->join($department .' as p','p.product_id','pro.id')
         ->join('categories as c','p.category_id','c.entity_id')
-        ->join('userphotographies as u','p.work_assign_user','u.id')
         ->join('userphotographies as u1','p.created_by','u1.id')
-        ->select('u.name as username','u1.name as created_by','pro.sku','pro.color','pro.userid','c.name as categoryname','p.status','p.product_id as pid')
-        ->where('p.next_department_status',0)
+        ->select('u1.name as created_by','pro.sku','pro.color','pro.userid','c.name as categoryname','p.status','p.product_id as pid')
+        ->where('p.next_department_status','0')
         ->groupBy(['pro.sku','pro.color']);
        return $data;
 }
@@ -204,9 +203,8 @@ public static function getCategoryname($id){
 public static function getuserbyname($id){
    
     $data=DB::table('userphotographies')
-        ->select('name as uname')
          ->where('id',$id)
-        ->get();
+         ->first();
 
       return $data;  
 }
@@ -244,6 +242,24 @@ public static function updateshoottable($pid,$status,$smode){
     $shoot->save();
     return true;
 }
+
+public static function get_inprogressproduct(){
+    $query=DB::table('photography_products as p')
+         ->join('categories as c','p.category_id','c.entity_id')
+         ->select('p.id','p.sku','p.color','c.name')
+         ->where('status','=','1');
+            return $query;   
+}
+public static function get_product_activity_last($productid){
+    $data=DB::table('photoshop_caches')
+            ->where('product_id','=',$productid)
+            ->orderBy('id','desc')
+            ->last();
+      return $data;      
+}
+
+
+
 
 
 }   
