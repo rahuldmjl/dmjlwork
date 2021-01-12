@@ -747,6 +747,8 @@ Route::get('Photoshop/setting/color','PhotoshopSetting@color')->name('photograph
 /*
 Photoshop department
 */ 
+Route::get('Photoshop/','PhotoshopController@login');
+Route::post('Photoshop/','PhotoshopController@logincheck');
 Route::post('Photoshop/Photography/pending','PhotoshopController@pending_list_submit');
 Route::get('Photoshop/Photography/pending','PhotoshopController@get_pending_list')->name('photography.pending');
 Route::post('Photoshop/Photography/pending_ajax_list','PhotoshopController@Pending_Ajax_list')->name('ajax.pending');

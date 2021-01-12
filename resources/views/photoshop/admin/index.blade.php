@@ -63,11 +63,9 @@ use App\Helpers\PhotoshopHelper;
   			<div class="widget-bg">
 					<div class="widget-heading clearfix">
 						<h5 class="border-b-light-1 pb-1 mb-2 mt-0 w-100">Pending Product list</h5>
-					  
-					</div>
+				 </div>
             <div class="widget-body clearfix dataTable-length-top-0">
-  						
-	            <table class="table table-striped table-center word-break mt-0 checkbox checkbox-primary"   id="photographytable" >
+  						 <table class="table table-striped table-center word-break mt-0 checkbox checkbox-primary"   id="admindatatablepending" >
   							<thead>
   								<tr class="bg-primary">
                    <th>Sku</th>
@@ -162,5 +160,10 @@ use App\Helpers\PhotoshopHelper;
 <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.print.min.js"></script>
 <script src="<?=URL::to('/');?>/js/jquery.validate.min.js"></script>
 <script src="<?=URL::to('/');?>/js/additional-methods.min.js"></script>
+<script>
+$(document).ready(function(){
+var table=$('#admindatatablepending').DataTable();
+});
 
+</script>
 @endsection

@@ -258,9 +258,5 @@ public static function get_product_activity_last($productid){
       return $data;      
 }
 
-
-
-
-
 }   
 ?>

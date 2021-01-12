@@ -216,6 +216,13 @@ use App\Helpers\PhotoshopHelper;
   			</div>
   		</div>
     </div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
   <!-- /.widget-list -->
 </main>
 <!-- /.main-wrappper -->
